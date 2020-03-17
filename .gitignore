@@ -1,0 +1,9 @@
+/.idea
+/media/*
+/logs/*
+/local
+/static
+!/*/.gitkeep
+.env
+*.log
+db.sqlite3

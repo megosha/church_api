@@ -1,4 +1,12 @@
-GET http://api.church22.ru/profile/
+GET https://api.electis.ru/profile/
+Authorization: Basic test testtest
+
+###
+GET http://127.0.0.1:8010/profile/
+Authorization: Basic test testtest
+
+###
+GET https://https.home.electis.ru/profile/
 Authorization: Basic test testtest
 
 ###

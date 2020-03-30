@@ -6,5 +6,5 @@
 !/*/.gitkeep
 .env
 *.log
+*.http
 db.sqlite3
-api.http

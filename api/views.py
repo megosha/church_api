@@ -26,7 +26,7 @@ class FormViewSet(APIView):
             title = form['title']
             data = form['data']
         except Exception as e:
-            return HttpResponse('{"error": "Ошибка данных: {e}"}'.format(e=e))
+            return HttpResponse('{"error": "Ошибка данных: {e}"}'.format(e=str(e)))
         emails = ('andrey@ngbarnaul.ru',)
         form_obj = models.Form.objects.create(title=title, text=json.dumps(data, ensure_ascii=False))
         html = f'<h2>{title}</h2>' + '<br>'.join([f"{d[0]}: {d[1]}" for d in data])
@@ -35,7 +35,7 @@ class FormViewSet(APIView):
         try:
             mail.send(fail_silently=False)
         except Exception as e:
-            return HttpResponse('{"error": "Ошибка отправки сообщения: {e}"}'.format(e=e))
+            return HttpResponse('{"error": "Ошибка отправки сообщения: {e}"}'.format(e=str(e)))
         form_obj.sended = True
         form_obj.save()
         return HttpResponse('{"response": "OK"}')

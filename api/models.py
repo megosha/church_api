@@ -30,3 +30,13 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.position} - {self.name}'
+
+
+class Form(models.Model):
+    title = models.CharField(max_length=32, default='')
+    text = models.TextField(default='')
+    sended = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.title

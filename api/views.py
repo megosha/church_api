@@ -6,7 +6,6 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
 
 from api import models, serializers
 
@@ -18,7 +17,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
 
 class FormViewSet(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
     def resp(self, status: bool = True, msg: str = 'OK'):
         key = 'response' if status else 'error'
@@ -47,7 +46,7 @@ class FormViewSet(APIView):
 
 
 class RobokassaViewSet(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         mrh_login = settings.ROBOKASSA_LOGIN
@@ -56,7 +55,7 @@ class RobokassaViewSet(APIView):
         inv_desc = 'Добровольное пожертвование на деятельность церкви'
         def_sum = '500'
         crc = hashlib.md5(f'{mrh_login}::{inv_id}:{mrh_pass1}'.encode()).hexdigest()
-        html = "<script language=JavaScript src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?"\
+        html = "<script src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?"\
                f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}"\
                f"&Description={inv_desc}&SignatureValue={crc}'></script>"
         return HttpResponse(html)

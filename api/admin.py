@@ -2,6 +2,13 @@ from django.contrib import admin
 from django.apps import apps
 from rest_framework.authtoken.models import Token
 
+from api import models
+
+
+@admin.register(models.Form)
+class FormAdmin(admin.ModelAdmin):
+    list_display = ["created", "title", "sended"]
+
 
 apps_models = apps.get_models()
 for model in apps_models:

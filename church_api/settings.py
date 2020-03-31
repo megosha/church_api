@@ -159,5 +159,5 @@ REST_FRAMEWORK = {
 EMAIL_CONFIG = env.email_url('EMAIL_URL', default='smtp://user@:password@localhost:25')
 vars().update(EMAIL_CONFIG)
 
-ROBOKASSA_LOGIN = env('ROBOKASSA_LOGIN')
-ROBOKASSA_PASS1 = env('ROBOKASSA_PASS1')
+ROBOKASSA_LOGIN = env('ROBOKASSA_LOGIN', '')
+ROBOKASSA_PASS1 = env('ROBOKASSA_PASS1', '')

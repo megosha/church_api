@@ -1,4 +1,5 @@
 import json
+import hashlib
 
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
@@ -43,3 +44,19 @@ class FormViewSet(APIView):
         form_obj.sended = True
         form_obj.save()
         return self.resp()
+
+
+class RobokassaViewSet(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        mrh_login = settings.ROBOKASSA_LOGIN
+        mrh_pass1 = settings.ROBOKASSA_PASS1
+        inv_id = 1
+        inv_desc = 'Добровольное пожертвование на деятельность церкви'
+        def_sum = '500'
+        crc = hashlib.md5(f'{mrh_login}::{inv_id}:{mrh_pass1}'.encode()).hexdigest()
+        html = "<html><script language=JavaScript src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?"\
+               f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}"\
+               f"&Description={inv_desc}&SignatureValue={crc}'></script></html>"
+        return HttpResponse(html)

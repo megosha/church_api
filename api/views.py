@@ -56,7 +56,7 @@ class RobokassaViewSet(APIView):
         inv_desc = 'Добровольное пожертвование на деятельность церкви'
         def_sum = '500'
         crc = hashlib.md5(f'{mrh_login}::{inv_id}:{mrh_pass1}'.encode()).hexdigest()
-        html = "<html><script language=JavaScript src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?"\
+        html = "<script language=JavaScript src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?"\
                f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}"\
-               f"&Description={inv_desc}&SignatureValue={crc}'></script></html>"
+               f"&Description={inv_desc}&SignatureValue={crc}'></script>"
         return HttpResponse(html)

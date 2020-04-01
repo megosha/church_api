@@ -1,5 +1,6 @@
 import json
 import hashlib
+import logging
 
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
@@ -59,3 +60,12 @@ class RobokassaViewSet(APIView):
                f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}"\
                f"&Description={inv_desc}&SignatureValue={crc}'></script>"
         return HttpResponse(html)
+
+
+class LogViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def dispatch(self, request, *args, **kwargs):
+        logger = logging.getLogger('django')
+        logger.info(f'{request.scheme} {request.method}:\n{request.body}')
+        return HttpResponse('OK')

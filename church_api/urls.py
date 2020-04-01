@@ -12,6 +12,7 @@ router.register(r'profile', views.ProfileViewSet)
 urlpatterns = [
     path('form/', views.FormViewSet.as_view()),
     path('robokassa/', views.RobokassaViewSet.as_view()),
+    path('log/', views.LogViewSet.as_view()),
     path('', include(router.urls)),
     path('auth/', obtain_auth_token),
     path('admin/', admin.site.urls),

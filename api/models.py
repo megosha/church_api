@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from rest_framework.authtoken.models import Token
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -37,6 +38,28 @@ class Form(models.Model):
     text = models.TextField(default='')
     sended = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.title
+
+
+class NewsSection(models.Model):
+    title = models.CharField(max_length=255, blank=True, default='')
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+
+class News(models.Model):
+    class Meta:
+        ordering = ('date',)
+    section = models.ForeignKey(NewsSection, on_delete=models.CASCADE)
+    date = models.DateField(default=timezone.now)
+    title = models.CharField(max_length=255, blank=True, default='')
+    url = models.CharField(max_length=255, blank=True, default='')
+    image = models.ImageField(blank=True, null=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +60,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -161,3 +164,25 @@ vars().update(EMAIL_CONFIG)
 
 ROBOKASSA_LOGIN = env.str('ROBOKASSA_LOGIN', '')
 ROBOKASSA_PASS1 = env.str('ROBOKASSA_PASS1', '')
+
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+# <a href="{% url "social:begin" "google-oauth2" %}">Google+</a>
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.vk.VKOAuth2',
+    'social_core.backends.odnoklassniki.OdnoklassnikiOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+)
+SOCIAL_AUTH_VK_OAUTH2_KEY = '00197cdd00197cdd00197cdd6700699c530001900197cdd5e9452be19d05d4fe681b0db'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = '21kcvuSCQEtBwcS1hLv4'
+SOCIAL_AUTH_ODNOKLASSNIKI_OAUTH2_KEY = ''
+SOCIAL_AUTH_ODNOKLASSNIKI_OAUTH2_SECRET = ''
+SOCIAL_AUTH_ODNOKLASSNIKI_OAUTH2_PUBLIC_NAME = ''
+SOCIAL_AUTH_FACEBOOK_KEY = ''
+SOCIAL_AUTH_FACEBOOK_SECRET = ''
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'locale': 'ru_RU',
+  'fields': 'id, name, email, age_range'
+}

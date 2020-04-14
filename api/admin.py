@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.apps import apps
-from rest_framework.authtoken.models import Token
 
 from api import models
 
@@ -10,9 +9,12 @@ class FormAdmin(admin.ModelAdmin):
     list_display = ["created", "title", "sended"]
 
 
+skip_models = ('authtoken.Token.objects',)
+skip_app = 'social_django'
 apps_models = apps.get_models()
 for model in apps_models:
-    if model == Token:
+    model_objects = str(model.objects)
+    if model_objects in skip_models or model_objects.startswith(skip_app):
         continue
     try:
         admin.site.register(model)

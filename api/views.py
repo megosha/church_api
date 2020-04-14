@@ -5,6 +5,8 @@ import logging
 from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
 from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.utils import timezone
 from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
 
@@ -14,6 +16,12 @@ from api import models, serializers
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = models.Profile.objects.filter(active=True)
     serializer_class = serializers.ProfileSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+
+class NewsViewSet(viewsets.ModelViewSet):
+    queryset = models.News.objects.filter(active=True, date__lte=timezone.now(), section__active=True)
+    serializer_class = serializers.NewsSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
 
@@ -69,3 +77,11 @@ class LogViewSet(APIView):
         logger = logging.getLogger('django')
         logger.info(f'{request.scheme} {request.method}:\n{request.body}')
         return HttpResponse('OK')
+
+
+class AccountViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return HttpResponse(render_to_string('login_form.html'))

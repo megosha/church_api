@@ -4,5 +4,6 @@ from front import views
 
 
 urlpatterns = [
+    path('', views.IndexView.as_view()),
     re_path(r'', views.StaticView.as_view()),
 ]

@@ -50,7 +50,7 @@ function template_profile(profile) {
 $(document).ready(function() {
     console.log('request data');
     $.ajax({
-        url: 'https://api.electis.ru/api/profile/',
+        url: 'https://api.church22.ru/api/profile/',
         type: 'GET',
 //        data: form,
         cache: false,

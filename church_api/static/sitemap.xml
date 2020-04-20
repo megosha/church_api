@@ -1,53 +1,56 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
-		<loc>https://church22.ru/index/</loc>
+		<loc>https://church22.ru/index.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/about/</loc>
+		<loc>https://church22.ru/about.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/heal/</loc>
+		<loc>https://church22.ru/heal.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/policy/</loc>
+		<loc>https://church22.ru/policy.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/feedback/</loc>
+		<loc>https://church22.ru/feedback.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/command/</loc>
+		<loc>https://church22.ru/command.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/social/</loc>
+		<loc>https://church22.ru/social.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/psycholog/</loc>
+		<loc>https://church22.ru/psycholog.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/finance/</loc>
+		<loc>https://church22.ru/finance.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/contact/</loc>
+		<loc>https://church22.ru/contact.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/donate/</loc>
+		<loc>https://church22.ru/donate.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/donate_ok/</loc>
+		<loc>https://church22.ru/donate_ok.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/donate_fail/</loc>
+		<loc>https://church22.ru/donate_fail.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/account/</loc>
+		<loc>https://church22.ru/account.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/article1/</loc>
+		<loc>https://church22.ru/article1.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/article2/</loc>
+		<loc>https://church22.ru/article2.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/article3/</loc>
+		<loc>https://church22.ru/article3.html</loc>
+	</url>
+	<url>
+		<loc>https://church22.ru/article.html</loc>
 	</url>
 </urlset>

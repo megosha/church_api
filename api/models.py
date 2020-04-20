@@ -57,8 +57,10 @@ class News(models.Model):
     section = models.ForeignKey(NewsSection, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
     title = models.CharField(max_length=255, blank=True, default='')
-    url = models.CharField(max_length=255, blank=True, default='')
+    cover = models.ImageField(null=True)
     image = models.ImageField(blank=True, null=True)
+    text = models.TextField(default='')
+    author = models.TextField(default='')
     active = models.BooleanField(default=True)
 
     def __str__(self):

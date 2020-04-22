@@ -5,12 +5,12 @@
                 <p class="mbr-text mbr-fonts-style status mbr-normal my-0 display-4">{{ item.date|date:"d E Y" }}</p>
                 <p class="mbr-text mbr-fonts-style status mbr-normal my-0 display-7">{{ item.section }}</p>
                 <div class="wrap-img ">
-                    <a href="/article/{{ item.pk }}" target="_blank">
+                    <a href="/article-{{ item.pk }}">
                         <img src="{{ item.cover.url }}" class="img-responsive clients-img" alt="" title="">
                     </a>
                 </div>
                 <h4 class="card-title mbr-fonts-style mbr-normal display-5">
-                    <a href="/article/{{ item.pk }}" target="_blank" class="text-secondary">{{ item.title }}</a>
+                    <a href="/article-{{ item.pk }}" class="text-secondary">{{ item.title }}</a>
                 </h4>
             </div>
         </div>

@@ -17,6 +17,17 @@ style.css:
 <meta name="robots" content="noindex,follow">
 ```
 
+##### Переход по клику на раздел
+
+```
+onclick="window.location.href='/news-1'"
+```
+
+##### Один блок на все страницы в мобирайзе (футер)
+
+в теге section (первая строка) дописать global once="footers"
+
+
 ### Деплой из мобирайза
 
 

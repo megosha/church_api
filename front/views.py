@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from api import models
 
-
+# TODO news section
 class IndexView(View):
     def get(self, request):
         news = render_to_string('include/news.html', {'news': models.News.objects.all()})
@@ -14,12 +14,28 @@ class IndexView(View):
         return render(request, 'index.html', context)
 
 
+class NewsSectionView(View):
+    def get(self, request, pk):
+        try:
+            newssection = render_to_string('include/newssection.html', {
+                'newssection': models.NewsSection.objects.get(pk=pk),
+                'newssection_all': models.NewsSection.objects.filter(active=True)
+            })
+        except Exception as Ex:
+            print(Ex)
+            return redirect('/')
+        context = {
+            'newssection': newssection,
+        }
+        return render(request, 'newssection.html', context)
+
+
 class ArticleView(View):
     def get(self, request, pk):
-        # TODO Новости на главной все, Статика в статье
         try:
             article = render_to_string('include/article.html', {'article': models.News.objects.get(pk=pk)})
-        except:
+        except Exception as Ex:
+            print(Ex)
             return redirect('/')
         context = {
             'article': article
@@ -32,5 +48,6 @@ class StaticView(View):
         path = request.path[1:] + '.html'
         try:
             return render(request, path)
-        except:
+        except Exception as Ex:
+            print(Ex)
             return redirect('/')

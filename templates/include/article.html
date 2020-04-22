@@ -1,4 +1,4 @@
-<section class="mbr-section content5 cid-rWEPUevwVY" id="content5-6c">
+<section class="mbr-section content5 cid-rWcOAIXKdt" id="content5-6c">
     <div class="container">
         <div class="media-container-row">
             <div class="title col-12 col-md-8">
@@ -8,16 +8,16 @@
         </div>
     </div>
 </section>
-
+{% if article.image %}
 <section class="cid-rWERbyIHpu" id="image3-6g">
     <figure class="mbr-figure container">
-            <div class="image-block" style="width: 100%;">
-                <img src="{{ article.image.url }}" height="300" alt="" title="">
+            <div class="image-block">
+                <img src="{{ article.image.url }}" alt="" title="">
             </div>
     </figure>
 </section>
-
-<section class="mbr-section article content1 cid-rWEPUfl6qP" id="content1-6d">
+{%  endif %}
+<section class="mbr-section article content1 cid-rWcOAJGDus" id="content1-6d">
     <div class="container">
         <div class="media-container-row">
             <div class="mbr-text col-12 mbr-fonts-style display-7 col-md-12">
@@ -26,8 +26,8 @@
         </div>
     </div>
 </section>
-
-<section class="mbr-section article extСontent cid-rWEPUg5d26" id="extContent3-6e">
+{% if article.author %}
+<section class="mbr-section article extСontent cid-rWe5Ro6y1U" id="extContent3-6e">
     <div class="container">
         <div class="media-container-row">
             <div class="mbr-text col-12 col-md-8 display-4">
@@ -39,3 +39,4 @@
         </div>
     </div>
 </section>
+{% endif %}

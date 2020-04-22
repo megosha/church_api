@@ -45,6 +45,7 @@ class Form(models.Model):
 
 class NewsSection(models.Model):
     title = models.CharField(max_length=255, blank=True, default='')
+    icon = models.CharField(max_length=32, default='mbri-info')
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -56,11 +57,12 @@ class News(models.Model):
         ordering = ('date',)
     section = models.ForeignKey(NewsSection, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now)
-    title = models.CharField(max_length=255, blank=True, default='')
+    title = models.CharField(max_length=255, default='')
     cover = models.ImageField(null=True)
     image = models.ImageField(blank=True, null=True)
-    text = models.TextField(default='')
-    author = models.TextField(default='')
+    text = models.TextField(default='', blank=True)
+    html = models.TextField(default='', blank=True)
+    author = models.TextField(default='', blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):

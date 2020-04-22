@@ -1,0 +1,54 @@
+<section class="extFeatures cid-rWKUt54ncm" id="extFeatures3-70">
+    <div class="container-fluid">
+        <div class="row justify-content-center content-row">
+            {% for item in newssection_all %}
+            <div class="card p-3 col-md-6 col-lg-4 col-xl-2" onclick="window.location.href='/news-{{ item.pk }}'">
+                <div class="card-img pb-2">
+                    <div class="step">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px;"></span>
+                    </div>
+                </div>
+                <div class="card-box">
+                    <p class="mbr-text mbr-fonts-style display-7">{{ item.title }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="extFeatures cid-rWKLYBGipj" id="extFeatures34-6v">
+    <div class="container">
+        <h2 class="mbr-section-title pb-1 mbr-normal mbr-fonts-style align-left display-2">{{ newssection.title }}</h2>
+        <div class="row row-content justify-content-center">
+            {% for item in newssection.news_set.all %}
+            <div class="card p-3 col-lg-12 col-md-12">
+                <div class="card-wrapper">
+                    <div class="card-img">
+                        <img src="{{ item.cover.url }}" title="" alt="">
+                        <div class="card-box">
+                        </div>
+                    </div>
+                    <div class="content-wrapper">
+                        <div class="text-box">
+                            <div>
+                                <h4 class="card-title2 mbr-fonts-style mbr-normal align-left display-5">{{ item.title }}</h4>
+                                <div class="ico-box">
+                                    <span class="pr-2 mbr-iconfont mbr-iconfont-social ico2 mbri-calendar"></span>
+                                    <p class="mbr-text mbr-fonts-style phone mbr-normal display-4">{{ item.date|date:"d E Y" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-box">
+                            <p class="mbr-text mbr-fonts-style mbr-normal card-text display-7">{{ item.text|truncatewords_html:20 }}</p>
+                        </div>
+                        <div class="mbr-section-btn">
+                            <a href="/article-{{ item.pk }}" class="btn btn-sm btn-secondary-outline display-4">Перейти</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

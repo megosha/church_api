@@ -9,34 +9,39 @@
     </div>
 </section>
 {% if article.image %}
-<section class="cid-rWERbyIHpu" id="image3-6g">
-    <figure class="mbr-figure container">
+    <section class="cid-rWERbyIHpu" id="image3-6g">
+        <figure class="mbr-figure container">
             <div class="image-block">
                 <img src="{{ article.image.url }}" alt="" title="">
             </div>
-    </figure>
-</section>
-{%  endif %}
+        </figure>
+    </section>
+{% endif %}
 <section class="mbr-section article content1 cid-rWcOAJGDus" id="content1-6d">
     <div class="container">
         <div class="media-container-row">
             <div class="mbr-text col-12 mbr-fonts-style display-7 col-md-12">
-                {{ article.text|linebreaks }}
+                {{ article.text|safe|linebreaks }}
+            </div>
+        </div>
+        <div class="media-container-row">
+            <div class="mbr-text col-12 mbr-fonts-style display-7 col-md-12">
+                {{ article.html|safe }}
             </div>
         </div>
     </div>
 </section>
 {% if article.author %}
-<section class="mbr-section article extСontent cid-rWe5Ro6y1U" id="extContent3-6e">
-    <div class="container">
-        <div class="media-container-row">
-            <div class="mbr-text col-12 col-md-8 display-4">
-                <div class="flex-block">
-                    <span class="mbr-iconfont mbri-quote-right"></span>
-                    <p class="mbr-fonts-style block-quote display-4">{{ article.author|linebreaksbr }}</p>
+    <section class="mbr-section article extСontent cid-rWe5Ro6y1U" id="extContent3-6e">
+        <div class="container">
+            <div class="media-container-row">
+                <div class="mbr-text col-12 col-md-8 display-4">
+                    <div class="flex-block">
+                        <span class="mbr-iconfont mbri-quote-right"></span>
+                        <p class="mbr-fonts-style block-quote display-4">{{ article.author|linebreaksbr }}</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endif %}

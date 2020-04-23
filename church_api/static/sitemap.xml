@@ -42,15 +42,9 @@
 		<loc>https://church22.ru/account.html</loc>
 	</url>
 	<url>
-		<loc>https://church22.ru/article1.html</loc>
+		<loc>https://church22.ru/article-1.html</loc>
 	</url>
-	<url>
-		<loc>https://church22.ru/article2.html</loc>
-	</url>
-	<url>
-		<loc>https://church22.ru/article3.html</loc>
-	</url>
-	<url>
-		<loc>https://church22.ru/article.html</loc>
+    <url>
+		<loc>https://church22.ru/newssection-1.html</loc>
 	</url>
 </urlset>

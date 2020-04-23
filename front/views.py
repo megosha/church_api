@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from api import models
 
-# TODO news section
+
 class IndexView(View):
     def get(self, request):
         news = render_to_string('include/news.html', {'news': models.News.objects.all()})
@@ -12,6 +12,17 @@ class IndexView(View):
             'news': news,
         }
         return render(request, 'index.html', context)
+
+
+class CommandView(View):
+    def get(self, request):
+        command = render_to_string('include/command.html', {
+            'command': models.Profile.objects.filter(position__gt=0, active=True).order_by('position')
+        })
+        context = {
+            'command': command,
+        }
+        return render(request, 'command.html', context)
 
 
 class NewsSectionView(View):

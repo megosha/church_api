@@ -13,7 +13,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class Profile(models.Model):
     class Meta:
-        ordering = ('position',)
+        ordering = ('name',)
     name = models.CharField(max_length=255, blank=True, default='')
     function = models.CharField(max_length=255, blank=True, default='')
     image = models.ImageField(blank=True, null=True)

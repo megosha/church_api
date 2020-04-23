@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row justify-content-center content-row">
             {% for item in newssection_all %}
-            <div class="card p-3 col-md-6 col-lg-4 col-xl-2" onclick="window.location.href='/news-{{ item.pk }}'">
+            <div onclick="window.location.href='/news-{{ item.pk }}'" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" class="card p-3 col-md-6 col-lg-4 col-xl-2">
                 <div class="card-img pb-2">
                     <div class="step">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px;"></span>
@@ -19,7 +19,7 @@
 
 <section class="extFeatures cid-rWKLYBGipj" id="extFeatures34-6v">
     <div class="container">
-        <h2 class="mbr-section-title pb-1 mbr-normal mbr-fonts-style align-left display-2">{{ newssection.title }}</h2>
+        <h2 class="mbr-section-title pb-1 mbr-normal mbr-fonts-style display-1">{{ newssection.title }}</h2>
         <div class="row row-content justify-content-center">
             {% for item in newssection.news_set.all %}
             <div class="card p-3 col-lg-12 col-md-12">

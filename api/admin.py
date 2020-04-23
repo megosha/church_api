@@ -4,6 +4,14 @@ from django.apps import apps
 from api import models
 
 
+@admin.register(models.Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ["position", "name", "active"]
+
+@admin.register(models.News)
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ["date", "title", "section", "active"]
+
 @admin.register(models.Form)
 class FormAdmin(admin.ModelAdmin):
     list_display = ["created", "title", "sended"]

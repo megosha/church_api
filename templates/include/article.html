@@ -12,7 +12,11 @@
     <section class="cid-rWERbyIHpu" id="image3-6g">
         <figure class="mbr-figure container">
             <div class="image-block">
+                {% if article.image %}
                 <img src="{{ article.image.url }}" alt="" title="">
+                {% else %}
+                <img src="{{ article.cover.url }}" alt="" title="">
+                {% endif %}
             </div>
         </figure>
     </section>

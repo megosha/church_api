@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="p-box">
-                            <p class="mbr-text mbr-fonts-style mbr-normal card-text display-7">{{ item.text|truncatewords_html:20 }}</p>
+                            <p class="mbr-text mbr-fonts-style mbr-normal card-text display-7">{{ item.text|safe|truncatewords_html:30 }}</p>
                         </div>
                         <div class="mbr-section-btn">
                             <a href="/article-{{ item.pk }}" class="btn btn-sm btn-secondary-outline display-4">Перейти</a>

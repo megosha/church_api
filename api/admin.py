@@ -6,7 +6,7 @@ from api import models
 
 @admin.register(models.Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["position", "name", "active"]
+    list_display = ["name", "position", "active"]
 
 @admin.register(models.News)
 class NewsAdmin(admin.ModelAdmin):

@@ -54,8 +54,8 @@ class NewsSection(models.Model):
 
 class News(models.Model):
     class Meta:
-        ordering = ('date',)
-    section = models.ForeignKey(NewsSection, on_delete=models.CASCADE)
+        ordering = ('-date',)
+    section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True)
     date = models.DateField(default=timezone.now)
     title = models.CharField(max_length=255, default='')
     cover = models.ImageField(null=True)

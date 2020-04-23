@@ -7,7 +7,7 @@ from api import models
 
 class IndexView(View):
     def get(self, request):
-        news = render_to_string('include/news.html', {'news': models.News.objects.all()})
+        news = render_to_string('include/news.html', {'news': models.News.objects.filter(active=True)[:10]})
         context = {
             'news': news,
         }

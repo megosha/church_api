@@ -30,7 +30,7 @@ class NewsSectionView(View):
         try:
             newssection = render_to_string('include/newssection.html', {
                 'newssection': models.NewsSection.objects.get(pk=pk),
-                'newssection_all': models.NewsSection.objects.filter(active=True)
+                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
             })
         except Exception as Ex:
             print(Ex)

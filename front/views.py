@@ -44,7 +44,10 @@ class NewsSectionView(View):
 class ArticleView(View):
     def get(self, request, pk):
         try:
-            article = render_to_string('include/article.html', {'article': models.News.objects.get(pk=pk)})
+            article = render_to_string('include/article.html', {
+                'article': models.News.objects.get(pk=pk),
+                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
+            })
         except Exception as Ex:
             print(Ex)
             return redirect('/')

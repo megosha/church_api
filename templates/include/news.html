@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <p class="mbr-text mbr-fonts-style status mbr-normal my-0 display-4">{{ item.date|date:"d E Y" }}</p>
                 <a href="/news-{{ item.section.pk }}">
-                    <p class="mbr-text mbr-fonts-style status mbr-normal my-0 display-7">{{ item.section }}</p>
+                    <p class="mbr-text mbr-fonts-style status mbr-normal my-0 display-7">{{ item.section.title }}</p>
                 </a>
                 <div class="wrap-img ">
                     <a href="/article-{{ item.pk }}">

@@ -10,6 +10,7 @@ class IndexView(View):
         news = render_to_string('include/news.html', {'news': models.News.objects.filter(active=True)[:10]})
         context = {
             'news': news,
+            'main': models.Main.get_solo(),
         }
         return render(request, 'index.html', context)
 

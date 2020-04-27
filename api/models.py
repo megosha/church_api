@@ -4,6 +4,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
+from solo.models import SingletonModel
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -62,8 +64,15 @@ class News(models.Model):
     image = models.ImageField(blank=True, null=True)
     text = models.TextField(default='', blank=True)
     html = models.TextField(default='', blank=True)
+    youtube = models.CharField(max_length=16, default='', blank=True)
     author = models.TextField(default='', blank=True)
     active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
+
+
+class Main(SingletonModel):
+    title = models.CharField(max_length=255, default='')
+    welcome = models.TextField(default='', blank=True)
+    youtube = models.CharField(max_length=16, default='', blank=True)

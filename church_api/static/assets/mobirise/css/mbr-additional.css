@@ -33743,6 +33743,19 @@ body {
 .cid-rWcOAJGDus blockquote {
   color: #767676;
 }
+.cid-rXjmWTcL4k {
+  background: #ffffff;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+.cid-rXjmWTcL4k .video-block {
+  margin: auto;
+}
+@media (max-width: 768px) {
+  .cid-rXjmWTcL4k .video-block {
+    width: 100% !important;
+  }
+}
 .cid-rWe5Ro6y1U {
   padding-top: 0px;
   padding-bottom: 0px;

@@ -1,16 +1,22 @@
 from django.contrib import admin
 from django.apps import apps
+from solo.admin import SingletonModelAdmin
 
 from api import models
+
+
+admin.site.register(models.Main, SingletonModelAdmin)
 
 
 @admin.register(models.Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ["name", "position", "active"]
 
+
 @admin.register(models.News)
 class NewsAdmin(admin.ModelAdmin):
     list_display = ["date", "title", "section", "active"]
+
 
 @admin.register(models.Form)
 class FormAdmin(admin.ModelAdmin):

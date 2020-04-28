@@ -15,6 +15,20 @@ class IndexView(View):
         return render(request, 'index.html', context)
 
 
+class AccountView(View):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            return redirect('/auth/login/')
+        profile, created = models.Profile.objects.get_or_create(user=request.user)
+        account = render_to_string('include/account.html', {
+            'item': profile
+        })
+        context = {
+            'account': account,
+        }
+        return render(request, 'account.html', context)
+
+
 class CommandView(View):
     def get(self, request):
         command = render_to_string('include/command.html', {

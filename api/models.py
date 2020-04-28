@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -16,13 +17,16 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 class Profile(models.Model):
     class Meta:
         ordering = ('name',)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, default='')
+    birthday = models.DateField(null=True, blank=True)
     function = models.CharField(max_length=255, blank=True, default='')
     image = models.ImageField(blank=True, null=True)
     about = models.TextField(blank=True, default='')
     active = models.BooleanField(default=True)
     position = models.SmallIntegerField(default=-10)
     phone = models.CharField(max_length=32, blank=True, default='')
+    phone_visible = models.BooleanField(default=False, blank=True)
     social_email = models.CharField(max_length=64, blank=True, default='')
     social_page = models.CharField(max_length=64, blank=True, default='')
     social_vk = models.CharField(max_length=64, blank=True, default='')

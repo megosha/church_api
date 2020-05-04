@@ -28,12 +28,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'api',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'solo',
-    'social_django',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.instagram',
+    # 'allauth.socialaccount.providers.odnoklassniki',
+    'allauth.socialaccount.providers.vk',
 ]
 
 MIDDLEWARE = [
@@ -60,8 +68,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -163,28 +169,21 @@ REST_FRAMEWORK = {
 
 EMAIL_CONFIG = env.email_url('EMAIL_URL', default='smtp://user@:password@localhost:25')
 vars().update(EMAIL_CONFIG)
+DEFAULT_FROM_EMAIL = EMAIL_CONFIG.get('EMAIL_HOST_USER')
 
 ROBOKASSA_LOGIN = env.str('ROBOKASSA_LOGIN', '')
 ROBOKASSA_PASS1 = env.str('ROBOKASSA_PASS1', '')
 
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-# <a href="{% url "social:begin" "google-oauth2" %}">Google+</a>
+LOGIN_REDIRECT_URL = '/account'
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'social_core.backends.vk.VKOAuth2',
-    'social_core.backends.odnoklassniki.OdnoklassnikiOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    # 'front.backends.EmailAuthBackend',
 )
-SOCIAL_AUTH_VK_OAUTH2_KEY = '00197cdd00197cdd00197cdd6700699c530001900197cdd5e9452be19d05d4fe681b0db'
-SOCIAL_AUTH_VK_OAUTH2_SECRET = '21kcvuSCQEtBwcS1hLv4'
-SOCIAL_AUTH_ODNOKLASSNIKI_OAUTH2_KEY = ''
-SOCIAL_AUTH_ODNOKLASSNIKI_OAUTH2_SECRET = ''
-SOCIAL_AUTH_ODNOKLASSNIKI_OAUTH2_PUBLIC_NAME = ''
-SOCIAL_AUTH_FACEBOOK_KEY = ''
-SOCIAL_AUTH_FACEBOOK_SECRET = ''
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-  'locale': 'ru_RU',
-  'fields': 'id, name, email, age_range'
-}
+
+SITE_ID = 1
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED=True
+

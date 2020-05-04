@@ -9,6 +9,9 @@ style.css:
   visibility: hidden;
 }
 */
+.hidden {
+  visibility: visible;
+}
 ```
 
 ##### Не отображать страницу в поисковиках

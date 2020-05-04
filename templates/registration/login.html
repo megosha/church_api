@@ -3,7 +3,7 @@
 {% block content %}
 
 {% if form.errors %}
-  <p>Your username and password didn't match. Please try again.</p>
+  <p>Email или пароль неверный. Попробуйте ещё раз.</p>
 {% endif %}
 
 {% if next %}
@@ -20,7 +20,7 @@
 <table>
 
 <tr>
-  <td>{{ form.username.label_tag }}</td>
+  <td>Ваш Email:</td>
   <td>{{ form.username }}</td>
 </tr>
 
@@ -30,11 +30,11 @@
 </tr>
 </table>
 
-<input type="submit" value="login" />
+<input type="submit" value="Вход" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
 {# Assumes you setup the password_reset view in your URLconf #}
-<p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+<p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
 
 {% endblock %}

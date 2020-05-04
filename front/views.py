@@ -3,6 +3,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 
 from api import models
+from front import forms
 
 
 class IndexView(View):
@@ -22,11 +23,18 @@ class AccountView(View):
         profile, created = models.Profile.objects.get_or_create(user=request.user)
         account = render_to_string('include/account.html', {
             'item': profile
-        })
+        }, request)
         context = {
             'account': account,
         }
         return render(request, 'account.html', context)
+
+    def post(self, request):
+        profile = request.user.profile
+        form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+        return redirect('/account')
 
 
 class CommandView(View):

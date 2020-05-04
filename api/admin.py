@@ -23,7 +23,8 @@ class FormAdmin(admin.ModelAdmin):
     list_display = ["created", "title", "sended"]
 
 
-skip_models = ('authtoken.Token.objects',)
+skip_models = ('authtoken.Token.objects', 'account.EmailAddress.objects', 'socialaccount.SocialApp.objects',
+               'socialaccount.SocialToken.objects', 'socialaccount.SocialAccount.objects')
 skip_app = 'social_django'
 apps_models = apps.get_models()
 for model in apps_models:

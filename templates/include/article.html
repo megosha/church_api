@@ -71,7 +71,7 @@
                 <div class="mbr-text col-12 col-md-8 display-4">
                     <div class="flex-block">
                         <span class="mbr-iconfont mbri-quote-right"></span>
-                        <p class="mbr-fonts-style block-quote display-4">{{ article.author|linebreaksbr }}</p>
+                        <p class="mbr-fonts-style block-quote display-4">{{ article.author|safe|linebreaksbr }}</p>
                     </div>
                 </div>
             </div>

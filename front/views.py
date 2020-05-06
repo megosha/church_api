@@ -8,10 +8,13 @@ from front import forms
 
 class IndexView(View):
     def get(self, request):
-        news = render_to_string('include/news.html', {'news': models.News.objects.filter(active=True)[:10]})
+        news = render_to_string('include/news.html', {
+            'news': models.News.objects.filter(active=True)[:10]
+        })
         context = {
             'news': news,
             'main': models.Main.get_solo(),
+            'title': models.Main.get_solo().title
         }
         return render(request, 'index.html', context)
 
@@ -67,15 +70,17 @@ class NewsSectionView(View):
 class ArticleView(View):
     def get(self, request, pk):
         try:
-            article = render_to_string('include/article.html', {
-                'article': models.News.objects.get(pk=pk),
+            article = models.News.objects.get(pk=pk)
+            article_html = render_to_string('include/article.html', {
+                'article': article,
                 'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
             })
         except Exception as Ex:
             print(Ex)
             return redirect('/')
         context = {
-            'article': article
+            'article': article_html,
+            'title': article.title
         }
         return render(request, 'article.html', context)
 

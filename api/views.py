@@ -41,7 +41,7 @@ class FormViewSet(APIView):
             html = f'<h2>{title}</h2>' + '<br>'.join([f"{d[0]}: {d[1]}" for d in data])
         except Exception as e:
             return self.resp(False, f'Ошибка данных: {e}')
-        emails = ('andrey@ngbarnaul.ru',)
+        emails = ('andrey@ngbarnaul.ru', 'artorop@mail.ru',)
         form_obj = models.Form.objects.create(title=title, text=json.dumps(data, ensure_ascii=False))
         mail = EmailMultiAlternatives(title, html, settings.EMAIL_HOST_USER, emails)
         mail.content_subtype = "html"

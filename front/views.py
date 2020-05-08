@@ -88,8 +88,12 @@ class ArticleView(View):
 class StaticView(View):
     def get(self, request):
         path = request.path[1:] + '.html'
+        context = {
+            'main': models.Main.get_solo(),
+            'title': models.Main.get_solo().title
+        }
         try:
-            return render(request, path)
+            return render(request, path, context)
         except Exception as Ex:
             print(Ex)
             return redirect('/')

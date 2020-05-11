@@ -53,9 +53,12 @@ class CommandView(View):
 
 class NewsSectionView(View):
     def get(self, request, pk):
+        news_section = models.NewsSection.objects.filter(pk=pk).first()
+        if not news_section:
+            news_section = models.NewsSection.objects.first()
         try:
             newssection = render_to_string('include/newssection.html', {
-                'newssection': models.NewsSection.objects.get(pk=pk),
+                'newssection': news_section,
                 'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
             })
         except Exception as Ex:

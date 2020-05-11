@@ -127,6 +127,10 @@
         style="color: #149dcc; text-decoration: underline;" href="/policy">Пользовательским соглашением об использовании персональных данных</a> </span>
 </label>
 </span></form><!--Formbuilder Form-->
+            <form method="post" action="/auth/logout/">
+                {% csrf_token %}
+                <button type="submit" class="btn-secondary-outline btn">Выйти</button>
+            </form>
             </div>
         </div>
     </div>

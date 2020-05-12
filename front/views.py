@@ -71,7 +71,10 @@ class AccountView(View):
                     if data.get('email'):
                         profile.social_email = data['email']
                 elif social_account.provider == 'facebook':
-                    pass
+                    profile.social_fb = f'https://www.facebook.com/profile.php?id={data["uid"]}'
+                    profile.name = data.get('name', '')
+                    if data.get('email'):
+                        profile.social_email = data['email']
                 profile.save()
         account = render_to_string('include/account.html', {
             'item': profile

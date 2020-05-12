@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <link rel="shortcut icon" href="/assets/images/logo2x-160x279.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets/images/favicon-128x128.png" type="image/x-icon">
     <meta name="description" content="Добро пожаловать в христианскую церковь города Барнаула!">
     <title>{{ title }}</title>
 
@@ -58,24 +58,18 @@
 <body>
 <!-- Analytics -->
 <!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function (m, e, t, r, i, k, a) {
-        m[i] = m[i] || function () {
-            (m[i].a = m[i].a || []).push(arguments)
-        };
-        m[i].l = 1 * new Date();
-        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
-    })
-    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-    ym(61624567, "init", {
-        clickmap: true,
-        trackLinks: true,
-        accurateTrackBounce: true
-    });
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(61624567, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
 </script>
-<noscript>
-    <div><img src="https://mc.yandex.ru/watch/61624567" style="position:absolute; left:-9999px;" alt=""/></div>
-</noscript>
+<noscript><div><img src="https://mc.yandex.ru/watch/61624567" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
 <!-- /Analytics -->
 
@@ -124,18 +118,17 @@
                 <li class="nav-item"><a class="nav-link link text-primary display-7" href="/news-0">Новости</a></li>
                 <li class="nav-item"><a class="nav-link link text-primary display-7" href="/donate">Пожертвовать</a></li>
             </ul>
+            <div class="navbar-buttons mbr-section-btn">
+                {% if not request.user.is_authenticated %}
+                    <a class="display-4 btn btn-secondary p-0 px-2" href="/account">
+                        Аккаунт&nbsp;<img height="40px" src="/account.png">
+                    </a>
+                {% else %}
+                    <a class="display-4 btn btn-secondary p-0 px-2" href="/account">
+                        {{ request.user.profile.name }}&nbsp;<img style="border-radius: 50%;" height="40px" src="{% if request.user.profile.image %}{{ request.user.profile.image.url }}{% else %}/account.png{% endif %}">
+                    </a>
+                {% endif %}
+            </div>
         </div>
-        <div class="navbar-buttons mbr-section-btn">
-            {% if not request.user.is_authenticated %}
-                <a class="display-4 btn btn-secondary p-0 px-2" href="/account">
-                    Аккаунт&nbsp;<img height="40px" src="/account.png">
-                </a>
-            {% else %}
-                <a class="display-4 btn btn-secondary p-0 px-2" href="/account">
-                    {{ request.user.profile.name }}&nbsp;<img style="border-radius: 50%;" height="40px" src="{% if request.user.profile.image %}{{ request.user.profile.image.url }}{% else %}/account.png{% endif %}">
-                </a>
-            {% endif %}
-        </div>
-
     </nav>
 </section>

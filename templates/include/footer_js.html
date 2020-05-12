@@ -21,8 +21,29 @@
 <script src="/assets/theme/js/script.js"></script>
 <script src="/assets/formoid.min.js"></script>
 
-<div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
+<div id="scrollToTop" class="scrollToTop mbr-arrow-up" style="left: 20px;bottom: 20px"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
 <input name="animation" type="hidden">
-
+<script type='text/javascript'>
+(function () {
+    window['yandexChatWidgetCallback'] = function() {
+        try {
+            window.yandexChatWidget = new Ya.ChatWidget({
+                guid: '8a9e3800-590c-9fa9-7e44-30e4b7dbe831',
+                buttonText: 'Ответим на ваши вопросы',
+                title: 'Чат с администратором',
+                theme: 'light',
+                collapsedDesktop: 'never',
+                collapsedTouch: 'always'
+            });
+        } catch(e) { }
+    };
+    var n = document.getElementsByTagName('script')[0],
+        s = document.createElement('script');
+    s.async = true;
+    s.charset = 'UTF-8';
+    s.src = 'https://yastatic.net/s3/chat/widget.js';
+    n.parentNode.insertBefore(s, n);
+})();
+</script>
 </body>
 </html>

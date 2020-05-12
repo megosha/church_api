@@ -1,4 +1,11 @@
+from datetime import datetime
+
+import os
+import requests
+from allauth.socialaccount.models import SocialAccount
+from django.conf import settings
 from django.template.loader import render_to_string
+from django.utils.dateparse import parse_date
 from django.views import View
 from django.shortcuts import render, redirect
 
@@ -20,10 +27,52 @@ class IndexView(View):
 
 
 class AccountView(View):
+    @staticmethod
+    def save_image(model, url, provider='no'):
+        fname = f"profile_{model.pk}_{provider}.jpg"
+        cover = os.path.join(settings.MEDIA_ROOT, fname)
+        with open(cover, 'wb+') as dest:
+            preview = requests.get(url)
+            dest.write(preview.content)
+            model.image.save(fname, dest)
+
+
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/auth/login/')
         profile, created = models.Profile.objects.get_or_create(user=request.user)
+        if created:
+            social_account = SocialAccount.objects.filter(user=request.user).first()
+            if social_account:
+                data = social_account.extra_data
+                if social_account.provider == 'vk':
+                    profile.social_vk = f'https://vk.com/id{data["id"]}'
+                    profile.name = f"{data.get('first_name', '')} {data.get('last_name', '')}"
+                    profile.city = data['city'].get('title', '') if data.get('city') else ''
+                    if data.get('bdate'):
+                        profile.birthday = datetime.strptime(data.get('bdate'), '%d.%m.%Y').date()
+                    if data.get('email'):
+                        profile.social_email = data['email']
+                    if data.get('photo_max_orig'):
+                        self.save_image(profile, data['photo_max_orig'], social_account.provider)
+                    profile.social_vk = f'https://ok.ru/profile/{data["uid"]}'
+                elif social_account.provider == 'odnoklassniki':
+                    profile.social_ok = f'https://ok.ru/profile/{data["uid"]}'
+                    profile.name = data.get('name', '')
+                    profile.city = data['location'].get('city', '') if data.get('location') else ''
+                    if data.get('birthday'):
+                        profile.birthday = datetime.strptime(data.get('birthday'), '%Y-%m-%d').date()
+                    if data.get('pic1024x768'):
+                        self.save_image(profile, data['pic1024x768'], social_account.provider)
+                elif social_account.provider == 'google':
+                    profile.name = data.get('name', '')
+                    if data.get('picture'):
+                        self.save_image(profile, data['picture'], social_account.provider)
+                    if data.get('email'):
+                        profile.social_email = data['email']
+                elif social_account.provider == 'facebook':
+                    pass
+                profile.save()
         account = render_to_string('include/account.html', {
             'item': profile
         }, request)

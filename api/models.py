@@ -24,7 +24,7 @@ class Profile(models.Model):
     image = models.ImageField(blank=True, null=True)
     about = models.TextField(blank=True, default='')
     active = models.BooleanField(default=True)
-    position = models.SmallIntegerField(default=-10)
+    city = models.CharField(max_length=64, blank=True, default='')
     phone = models.CharField(max_length=32, blank=True, default='')
     phone_visible = models.BooleanField(default=False, blank=True)
     social_email = models.CharField(max_length=64, blank=True, default='')
@@ -34,6 +34,7 @@ class Profile(models.Model):
     social_ok = models.CharField(max_length=64, blank=True, default='')
     social_insta = models.CharField(max_length=64, blank=True, default='')
     social_youtube = models.CharField(max_length=64, blank=True, default='')
+    position = models.SmallIntegerField(default=-10)
 
     def __str__(self):
         return f'{self.position} - {self.name}'

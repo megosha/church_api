@@ -64,17 +64,26 @@
     </figure>
 </section>
 {% endif %}
-{% if article.author %}
-    <section class="mbr-section article extСontent cid-rWe5Ro6y1U" id="extContent3-60">
-        <div class="container">
-            <div class="media-container-row">
-                <div class="mbr-text col-12 col-md-8 display-4">
-                    <div class="flex-block">
-                        <span class="mbr-iconfont mbri-quote-right"></span>
-                        <p class="mbr-fonts-style block-quote display-4">{{ article.author|safe|linebreaksbr }}</p>
-                    </div>
+{% if article.author or articel.author_profile %}
+<section class="mbr-section article extСontent cid-rWe5Ro6y1U" id="extContent3-60">
+    <div class="container">
+        <div class="media-container-row">
+            <div class="mbr-text col-12 col-md-8 display-4">
+                <div class="flex-block pb-4">
+                    <span class="mbr-iconfont mbri-quote-right"></span>
+                        {% if article.author_profile %}
+                        <a class="text-secondary" href="/profile-{{ article.author_profile.pk }}">
+                            <img height="50px" style="border-radius: 50%;" src="{{ article.author_profile.image.url }}">&nbsp;{{ article.author_profile.name }}
+                        </a>
+                        {% endif %}
+                        {% if article.author %}
+                        <p class="mbr-fonts-style block-quote display-4">
+                            {{ article.author|safe|linebreaksbr }}
+                        </p>
+                        {% endif %}
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 {% endif %}

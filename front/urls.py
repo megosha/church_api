@@ -6,6 +6,7 @@ from front import views
 urlpatterns = [
     path('', views.IndexView.as_view()),
     path('article-<int:pk>', views.ArticleView.as_view()),
+    path('profile-<int:pk>', views.ProfileView.as_view()),
     path('news-<int:pk>', views.NewsSectionView.as_view()),
     path('command', views.CommandView.as_view()),
     path('account', views.AccountView.as_view()),

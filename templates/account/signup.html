@@ -21,6 +21,9 @@
                     {% get_providers as socialaccount_providers %}
                     {% if socialaccount_providers %}
                         <h2 class="mbr-section-title form-title mbr-fonts-style align-center display-5">Вы можете зарегистрироваться используя свой аккаунт социальной сети:</h2>
+                        <p class="textGDPR">
+                            Внимание! Регистрируясь вы подтверждаете своё согласие c <a style="color: #149dcc; text-decoration: underline;" href="/policy">Пользовательским соглашением об использовании персональных данных</a>
+                        </p>
                         <div class="socialaccount_ballot">
                             <p class="socialaccount_providers">
                                 {% for provider in socialaccount_providers %}

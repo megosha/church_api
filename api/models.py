@@ -16,7 +16,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class Profile(models.Model):
     class Meta:
-        ordering = ('name',)
+        ordering = ('position', 'name',)
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, default='')
     birthday = models.DateField(null=True, blank=True)
@@ -34,7 +34,7 @@ class Profile(models.Model):
     social_ok = models.CharField(max_length=64, blank=True, default='')
     social_insta = models.CharField(max_length=64, blank=True, default='')
     social_youtube = models.CharField(max_length=64, blank=True, default='')
-    position = models.SmallIntegerField(default=-10)
+    position = models.SmallIntegerField(default=100)
 
     def __str__(self):
         return f'{self.position} - {self.name}'
@@ -63,6 +63,7 @@ class News(models.Model):
     class Meta:
         ordering = ('-date',)
     section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True)
+    author_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
     date = models.DateField(default=timezone.now)
     title = models.CharField(max_length=255, default='')
     cover = models.ImageField(null=True)

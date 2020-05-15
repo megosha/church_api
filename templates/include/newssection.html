@@ -1,3 +1,4 @@
+{% load thumbnail %}
 <section class="extFeatures cid-rWKUt54ncm" id="extFeatures3-70">
     <div class="container-fluid">
         <div class="row justify-content-center content-row">
@@ -25,7 +26,9 @@
             <div class="card p-3 col-lg-12 col-md-12">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        <img src="{{ item.cover.url }}" title="" alt="">
+                        {% thumbnail item.cover "400x300" crop="top" as im %}
+                        <img src="{{ im.url }}" title="" alt="">
+                        {% endthumbnail %}
                         <div class="card-box">
                         </div>
                     </div>

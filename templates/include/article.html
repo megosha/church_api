@@ -1,3 +1,4 @@
+{% load thumbnail %}
 <section class="mbr-section content5 cid-rWcOAIXKdt" id="content5-5u">
     <div class="container">
         <div class="media-container-row">
@@ -30,9 +31,7 @@
     <section class="cid-rWEYJ8TePR" id="image3-6j">
         <figure class="mbr-figure container">
             <div class="image-block">
-                {% if article.image %}
                 <img src="{{ article.image.url }}" alt="" title="">
-                {% endif %}
             </div>
         </figure>
     </section>
@@ -73,7 +72,9 @@
                     <span class="mbr-iconfont mbri-quote-right"></span>
                         {% if article.author_profile %}
                         <a class="text-secondary" href="/profile-{{ article.author_profile.pk }}">
-                            <img height="50px" style="border-radius: 50%;" src="{{ article.author_profile.image.url }}">&nbsp;{{ article.author_profile.name }}
+                            {% thumbnail article.author_profile.image "50x50" crop="center" as im %}
+                            <img height="50px" style="border-radius: 50%;" src="{{ im.url }}">&nbsp;{{ article.author_profile.name }}
+                            {% endthumbnail %}
                         </a>
                         {% endif %}
                         {% if article.author %}

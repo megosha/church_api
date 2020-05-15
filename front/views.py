@@ -28,11 +28,8 @@ class ProfileView(View):
 
 class IndexView(View):
     def get(self, request):
-        news = render_to_string('include/news.html', {
-            'news': models.News.objects.filter(active=True)[:10]
-        })
         context = {
-            'news': news,
+            'news': models.News.objects.filter(active=True)[:10],
             'main': models.Main.get_solo(),
             'title': models.Main.get_solo().title
         }

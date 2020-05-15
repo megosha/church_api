@@ -1,8 +1,11 @@
+{% load thumbnail %}
 <div class="card py-4 col-md-12">
     <div class="card-wrapper">
         <div class="card-img">
             {% if item.image %}
-            <img src="{{ item.image.url }}" title="" alt="">
+            {% thumbnail item.image "x500" as im %}
+            <img src="{{ im.url }}" title="" alt="">
+            {% endthumbnail %}
             {% endif %}
         </div>
         <div class="card-box">

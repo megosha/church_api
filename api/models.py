@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
@@ -6,6 +7,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from solo.models import SingletonModel
+from sorl.thumbnail import ImageField
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -21,7 +23,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=255, blank=True, default='')
     birthday = models.DateField(null=True, blank=True)
     function = models.CharField(max_length=255, blank=True, default='')
-    image = models.ImageField(blank=True, null=True)
+    image = ImageField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
     about = models.TextField(blank=True, default='')
     active = models.BooleanField(default=True)
     city = models.CharField(max_length=64, blank=True, default='')
@@ -63,11 +65,11 @@ class News(models.Model):
     class Meta:
         ordering = ('-date',)
     section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True)
-    author_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True)
+    author_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField(default=timezone.now)
     title = models.CharField(max_length=255, default='')
-    cover = models.ImageField(null=True)
-    image = models.ImageField(blank=True, null=True)
+    cover = ImageField(null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
+    image = ImageField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
     text = models.TextField(default='', blank=True)
     html = models.TextField(default='', blank=True)
     youtube = models.CharField(max_length=16, default='', blank=True)

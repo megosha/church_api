@@ -9,7 +9,7 @@
                 </a>
                 <div class="wrap-img ">
                     <a href="/article-{{ item.pk }}">
-                        {% thumbnail item.cover "300x200" crop="top" as im %}
+                        {% thumbnail item.cover "350x200" crop="top" as im %}
                         <img src="{{ im.url }}" class="img-responsive clients-img" alt="" title="">
                         {% endthumbnail %}
                     </a>

@@ -1,4 +1,5 @@
 {% include "include/head.html" %}
+{% load thumbnail %}
 <section class="header1 cid-rVqSw0TuXl" data-bg-video="https://www.youtube.com/watch?v=36YgDDJ7XSc" id="header1-5j">
     <div class="mbr-overlay" style="opacity: 0.6; background-color: rgb(0, 7, 29);">
     </div>
@@ -20,7 +21,9 @@
             {% for article in profile.news_set.all %}
                 <p class="mt-3">{{ article.date }}</p>
                 <p><a class="text-secondary" href="/article-{{ article.pk }}">
-                    <img height="50px" style="border-radius: 50%;" src="{{ article.image.url }}">&nbsp;{{ article.title }}
+                    {% thumbnail article.cover "50x50" crop="top" as im %}
+                    <img style="border-radius: 50%;" src="{{ im.url }}">&nbsp;{{ article.title }}
+                    {% endthumbnail %}
                 </a></p>
 
             {% empty %}

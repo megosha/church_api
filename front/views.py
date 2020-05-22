@@ -6,6 +6,33 @@ from api import models
 from front import forms, methods
 
 
+class WriterView(View):
+    def get(self, request):
+        if not request.user.is_authenticated:
+            request.session['message'] = 'Вы должны войти, чтобы редактировать статью'
+            return redirect('/auth/login/')
+        if 'id' in request.GET:
+            try:
+                article = models.News.objects.get(pk=request.GET['id'])
+            except Exception as Ex:
+                print(Ex)
+                return redirect('/')
+        else:
+            article = models.News()
+        context = {
+            'article': article,
+            'section_list': models.NewsSection.objects.filter(active=True)
+        }
+        return render(request, 'writer.html', context)
+
+    def post(self, request):
+        profile = request.user.profile
+        form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+        return redirect('/account')
+
+
 class ProfileView(View):
     def get(self, request, pk):
         if not request.user.is_authenticated:

@@ -26,8 +26,8 @@
             <div class="card p-3 col-lg-12 col-md-12">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        {% thumbnail item.cover "400x300" crop="top" as im %}
-                        <img src="{{ im.url }}" title="" alt="">
+                        {% thumbnail item.cover "320" as im %}
+                        <img src="{{ im.url }}" title="" alt="" style="height: auto">
                         {% endthumbnail %}
                         <div class="card-box">
                         </div>

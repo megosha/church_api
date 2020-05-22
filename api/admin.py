@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.apps import apps
+from django.utils.safestring import mark_safe
 from solo.admin import SingletonModelAdmin
 
 from api import models
@@ -16,6 +17,13 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(models.News)
 class NewsAdmin(admin.ModelAdmin):
     list_display = ["date", "title", "section", "active"]
+    readonly_fields = ["cover_img", "image_img"]
+
+    def cover_img(self, obj: models.News):
+        return mark_safe(f'<img src="{obj.cover.url}" width="200px">')
+
+    def image_img(self, obj: models.News):
+        return mark_safe(f'<img src="{obj.image.url}" width="200px">')
 
 
 @admin.register(models.Form)

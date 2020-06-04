@@ -12,5 +12,6 @@ urlpatterns = [
     re_path(r'^command/?$', views.CommandView.as_view()),
     re_path(r'^account/?$', views.AccountView.as_view()),
     re_path(r'^writer/?$', views.WriterView.as_view()),
+    re_path(r'^profile/?$', views.ProfileView.as_view()),
     re_path(r'', views.StaticView.as_view()),
 ]

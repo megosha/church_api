@@ -18,6 +18,12 @@
         </div>
         {% if profile.user.pk == user.pk %}
             <a class="display-4 btn btn-secondary mb-3" href="/writer">Написать статью</a>
+            <a class="display-4 btn btn-secondary mb-3" href="/account">Редактировать профиль</a>
+            <form method="post" action="/auth/logout/" style="float: right">
+                {% csrf_token %}
+                <button type="submit" class="btn-secondary-outline btn">Выйти</button>
+            </form>
+
         {% endif %}
         <div class="pb-3">
             <h4 class="mb-3">Статьи пользователя:</h4>

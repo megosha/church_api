@@ -45,15 +45,17 @@ class WriterView(View):
 
 
 class ProfileView(View):
-    def get(self, request, pk):
+    def get(self, request, pk=None):
         if not request.user.is_authenticated:
             request.session['message'] = 'Вы должны войти, чтобы увидеть профиль пользователя'
             return redirect('/auth/login/')
-        profile = models.Profile.objects.filter(pk=pk).first()
-        if not profile:
-            request.session['message'] = 'Пользователь не найден'
-            # TODO нет вывода сообщения
-            return redirect('/')
+        if pk:
+            profile = models.Profile.objects.filter(pk=pk).first()
+            if not profile:
+                request.session['message'] = 'Пользователь не найден'
+                profile = request.user.profile
+        else:
+            profile = request.user.profile
         profile_html = render_to_string('include/profile.html', {
             'item': profile
         }, request)

@@ -7,16 +7,15 @@ from front import forms, methods
 
 
 class WriterView(View):
-    def get(self, request):
+    def get(self, request, pk=None):
         if not request.user.is_authenticated:
             request.session['message'] = 'Вы должны войти, чтобы редактировать статью'
             return redirect('/auth/login/')
-        if 'id' in request.GET:
-            try:
-                article = models.News.objects.get(pk=request.GET['id'])
-            except Exception as Ex:
-                print(Ex)
-                return redirect('/')
+        if pk:
+            article = models.News.objects.filter(pk=pk, author_profile=request.user.profile).first()
+            if not article:
+                request.session['message'] = 'Статья не найдена или это не ваша статья'
+                return redirect(f'/profile-{request.user.profile.pk}')
         else:
             article = models.News()
         context = {
@@ -25,24 +24,38 @@ class WriterView(View):
         }
         return render(request, 'writer.html', context)
 
-    def post(self, request):
-        profile = request.user.profile
-        form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+    def post(self, request, pk=None):
+        if not request.user.is_authenticated:
+            request.session['message'] = 'Вы должны войти, чтобы редактировать статью'
+            return redirect('/auth/login/')
+        if pk:
+            article = models.News.objects.filter(pk=pk, author_profile=request.user.profile).first()
+            if not article:
+                request.session['message'] = 'Статья не найдена или это не ваша статья'
+                return redirect('/')
+            form = forms.NewsForm(request.POST, request.FILES, instance=article)
+        else:
+            form = forms.NewsForm(request.POST, request.FILES)
         if form.is_valid():
+            if not request.user.is_staff:
+                form.section = None
+                form.author_profile = request.user.profile
             form.save()
-        return redirect('/account')
+        return redirect(f'/profile-{request.user.profile.pk}')
 
 
 class ProfileView(View):
-    def get(self, request, pk):
+    def get(self, request, pk=None):
         if not request.user.is_authenticated:
             request.session['message'] = 'Вы должны войти, чтобы увидеть профиль пользователя'
             return redirect('/auth/login/')
-        profile = models.Profile.objects.filter(pk=pk).first()
-        if not profile:
-            request.session['message'] = 'Пользователь не найден'
-            # TODO нет вывода сообщения
-            return redirect('/')
+        if pk:
+            profile = models.Profile.objects.filter(pk=pk).first()
+            if not profile:
+                request.session['message'] = 'Пользователь не найден'
+                profile = request.user.profile
+        else:
+            profile = request.user.profile
         profile_html = render_to_string('include/profile.html', {
             'item': profile
         }, request)

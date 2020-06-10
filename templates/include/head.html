@@ -9,8 +9,8 @@
     <meta name="description" content="Добро пожаловать в христианскую церковь города Барнаула!">
     <title>{{ title }}</title>
 
-    <link rel="stylesheet" href="/assets/web//assets/mobirise-icons/mobirise-icons.css">
-    <link rel="stylesheet" href="/assets/web//assets/mobirise-icons2/mobirise2.css">
+    <link rel="stylesheet" href="/assets/web/assets/mobirise-icons/mobirise-icons.css">
+    <link rel="stylesheet" href="/assets/web/assets/mobirise-icons2/mobirise2.css">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-grid.min.css">
     <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap-reboot.min.css">
@@ -41,6 +41,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    {{ head_extend|safe }}
 </head>
 <body>
 <!-- Analytics -->
@@ -53,7 +54,8 @@
    ym(61624567, "init", {
         clickmap:true,
         trackLinks:true,
-        accurateTrackBounce:true
+        accurateTrackBounce:true,
+        webvisor:true
    });
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/61624567" style="position:absolute; left:-9999px;" alt="" /></div></noscript>

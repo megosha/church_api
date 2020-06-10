@@ -20,7 +20,15 @@ class WriterView(View):
             article = models.News()
         context = {
             'article': article,
-            'section_list': models.NewsSection.objects.filter(active=True)
+            'section_list': models.NewsSection.objects.filter(active=True),
+            'footer_extend': '<script src="https://cdn.tiny.cloud/1/lh4zfqr7jd1gvgc880bkn5z61dxah88ogs92zje69rgpmk0b/tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>'
+                             "<script>tinymce.init({"
+                             "selector:'#article-text-id',"
+                             "menubar: false,"
+                             'plugins: "code lists link image emoticons",'
+                             "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | emoticons | removeformat | forecolor backcolor | link image | code',"
+                             # "tinydrive_token_provider: '',"
+                             "});</script>"
         }
         return render(request, 'writer.html', context)
 
@@ -36,8 +44,14 @@ class WriterView(View):
             form = forms.NewsForm(request.POST, request.FILES, instance=article)
         else:
             form = forms.NewsForm(request.POST, request.FILES)
+        form.data = form.data.copy()
+        if form.data.get('section') == '---':
+            del form.data['section']
+        if 'date' in form.data and not form.data.get('date'):
+            del form.data['date']
         if form.is_valid():
             if not request.user.is_staff:
+                form = form.save(commit=False)
                 form.section = None
                 form.author_profile = request.user.profile
             form.save()

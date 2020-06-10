@@ -64,9 +64,9 @@ class NewsSection(models.Model):
 class News(models.Model):
     class Meta:
         ordering = ('-date',)
-    section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True)
+    section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True, blank=True)
     author_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
-    date = models.DateField(default=timezone.now)
+    date = models.DateField(default=timezone.now, blank=True)
     title = models.CharField(max_length=255, default='')
     cover = ImageField(null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
     image = ImageField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])

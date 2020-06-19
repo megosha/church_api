@@ -50,10 +50,10 @@ class WriterView(View):
         if 'date' in form.data and not form.data.get('date'):
             del form.data['date']
         if form.is_valid():
+            form = form.save(commit=False)
+            form.author_profile = request.user.profile
             if not request.user.is_staff:
-                form = form.save(commit=False)
                 form.section = None
-                form.author_profile = request.user.profile
             form.save()
         return redirect(f'/profile-{request.user.profile.pk}')
 

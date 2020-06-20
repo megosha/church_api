@@ -70,19 +70,22 @@
             <div class="mbr-text col-12 col-md-8 display-4">
                 <div class="flex-block pb-4">
                     <span class="mbr-iconfont mbri-quote-right"></span>
-                        {% if article.author_profile %}
-                        <a class="text-secondary" href="/profile-{{ article.author_profile.pk }}">
-                            {% thumbnail article.author_profile.image "50x50" crop="center" as im %}
-                            <img height="50px" style="border-radius: 50%;" src="{{ im.url }}">&nbsp;{{ article.author_profile.name }}
-                            {% endthumbnail %}
-                        </a>
-                        {% endif %}
-                        {% if article.author %}
-                        <p class="mbr-fonts-style block-quote display-4">
-                            {{ article.author|safe|linebreaksbr }}
-                        </p>
-                        {% endif %}
+                    {% if article.author %}
+                    <p class="mbr-fonts-style block-quote display-4">
+                        {{ article.author|safe|linebreaksbr }}
+                    </p>
+                    {% endif %}
+                    {% if article.author_profile %}
+                    <a class="text-secondary" href="/profile-{{ article.author_profile.pk }}">
+                        {% thumbnail article.author_profile.image "50x50" crop="center" as im %}
+                        <img height="50px" style="border-radius: 50%;" src="{{ im.url }}">&nbsp;{{ article.author_profile.name }}
+                        {% endthumbnail %}
+                    </a>
+                    {% endif %}
                 </div>
+                {% if article.author_profile == request.user.profile %}
+                    <a href="/writer/{{ article.pk }}" style="float: right" class="btn btn-sm btn-secondary display-4">Редактировать</a>
+                {% endif %}
             </div>
         </div>
     </div>

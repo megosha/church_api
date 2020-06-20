@@ -19,7 +19,7 @@ class WriterView(View):
         else:
             article = models.News()
         context = {
-            'article': article,
+            'form': forms.NewsForm(instance=article),
             'section_list': models.NewsSection.objects.filter(active=True),
             'footer_extend': '<script src="https://cdn.tiny.cloud/1/lh4zfqr7jd1gvgc880bkn5z61dxah88ogs92zje69rgpmk0b/tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>'
                              "<script>tinymce.init({"
@@ -152,7 +152,7 @@ class ArticleView(View):
             article_html = render_to_string('include/article.html', {
                 'article': article,
                 'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
-            })
+            }, request)
         except Exception as Ex:
             request.session['message'] = 'Статья не найдена'
             print(Ex)

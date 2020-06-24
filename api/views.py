@@ -3,7 +3,6 @@ import hashlib
 import logging
 
 from django.conf import settings
-from django.core.mail.message import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -11,16 +10,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
 
 from api import models, serializers
-
-
-def send_email(title, text, emails: iter = ('andrey@ngbarnaul.ru',), as_html: bool = False):
-    mail = EmailMultiAlternatives(title, text, settings.EMAIL_HOST_USER, emails)
-    if as_html:
-        mail.content_subtype = "html"
-    try:
-        mail.send(fail_silently=False)
-    except Exception as Ex:
-        return Ex
+from front.methods import send_email
 
 
 class ProfileViewSet(viewsets.ModelViewSet):

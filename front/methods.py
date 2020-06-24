@@ -4,8 +4,44 @@ from datetime import datetime
 import requests
 from django.conf import settings
 from allauth.socialaccount.models import SocialAccount
+from django.core.mail.message import EmailMultiAlternatives
 
 from api import models
+
+
+def get_token(phraze=False):
+    if not settings.configured:
+        settings.configure()
+    if phraze:
+        return settings.TGRAM_PHRAZE
+    return settings.TGRAM_TOKEN
+
+
+def say2boss(text):
+    boss_id = models.Config.get_solo().tgram.get('boss_id')
+    if not boss_id:
+        print('BOSS not found')
+        return None
+    url = f'https://api.telegram.org/bot{get_token()}/sendMessage?chat_id={boss_id}&parse_mode=Markdown&text={text}'
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f'status_code {response.status_code}')
+    except Exception as Ex:
+        print(Ex)
+        return False
+
+
+def send_email(title, text, emails: iter = ('andrey@ngbarnaul.ru',), as_html: bool = False):
+    mail = EmailMultiAlternatives(title, text, settings.EMAIL_HOST_USER, emails)
+    if as_html:
+        mail.content_subtype = "html"
+    try:
+        mail.send(fail_silently=False)
+    except Exception as Ex:
+        return Ex
 
 
 def fill_social(profile: models.Profile):
@@ -22,7 +58,6 @@ def fill_social(profile: models.Profile):
                 profile.social_email = data['email']
             if data.get('photo_max_orig'):
                 save_image(profile, data['photo_max_orig'], social_account.provider)
-            profile.social_vk = f'https://ok.ru/profile/{data["uid"]}'
         elif social_account.provider == 'odnoklassniki':
             profile.social_ok = f'https://ok.ru/profile/{data["uid"]}'
             profile.name = data.get('name', '')

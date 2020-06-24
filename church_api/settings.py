@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'api',
+    'api.apps.ApiConfig',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -183,3 +183,6 @@ SITE_ID = 1
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
+
+TGRAM_TOKEN = env.str('TGRAM_TOKEN', '')
+TGRAM_PHRAZE = env.str('TGRAM_PHRAZE', '')

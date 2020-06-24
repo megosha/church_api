@@ -3,7 +3,6 @@ import hashlib
 import logging
 
 from django.conf import settings
-from django.core.mail.message import EmailMultiAlternatives
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -11,6 +10,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
 
 from api import models, serializers
+from front.methods import send_email
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -41,14 +41,11 @@ class FormViewSet(APIView):
             html = f'<h2>{title}</h2>' + '<br>'.join([f"{d[0]}: {d[1]}" for d in data])
         except Exception as e:
             return self.resp(False, f'Ошибка данных: {e}')
-        emails = ('andrey@ngbarnaul.ru', 'artorop@mail.ru',)
+        emails = ('andrey@ngbarnaul.ru', 'artorop@mail.ru', 'elenarun@mail.ru',)
         form_obj = models.Form.objects.create(title=title, text=json.dumps(data, ensure_ascii=False))
-        mail = EmailMultiAlternatives(title, html, settings.EMAIL_HOST_USER, emails)
-        mail.content_subtype = "html"
-        try:
-            mail.send(fail_silently=False)
-        except Exception as e:
-            return self.resp(False, f'Ошибка отправки сообщения: {e}')
+        result = send_email(title, html, emails, as_html=True)
+        if isinstance(result, Exception):
+            return self.resp(False, f'Ошибка отправки сообщения: {result}')
         form_obj.sended = True
         form_obj.save()
         return self.resp()
@@ -64,8 +61,8 @@ class RobokassaViewSet(APIView):
         inv_desc = 'Добровольное пожертвование на деятельность церкви'
         def_sum = '500'
         crc = hashlib.md5(f'{mrh_login}::{inv_id}:{mrh_pass1}'.encode()).hexdigest()
-        html = "<script src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?"\
-               f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}"\
+        html = "<script src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?" \
+               f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}" \
                f"&Description={inv_desc}&SignatureValue={crc}'></script>"
         return HttpResponse(html)
 

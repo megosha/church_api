@@ -13,6 +13,16 @@ from rest_framework.views import APIView
 from api import models, serializers
 
 
+def send_email(title, text, emails: iter = ('andrey@ngbarnaul.ru',), as_html: bool = False):
+    mail = EmailMultiAlternatives(title, text, settings.EMAIL_HOST_USER, emails)
+    if as_html:
+        mail.content_subtype = "html"
+    try:
+        mail.send(fail_silently=False)
+    except Exception as Ex:
+        return Ex
+
+
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = models.Profile.objects.filter(active=True)
     serializer_class = serializers.ProfileSerializer
@@ -41,14 +51,11 @@ class FormViewSet(APIView):
             html = f'<h2>{title}</h2>' + '<br>'.join([f"{d[0]}: {d[1]}" for d in data])
         except Exception as e:
             return self.resp(False, f'Ошибка данных: {e}')
-        emails = ('andrey@ngbarnaul.ru', 'artorop@mail.ru',)
+        emails = ('andrey@ngbarnaul.ru', 'artorop@mail.ru', 'elenarun@mail.ru',)
         form_obj = models.Form.objects.create(title=title, text=json.dumps(data, ensure_ascii=False))
-        mail = EmailMultiAlternatives(title, html, settings.EMAIL_HOST_USER, emails)
-        mail.content_subtype = "html"
-        try:
-            mail.send(fail_silently=False)
-        except Exception as e:
-            return self.resp(False, f'Ошибка отправки сообщения: {e}')
+        result = send_email(title, html, emails, as_html=True)
+        if isinstance(result, Exception):
+            return self.resp(False, f'Ошибка отправки сообщения: {result}')
         form_obj.sended = True
         form_obj.save()
         return self.resp()
@@ -64,8 +71,8 @@ class RobokassaViewSet(APIView):
         inv_desc = 'Добровольное пожертвование на деятельность церкви'
         def_sum = '500'
         crc = hashlib.md5(f'{mrh_login}::{inv_id}:{mrh_pass1}'.encode()).hexdigest()
-        html = "<script src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?"\
-               f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}"\
+        html = "<script src='https://auth.robokassa.ru/Merchant/PaymentForm/FormFLS.js?" \
+               f"MerchantLogin={mrh_login}&DefaultSum={def_sum}&InvoiceID={inv_id}" \
                f"&Description={inv_desc}&SignatureValue={crc}'></script>"
         return HttpResponse(html)
 

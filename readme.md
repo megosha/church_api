@@ -1,3 +1,22 @@
+### Конфиги
+
+Добавляем конфиг supervisor:
+
+```
+sudo ln -s etc/supervisor.conf /etc/supervisor/conf.d/church22.conf
+sudo supervisorctl reread
+sudo supervisorctl update
+```
+
+Добавляем конфиг nginx:
+
+Прописываем в файле etc/nginx.conf нужный server_name, затем
+```
+sudo ln -s etc/nginx.conf /etc/nginx/sites-enabled/church22.conf
+sudo nginx -s reload
+```
+
+
 ### Фиксы в мобирайзе
 
 ##### Пропадание контекста в модалках
@@ -60,7 +79,5 @@ var API_URL = ('https:' == location.protocol ? 'https:' : 'http:') + '//api.chur
 ### TODO
 
 ```
-Фиксы статьи
-Новости раздел
 Генерация sitemap.xml
 ```

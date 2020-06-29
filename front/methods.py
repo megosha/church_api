@@ -9,29 +9,36 @@ from django.core.mail.message import EmailMultiAlternatives
 from api import models
 
 
-def get_token(phraze=False):
-    if not settings.configured:
-        settings.configure()
-    if phraze:
-        return settings.TGRAM_PHRAZE
-    return settings.TGRAM_TOKEN
+class TGram:
+    @staticmethod
+    def get_token(phraze=False):
+        if not settings.configured:
+            settings.configure()
+        if phraze:
+            if not settings.TGRAM_PHRAZE:
+                raise Exception('Phraze not set')
+            return settings.TGRAM_PHRAZE
+        if not settings.TGRAM_TOKEN:
+            raise Exception('Token not set')
+        return settings.TGRAM_TOKEN
 
-
-def say2boss(text):
-    boss_id = models.Config.get_solo().tgram.get('boss_id')
-    if not boss_id:
-        print('BOSS not found')
-        return None
-    url = f'https://api.telegram.org/bot{get_token()}/sendMessage?chat_id={boss_id}&parse_mode=Markdown&text={text}'
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            raise Exception(f'status_code {response.status_code}')
-    except Exception as Ex:
-        print(Ex)
-        return False
+    @staticmethod
+    def say2boss(text):
+        boss_id = models.Config.get_solo().tgram.get('boss_id')
+        if not boss_id:
+            print('BOSS not found')
+            return None
+        url = f'https://api.telegram.org/bot{TGram.get_token()}' \
+              f'/sendMessage?chat_id={boss_id}&parse_mode=Markdown&text={text}'
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise Exception(f'status_code {response.status_code}')
+        except Exception as Ex:
+            print(Ex)
+            return False
 
 
 def send_email(title, text, emails: iter = ('andrey@ngbarnaul.ru',), as_html: bool = False):

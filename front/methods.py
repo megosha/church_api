@@ -11,6 +11,13 @@ from api import models
 
 class TGram:
     @staticmethod
+    def get_set(item: str):
+        if not settings.configured:
+            settings.configure()
+        if hasattr(settings, 'TGRAM_' + item):
+            return getattr(settings, 'TGRAM_' + item)
+
+    @staticmethod
     def get_token(phraze=False):
         if not settings.configured:
             settings.configure()

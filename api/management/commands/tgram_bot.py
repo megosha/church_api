@@ -1,7 +1,8 @@
 import logging
 
+import requests
 from telegram import ReplyKeyboardMarkup
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from emoji import emojize
 from django.core.management.base import BaseCommand
 
@@ -34,14 +35,67 @@ class Command(BaseCommand):
             },
             fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
         )
+        broadcast_handler = ConversationHandler(
+            entry_points=[CommandHandler('broadcast', self.broadcast)],
+            states={
+                0: [CommandHandler('broadcast', self.broadcast), MessageHandler(Filters.text, self.broadcast_action)],
+                # 1: [MessageHandler(Filters.regex('^Confirm$'), self.broadcast_confirmation),]
+            },
+            fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
+        )
+        dp.add_handler(broadcast_handler)
         dp.add_handler(article_handler)
-        dp.add_handler(CommandHandler("broadcast", self.broadcast))
+        # dp.add_handler(CommandHandler("broadcast", self.broadcast))
         dp.add_handler(CommandHandler("set", self.set_boss))
         dp.add_handler(CommandHandler("boss", self.who_boss))
         dp.add_handler(CommandHandler("help", self.help))
         dp.add_handler(MessageHandler(Filters.text, self.on_board))
         updater.start_polling()
         updater.idle()
+
+    @staticmethod
+    def broadcast(update, context):
+        # data = update.message.text.replace('/broadcast', '').strip()
+        # data = data[data.rfind('/'):]
+        update.message.reply_text('Публикуем трансляцию и статью на сайт. Введите ссылку трансляции YouTube')
+        return 0
+
+    @staticmethod
+    def broadcast_action(update, context):
+        youtube_id = update.message.text.split('/')[-1].split('=')[-1]
+        models.Main.objects.update(youtube=youtube_id)
+        update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
+        API_KEY = 'AIzaSyDygPFvTtg5sZKTIkbKEYN7YRZL1W9YfWw'
+        # preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
+        url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={youtube_id}&key={API_KEY}'
+        try:
+            data = requests.get(url).json()
+        except Exception as Ex:
+            update.message.reply_text(f'Не удалось получить данные: {Ex}')
+            return ConversationHandler.END
+        preview = data['items'][0]['snippet']['thumbnails']['maxres']
+        title = data['items'][0]['snippet']['title']
+        article_title = title.split('"')[1] + ' - Трансляция'
+
+        models.News.objects.create()
+
+        # user = update.message.from_user
+        # user_data = context.user_data
+        # category = 'Location'
+
+        # user_data[category] = text
+        # logger.info("Location of %s: %s", user.first_name, update.message.text)
+
+        update.message.reply_text(data)
+        return ConversationHandler.END
+
+    @staticmethod
+    def broadcast_cancel(update, context):
+        # user = update.message.from_user
+        # logger.info("User %s canceled the conversation.", user.first_name)
+        # update.message.reply_text('Bye! Hope to see you again next time.',
+        #                           reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
 
     @staticmethod
     def article(update, context):
@@ -72,13 +126,6 @@ class Command(BaseCommand):
         update.message.reply_text(f"Отмена статьи: {user_data}")
         user_data.clear()
         return ConversationHandler.END
-
-    @staticmethod
-    def broadcast(update, context):
-        data = update.message.text.replace('/broadcast', '').strip()
-        # data = data[data.rfind('/'):]
-        update.message.reply_text(f'data: {data}')
-
 
     @staticmethod
     def help(update, context):

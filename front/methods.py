@@ -10,12 +10,6 @@ from api import models
 
 
 class TGram:
-    @staticmethod
-    def get_set(item: str):
-        if not settings.configured:
-            settings.configure()
-        if hasattr(settings, 'TGRAM_' + item):
-            return getattr(settings, 'TGRAM_' + item)
 
     @staticmethod
     def get_token(phraze=False):
@@ -46,6 +40,13 @@ class TGram:
         except Exception as Ex:
             print(Ex)
             return False
+
+
+def get_set(item: str):
+    if not settings.configured:
+        settings.configure()
+    if hasattr(settings, item):
+        return getattr(settings, item)
 
 
 def send_email(title, text, emails: iter = ('andrey@ngbarnaul.ru',), as_html: bool = False):

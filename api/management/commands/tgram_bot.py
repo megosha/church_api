@@ -1,13 +1,16 @@
 import logging
 
 import requests
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from django.utils import timezone
 from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from emoji import emojize
 from django.core.management.base import BaseCommand
 
 from api import models
-from front.methods import TGram
+from front import methods
 
 
 class Command(BaseCommand):
@@ -24,7 +27,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # next https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/nestedconversationbot.py
-        updater = Updater(TGram.get_token(), use_context=True)
+        updater = Updater(methods.TGram.get_token(), use_context=True)
         dp = updater.dispatcher
         article_handler = ConversationHandler(
             entry_points=[CommandHandler('article', self.article)],
@@ -55,8 +58,10 @@ class Command(BaseCommand):
 
     @staticmethod
     def broadcast(update, context):
-        # data = update.message.text.replace('/broadcast', '').strip()
-        # data = data[data.rfind('/'):]
+        config = models.Config.get_solo()
+        if config.tgram.get('boss_name') != update.message.chat.username:
+            update.message.reply_text(emojize('You are not Boss :suspect:'))
+            return
         update.message.reply_text('Публикуем трансляцию и статью на сайт. Введите ссылку трансляции YouTube')
         return 0
 
@@ -65,28 +70,27 @@ class Command(BaseCommand):
         youtube_id = update.message.text.split('/')[-1].split('=')[-1]
         models.Main.objects.update(youtube=youtube_id)
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
-        API_KEY = 'AIzaSyDygPFvTtg5sZKTIkbKEYN7YRZL1W9YfWw'
+        API_KEY = methods.get_set('GOOGLE_API_KEY')
         # preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
         url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={youtube_id}&key={API_KEY}'
         try:
             data = requests.get(url).json()
+            title = data['items'][0]['snippet']['title']
+            preview = data['items'][0]['snippet']['thumbnails']['maxres']['url']
+            cover = NamedTemporaryFile(delete=True)
+            cover.write(requests.get(preview).content)
+            cover.flush()
         except Exception as Ex:
             update.message.reply_text(f'Не удалось получить данные: {Ex}')
             return ConversationHandler.END
-        preview = data['items'][0]['snippet']['thumbnails']['maxres']
-        title = data['items'][0]['snippet']['title']
         article_title = title.split('"')[1] + ' - Трансляция'
-
-        models.News.objects.create()
-
-        # user = update.message.from_user
-        # user_data = context.user_data
-        # category = 'Location'
-
-        # user_data[category] = text
+        section = models.NewsSection.objects.filter(title='Видео').first()
+        author = models.Profile.objects.filter(telegram=update.message.chat.username).first()
+        article = models.News.objects.create(section=section, author_profile=author, date=timezone.now(),
+                                             title=article_title, youtube=youtube_id)
+        article.cover.save(f'broadcast_{article.pk}', File(cover))
         # logger.info("Location of %s: %s", user.first_name, update.message.text)
-
-        update.message.reply_text(data)
+        update.message.reply_text(emojize('200 OK :thumbs_up:'))
         return ConversationHandler.END
 
     @staticmethod
@@ -143,7 +147,7 @@ class Command(BaseCommand):
 
     @staticmethod
     def set_boss(update, context):
-        if update.message.text == '/set ' + TGram.get_token(True):
+        if update.message.text == '/set ' + methods.TGram.get_token(True):
             config = models.Config.get_solo()
             config.tgram['boss_id'] = update.message.chat_id
             config.tgram['boss_name'] = update.message.chat.username

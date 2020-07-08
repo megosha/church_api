@@ -1,46 +1,157 @@
-from time import sleep
 import logging
 
-import telegram
+import requests
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from django.utils import timezone
+from telegram import ReplyKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackQueryHandler
 from emoji import emojize
 from django.core.management.base import BaseCommand
 
 from api import models
-from front.methods import get_token
+from front import methods
 
 
 class Command(BaseCommand):
-    update_id = None
-    phraze = None
+    logger = None
+    article_markup = ReplyKeyboardMarkup([
+        ['Раздел', 'Заголовок', 'Обложка', 'Статья', 'YouTube'],
+        ['Опубликовать', 'Отмена']
+    ], one_time_keyboard=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
 
     def handle(self, *args, **options):
-        bot = telegram.Bot(get_token())
-        self.phraze = get_token(True)
-        try:
-            self.update_id = bot.get_updates()[0].update_id
-        except IndexError:
-            self.update_id = None
-        logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        while True:
-            try:
-                self.listen(bot)
-            except telegram.error.NetworkError:
-                sleep(1)
-            except telegram.error.Unauthorized:
-                self.update_id += 1
+        # next https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/nestedconversationbot.py
+        updater = Updater(methods.TGram.get_token(), use_context=True)
+        dp = updater.dispatcher
+        article_handler = ConversationHandler(
+            entry_points=[CommandHandler('article', self.article)],
+            states={
+                0: [MessageHandler(Filters.regex('^(Раздел|Заголовок|Обложка|Статья|YouTube)$'),
+                                   self.article_choice), ],
+                1: [MessageHandler(Filters.text, self.article_typing), ],
+            },
+            fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
+        )
+        broadcast_handler = ConversationHandler(
+            entry_points=[CommandHandler('broadcast', self.broadcast)],
+            states={
+                0: [CommandHandler('broadcast', self.broadcast), MessageHandler(Filters.text, self.broadcast_action)],
+                # 1: [MessageHandler(Filters.regex('^Confirm$'), self.broadcast_confirmation),]
+            },
+            fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
+        )
+        dp.add_handler(broadcast_handler)
+        dp.add_handler(article_handler)
+        # dp.add_handler(CommandHandler("broadcast", self.broadcast))
+        dp.add_handler(CommandHandler("set", self.set_boss))
+        dp.add_handler(CommandHandler("boss", self.who_boss))
+        dp.add_handler(CommandHandler("help", self.help))
+        dp.add_handler(MessageHandler(Filters.text, self.on_board))
+        updater.start_polling()
+        updater.idle()
 
-    def listen(self, bot):
-        for update in bot.get_updates(offset=self.update_id, timeout=10):
-            self.update_id = update.update_id + 1
-            if update.message:
-                if update.message.text == self.phraze:
-                    config = models.Config.get_solo()
-                    config.tgram['boss_id'] = update.message.chat_id
-                    config.tgram['boss_name'] = update.message.chat.username
-                    config.save()
-                    update.message.reply_text(emojize(f'You BOSS 🐧:cat_face:'))
-                elif update.message.text == 'who boss':
-                    config = models.Config.get_solo()
-                    update.message.reply_text(config.tgram.get('boss_name', 'No BOSS('))
-                else:
-                    update.message.reply_text(emojize('i hear you 🐧:cat_face:'))
+    @staticmethod
+    def broadcast(update, context):
+        config = models.Config.get_solo()
+        if config.tgram.get('boss_name') != update.message.chat.username:
+            update.message.reply_text(emojize('You are not Boss :suspect:'))
+            return
+        update.message.reply_text('Публикуем трансляцию и статью на сайт. Введите ссылку трансляции YouTube')
+        return 0
+
+    @staticmethod
+    def broadcast_action(update, context):
+        youtube_id = update.message.text.split('/')[-1].split('=')[-1]
+        models.Main.objects.update(youtube=youtube_id)
+        update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
+        API_KEY = methods.get_set('GOOGLE_API_KEY')
+        # preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
+        url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={youtube_id}&key={API_KEY}'
+        try:
+            data = requests.get(url).json()
+            title = data['items'][0]['snippet']['title']
+            preview = data['items'][0]['snippet']['thumbnails']['maxres']['url']
+            cover = NamedTemporaryFile(delete=True)
+            cover.write(requests.get(preview).content)
+            cover.flush()
+        except Exception as Ex:
+            update.message.reply_text(f'Не удалось получить данные: {Ex}')
+            return ConversationHandler.END
+        article_title = title.split('"')[1] + ' - Трансляция'
+        section = models.NewsSection.objects.filter(title='Видео').first()
+        author = models.Profile.objects.filter(telegram=update.message.chat.username).first()
+        article = models.News.objects.create(section=section, author_profile=author, date=timezone.now(),
+                                             title=article_title, youtube=youtube_id)
+        article.cover.save(f'broadcast_{article.pk}', File(cover))
+        # logger.info("Location of %s: %s", user.first_name, update.message.text)
+        update.message.reply_text(emojize('200 OK :thumbs_up:'))
+        return ConversationHandler.END
+
+    @staticmethod
+    def broadcast_cancel(update, context):
+        # user = update.message.from_user
+        # logger.info("User %s canceled the conversation.", user.first_name)
+        # update.message.reply_text('Bye! Hope to see you again next time.',
+        #                           reply_markup=ReplyKeyboardRemove())
+        return ConversationHandler.END
+
+    @staticmethod
+    def article(update, context):
+        update.message.reply_text("Написать статью на сайт", reply_markup=Command.article_markup)
+
+    @staticmethod
+    def article_choice(update, context):
+        text = update.message.text
+        context.user_data['choice'] = text
+        update.message.reply_text(f'Введите {text}')
+        return 1
+
+    @staticmethod
+    def article_typing(update, context):
+        user_data = context.user_data
+        text = update.message.text
+        category = user_data['choice']
+        user_data[category] = text
+        del user_data['choice']
+        update.message.reply_text(f"Статья: {user_data}", reply_markup=Command.article_markup)
+        return 0
+
+    @staticmethod
+    def article_cancel(update, context):
+        user_data = context.user_data
+        if 'choice' in user_data:
+            del user_data['choice']
+        update.message.reply_text(f"Отмена статьи: {user_data}")
+        user_data.clear()
+        return ConversationHandler.END
+
+    @staticmethod
+    def help(update, context):
+        commands = ', '.join([', '.join(h.command) for h in context.dispatcher.handlers[0] if hasattr(h, 'command')])
+        update.message.reply_text(f'Commands: {commands}')
+
+    @staticmethod
+    def on_board(update, context):
+        update.message.reply_text(emojize('Bot on board!'))
+
+    @staticmethod
+    def who_boss(update, context):
+        config = models.Config.get_solo()
+        update.message.reply_text(config.tgram.get('boss_name', 'No BOSS('))
+
+    @staticmethod
+    def set_boss(update, context):
+        if update.message.text == '/set ' + methods.TGram.get_token(True):
+            config = models.Config.get_solo()
+            config.tgram['boss_id'] = update.message.chat_id
+            config.tgram['boss_name'] = update.message.chat.username
+            config.save()
+            update.message.reply_text(emojize(f'You BOSS 🐧:cat_face:'))
+        else:
+            update.message.reply_text('Wrong argument')

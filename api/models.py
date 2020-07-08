@@ -32,6 +32,7 @@ class Profile(models.Model):
     social_ok = models.CharField(max_length=64, blank=True, default='')
     social_insta = models.CharField(max_length=64, blank=True, default='')
     social_youtube = models.CharField(max_length=64, blank=True, default='')
+    telegram = models.CharField(max_length=64, blank=True, default='')
     position = models.SmallIntegerField(default=100)
 
     def __str__(self):

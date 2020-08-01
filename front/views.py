@@ -32,6 +32,12 @@ class WriterView(View):
         }
         return render(request, 'writer.html', context)
 
+    @staticmethod
+    def youtube_get_id(link: str):
+        youtube_id = link.split('/')[-1].split('=')[-1]
+        if len(youtube_id) == 11:
+            return youtube_id
+
     def post(self, request, pk=None):
         if not request.user.is_authenticated:
             request.session['message'] = 'Вы должны войти, чтобы редактировать статью'
@@ -49,6 +55,8 @@ class WriterView(View):
             del form.data['section']
         if 'date' in form.data and not form.data.get('date'):
             del form.data['date']
+        if 'youtube' in form.data and len(form.data['youtube']) > 11:
+            form.data['youtube'] = self.youtube_get_id(form.data['youtube'])
         if form.is_valid():
             form = form.save(commit=False)
             form.author_profile = request.user.profile

@@ -135,14 +135,17 @@ class CommandView(View):
 
 
 class NewsSectionView(View):
-    def get(self, request, pk):
+
+    def get_html(self, request, pk, news_filter=None):
+        news_filter = news_filter or {}
         news_section = models.NewsSection.objects.filter(pk=pk).first()
         if not news_section:
             news_section = models.NewsSection.objects.first()
         try:
             newssection = render_to_string('include/newssection.html', {
                 'newssection': news_section,
-                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
+                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
+                'news': news_section.news_set.filter(**news_filter)
             })
         except Exception as Ex:
             print(Ex)
@@ -151,6 +154,13 @@ class NewsSectionView(View):
             'newssection': newssection,
         }
         return render(request, 'newssection.html', context)
+
+    def get(self, request, pk):
+        return self.get_html(request, pk)
+
+    def post(self, request, pk):
+        news_filter = {}
+        return self.get_html(request, pk, news_filter)
 
 
 class ArticleView(View):

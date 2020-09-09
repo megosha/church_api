@@ -6,7 +6,11 @@
             <div onclick="window.location.href='/news-{{ item.pk }}'" class="card p-3 col-md-6 col-lg-4 col-xl-2"
                  onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'">
                 <div class="card-img pb-2">
+                {% if item.pk == newssection.pk %}
+                    <div class="step section_active">
+                    {% else %}
                     <div class="step">
+                    {% endif %}
                     {% if item.pk == newssection.pk %}
                         <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}"
                               style="font-size: 50px; color: #8000ff; font-weight: bold"></span>
@@ -16,11 +20,7 @@
                     </div>
                 </div>
                 <div class="card-box">
-                {% if item.pk == newssection.pk %}
-                    <p class="mbr-text mbr-fonts-style display-7" style="color: #8000ff">{{ item.title }}</p>
-                {% else %}
                     <p class="mbr-text mbr-fonts-style display-7">{{ item.title }}</p>
-                {% endif %}
                 </div>
             </div>
             {% endfor %}

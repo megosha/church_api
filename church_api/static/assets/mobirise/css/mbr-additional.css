@@ -30914,7 +30914,7 @@ body {
   -webkit-justify-content: center;
   justify-content: center;
 }
-.cid-rWKUt54ncm .card:hover .step {
+.cid-rWKUt54ncm .card:hover .step, .section_active {
   color: #ffffff;
   border: 0px solid transparent;
   box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.2);

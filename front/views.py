@@ -1,6 +1,9 @@
+from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.views import View
 from django.shortcuts import render, redirect
+from typing import Union
 
 from api import models
 from front import forms, methods
@@ -27,7 +30,7 @@ class WriterView(View):
                              "menubar: false,"
                              'plugins: "code lists link image emoticons",'
                              "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | emoticons | removeformat | forecolor backcolor | link image | code',"
-                             # "tinydrive_token_provider: '',"
+            # "tinydrive_token_provider: '',"
                              "});</script>"
         }
         return render(request, 'writer.html', context)
@@ -136,17 +139,17 @@ class CommandView(View):
 
 class NewsSectionView(View):
 
-    def get_html(self, request, pk, news_filter=None):
-        news_filter = news_filter or {}
-        news_section = models.NewsSection.objects.filter(pk=pk).first()
-        if not news_section:
-            news_section = models.NewsSection.objects.first()
+    def get_html(self, request, news_section, news_filter: str = None):
+        news_qset = news_section.news_set.filter(active=True)
+        if news_filter:
+            news_qset = news_qset.filter(Q(title__contains=news_filter) | Q(text__contains=news_filter))
         try:
             newssection = render_to_string('include/newssection.html', {
                 'newssection': news_section,
                 'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
-                'news': news_section.news_set.filter(**news_filter)
-            })
+                'news': news_qset,
+                'filter': news_filter or ''
+            }, request=request)
         except Exception as Ex:
             print(Ex)
             return redirect('/')
@@ -155,12 +158,27 @@ class NewsSectionView(View):
         }
         return render(request, 'newssection.html', context)
 
+    def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
+        news_section = models.NewsSection.objects.filter(pk=pk).first()
+        if not news_section:
+            news_section = models.NewsSection.objects.first()
+            if not news_section:
+                return redirect('/')
+            return redirect(f'/news-{news_section.pk}')
+        return news_section
+
     def get(self, request, pk):
-        return self.get_html(request, pk)
+        news_section = self.get_news_section(pk)
+        if isinstance(news_section, HttpResponseRedirect):
+            return news_section
+        return self.get_html(request, news_section)
 
     def post(self, request, pk):
-        news_filter = {}
-        return self.get_html(request, pk, news_filter)
+        news_section = self.get_news_section(pk)
+        if isinstance(news_section, HttpResponseRedirect):
+            return news_section
+        news_filter = request.POST.get('filter')
+        return self.get_html(request, news_section, news_filter)
 
 
 class ArticleView(View):

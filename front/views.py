@@ -1,9 +1,11 @@
+from typing import Union
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.views import View
 from django.shortcuts import render, redirect
-from typing import Union
 
 from api import models
 from front import forms, methods
@@ -139,25 +141,6 @@ class CommandView(View):
 
 class NewsSectionView(View):
 
-    def get_html(self, request, news_section, news_filter: str = None):
-        news_qset = news_section.news_set.filter(active=True)
-        if news_filter:
-            news_qset = news_qset.filter(Q(title__contains=news_filter) | Q(text__contains=news_filter))
-        try:
-            newssection = render_to_string('include/newssection.html', {
-                'newssection': news_section,
-                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
-                'news': news_qset,
-                'filter': news_filter or ''
-            }, request=request)
-        except Exception as Ex:
-            print(Ex)
-            return redirect('/')
-        context = {
-            'newssection': newssection,
-        }
-        return render(request, 'newssection.html', context)
-
     def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
         news_section = models.NewsSection.objects.filter(pk=pk).first()
         if not news_section:
@@ -167,18 +150,40 @@ class NewsSectionView(View):
             return redirect(f'/news-{news_section.pk}')
         return news_section
 
+    def paginate(self, qset, page, per_page=10):
+        paginator = Paginator(qset, per_page)
+        try:
+            items = paginator.page(page)
+        except PageNotAnInteger:
+            items = paginator.page(1)
+        except EmptyPage:
+            items = paginator.page(paginator.num_pages)
+        return items
+
     def get(self, request, pk):
         news_section = self.get_news_section(pk)
         if isinstance(news_section, HttpResponseRedirect):
             return news_section
-        return self.get_html(request, news_section)
-
-    def post(self, request, pk):
-        news_section = self.get_news_section(pk)
-        if isinstance(news_section, HttpResponseRedirect):
-            return news_section
-        news_filter = request.POST.get('filter')
-        return self.get_html(request, news_section, news_filter)
+        news_filter = request.GET.get('filter')
+        news_qset = news_section.news_set.filter(active=True)
+        if news_filter:
+            news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
+        page = request.GET.get('page')
+        try:
+            newssection = render_to_string('include/newssection.html', {
+                'newssection': news_section,
+                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
+                'news': self.paginate(news_qset, page),
+                'page': page,
+                'filter': news_filter or ''
+            }, request=request)
+        except Exception as Ex:
+            print(Ex)
+            return redirect('/')
+        context = {
+            'newssection': newssection,
+        }
+        return render(request, 'newssection.html', context)
 
 
 class ArticleView(View):

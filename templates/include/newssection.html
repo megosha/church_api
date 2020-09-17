@@ -26,14 +26,13 @@
 <section class="extFeatures cid-rWKLYBGipj" id="extFeatures34-6v">
     <div class="container">
         <h2 class="mbr-section-title pb-1 mbr-normal mbr-fonts-style display-1">{{ newssection.title }}</h2>
-        <form method="POST" class="mbr-form form-with-styler">
-            {% csrf_token %}
+        <form method="GET" class="mbr-form form-with-styler">
             <div class="dragArea form-row">
                 <div data-for="find" class="col-lg-10 col-md-10 col-sm-10 col-10 form-group">
-                    <input type="text" name="filter" placeholder="Поиск" class="form-control " value="{{ filter }}" id="filter">
+                    <input style="background-color: #f7fffd" type="text" name="filter" placeholder="Поиск" class="form-control input-sm" value="{{ filter }}" id="filter">
                 </div>
                 <div class="col">
-                    <button type="submit" class="btn btn-primary px-2"><span class="display-7 mobi-mbri mobi-mbri-search mbr-iconfont mbr-iconfont-btn"></span></button>
+                    <button type="submit" class="btn btn-secondary-outline"><span class="display-7 mobi-mbri-search mbr-iconfont"></span></button>
                 </div>
             </div>
         </form>
@@ -69,6 +68,17 @@
                 </div>
             </div>
             {% endfor %}
+        </div>
+        <div class="pagination">
+         <span class="step-links">
+          {% if news.has_previous %}
+              <a class="btn btn-sm btn-secondary-outline display-4 mbr-iconfont mbri-left" href="?page={{ news.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}"></a>
+          {% endif %}
+            <span class="current">Страница {{ news.number }} из {{ news.paginator.num_pages }}</span>
+          {% if news.has_next %}
+              <a class="btn btn-sm btn-secondary-outline display-4 mbr-iconfont mbri-right" href="?page={{ news.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}"></a>
+          {% endif %}
+          </span>
         </div>
     </div>
 </section>

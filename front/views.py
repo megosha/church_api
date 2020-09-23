@@ -187,6 +187,10 @@ class NewsSectionView(View):
 
 
 class ArticleView(View):
+    @staticmethod
+    def truncatedwords(value, arg):
+        return " ".join(value.split()[:arg])
+
     def get(self, request, pk):
         try:
             article = models.News.objects.get(pk=pk)
@@ -200,7 +204,14 @@ class ArticleView(View):
             return redirect('/news')
         context = {
             'article': article_html,
-            'title': article.title
+            'title': article.title,
+            'head_extend': f"""
+<meta property="og:title" content="{article.title}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{request.build_absolute_uri()}" />
+<meta property="og:image" content="{request._current_scheme_host + article.cover.url}" />
+<meta property="og:description" content="{self.truncatedwords(article.text, 30)}" />
+"""
         }
         return render(request, 'article.html', context)
 

@@ -205,6 +205,7 @@ class ArticleView(View):
         context = {
             'article': article_html,
             'title': article.title,
+            # https://ruogp.me/ | mb https://yandex.ru/dev/share/ ?
             'head_extend': f"""
 <meta property="og:title" content="{article.title}" />
 <meta property="og:type" content="website" />

@@ -67,16 +67,20 @@ class Command(BaseCommand):
 
     @staticmethod
     def broadcast_action(update, context):
-        youtube_id = update.message.text.split('/')[-1].split('=')[-1]
+        youtube_id = methods.youtube_get_id(update.message.text)
         models.Main.objects.update(youtube=youtube_id)
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
         API_KEY = methods.get_set('GOOGLE_API_KEY')
-        # preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
         url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={youtube_id}&key={API_KEY}'
         try:
             data = requests.get(url).json()
+            if 'error' in data and 'message' in data:
+                raise Exception(data['message'])
             title = data['items'][0]['snippet']['title']
-            preview = data['items'][0]['snippet']['thumbnails']['maxres']['url']
+            try:
+                preview = data['items'][0]['snippet']['thumbnails']['maxres']['url']
+            except:
+                preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
             cover = NamedTemporaryFile(delete=True)
             cover.write(requests.get(preview).content)
             cover.flush()

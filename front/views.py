@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.views import View
 from django.shortcuts import render, redirect
 
@@ -96,7 +97,7 @@ class ProfileView(View):
 class IndexView(View):
     def get(self, request):
         context = {
-            'news': models.News.objects.filter(active=True)[:10],
+            'news': models.News.objects.filter(active=True, date__gte=timezone.now())[:7],
             'main': models.Main.get_solo(),
             'title': models.Main.get_solo().title
         }
@@ -193,7 +194,7 @@ class ArticleView(View):
 
     def get(self, request, pk):
         try:
-            article = models.News.objects.get(pk=pk)
+            article = models.News.objects.get(pk=pk, date__gte=timezone.now())
             article_html = render_to_string('include/article.html', {
                 'article': article,
                 'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()

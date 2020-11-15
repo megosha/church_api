@@ -97,7 +97,7 @@ class ProfileView(View):
 class IndexView(View):
     def get(self, request):
         context = {
-            'news': models.News.objects.filter(active=True, date__gte=timezone.now())[:7],
+            'news': models.News.objects.filter(active=True, date__lte=timezone.now())[:7],
             'main': models.Main.get_solo(),
             'title': models.Main.get_solo().title
         }
@@ -194,7 +194,7 @@ class ArticleView(View):
 
     def get(self, request, pk):
         try:
-            article = models.News.objects.get(pk=pk, date__gte=timezone.now())
+            article = models.News.objects.get(pk=pk, date__lte=timezone.now())
             article_html = render_to_string('include/article.html', {
                 'article': article,
                 'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()

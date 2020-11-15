@@ -1,3 +1,8 @@
+from typing import Union
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views import View
@@ -28,10 +33,16 @@ class WriterView(View):
                              "menubar: false,"
                              'plugins: "code lists link image emoticons",'
                              "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | emoticons | removeformat | forecolor backcolor | link image | code',"
-                             # "tinydrive_token_provider: '',"
+            # "tinydrive_token_provider: '',"
                              "});</script>"
         }
         return render(request, 'writer.html', context)
+
+    @staticmethod
+    def youtube_get_id(link: str):
+        youtube_id = link.split('/')[-1].split('=')[-1]
+        if len(youtube_id) == 11:
+            return youtube_id
 
     def post(self, request, pk=None):
         if not request.user.is_authenticated:
@@ -50,6 +61,8 @@ class WriterView(View):
             del form.data['section']
         if 'date' in form.data and not form.data.get('date'):
             del form.data['date']
+        if 'youtube' in form.data and len(form.data['youtube']) > 11:
+            form.data['youtube'] = self.youtube_get_id(form.data['youtube'])
         if form.is_valid():
             form = form.save(commit=False)
             form.author_profile = request.user.profile
@@ -128,17 +141,43 @@ class CommandView(View):
 
 
 class NewsSectionView(View):
-    def get(self, request, pk):
+
+    def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
         news_section = models.NewsSection.objects.filter(pk=pk).first()
         if not news_section:
             news_section = models.NewsSection.objects.first()
+            if not news_section:
+                return redirect('/')
+            return redirect(f'/news-{news_section.pk}')
+        return news_section
+
+    def paginate(self, qset, page, per_page=10):
+        paginator = Paginator(qset, per_page)
+        try:
+            items = paginator.page(page)
+        except PageNotAnInteger:
+            items = paginator.page(1)
+        except EmptyPage:
+            items = paginator.page(paginator.num_pages)
+        return items
+
+    def get(self, request, pk):
+        news_section = self.get_news_section(pk)
+        if isinstance(news_section, HttpResponseRedirect):
+            return news_section
+        news_filter = request.GET.get('filter')
+        news_qset = news_section.news_set.filter(active=True)
+        if news_filter:
+            news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
+        page = request.GET.get('page')
         try:
             newssection = render_to_string('include/newssection.html', {
                 'newssection': news_section,
-                'newssection_all': models.NewsSection.objects.filter(
-                    active=True, news__active=True, date__gte=timezone.now()
-                ).distinct()
-            })
+                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
+                'news': self.paginate(news_qset, page),
+                'page': page,
+                'filter': news_filter or ''
+            }, request=request)
         except Exception as Ex:
             print(Ex)
             return redirect('/')
@@ -149,6 +188,10 @@ class NewsSectionView(View):
 
 
 class ArticleView(View):
+    @staticmethod
+    def truncatedwords(value, arg):
+        return " ".join(value.split()[:arg])
+
     def get(self, request, pk):
         try:
             article = models.News.objects.get(pk=pk, date__gte=timezone.now())
@@ -162,7 +205,15 @@ class ArticleView(View):
             return redirect('/news')
         context = {
             'article': article_html,
-            'title': article.title
+            'title': article.title,
+            # https://ruogp.me/ | mb https://yandex.ru/dev/share/ ?
+            'head_extend': f"""
+<meta property="og:title" content="{article.title}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{request.build_absolute_uri()}" />
+<meta property="og:image" content="{request._current_scheme_host + article.cover.url}" />
+<meta property="og:description" content="{self.truncatedwords(article.text, 30)}" />
+"""
         }
         return render(request, 'article.html', context)
 

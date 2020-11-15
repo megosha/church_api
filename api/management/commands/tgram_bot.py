@@ -81,11 +81,11 @@ class Command(BaseCommand):
     @staticmethod
     def broadcast_action(update, context):
         youtube_id = methods.youtube_get_id(update.message.text)
-        models.Main.objects.update(youtube=youtube_id)
-        update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
         if not youtube_id:
             update.message.reply_text(f'youtube_id не найден')
             return ConversationHandler.END
+        models.Main.objects.update(youtube=youtube_id)
+        update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
         API_KEY = methods.get_set('GOOGLE_API_KEY')
         url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={youtube_id}&key={API_KEY}'
         try:

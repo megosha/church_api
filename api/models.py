@@ -81,4 +81,3 @@ class Main(SingletonModel):
     title = models.CharField(max_length=255, default='')
     welcome = models.TextField(default='', blank=True)
     youtube = models.CharField(max_length=16, default='', blank=True)
-

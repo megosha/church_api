@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.views import View
 from django.shortcuts import render, redirect
 
@@ -126,7 +127,7 @@ class AccountView(View):
         form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-        return redirect('/account')
+        return redirect('/profile')
 
 
 class CommandView(View):
@@ -212,7 +213,7 @@ class ArticleView(View):
 <meta property="og:type" content="website" />
 <meta property="og:url" content="{request.build_absolute_uri()}" />
 <meta property="og:image" content="{request._current_scheme_host + article.cover.url}" />
-<meta property="og:description" content="{self.truncatedwords(article.text, 30)}" />
+<meta property="og:description" content="{self.truncatedwords(strip_tags(article.text), 30)}" />
 """
         }
         return render(request, 'article.html', context)

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.odnoklassniki',
     'allauth.socialaccount.providers.vk',
     'sorl.thumbnail',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -188,3 +189,6 @@ TGRAM_TOKEN = env.str('TGRAM_TOKEN', '')
 TGRAM_PHRAZE = env.str('TGRAM_PHRAZE', '')
 
 GOOGLE_API_KEY = env.str('GOOGLE_API_KEY', '')
+
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_TIMEZONE = 'Asia/Barnaul'

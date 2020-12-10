@@ -32,7 +32,10 @@ class FormAdmin(admin.ModelAdmin):
 
 
 skip_models = ('authtoken.Token.objects', 'account.EmailAddress.objects', 'socialaccount.SocialApp.objects',
-               'socialaccount.SocialToken.objects', 'socialaccount.SocialAccount.objects')
+               'socialaccount.SocialToken.objects', 'socialaccount.SocialAccount.objects',
+               'django_celery_beat.IntervalSchedule.objects', 'django_celery_beat.CrontabSchedule.objects',
+               'django_celery_beat.SolarSchedule.objects', 'django_celery_beat.ClockedSchedule.objects',
+               'django_celery_beat.PeriodicTask.objects',)
 skip_app = 'social_django'
 apps_models = apps.get_models()
 for model in apps_models:

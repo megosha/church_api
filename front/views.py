@@ -28,12 +28,15 @@ class WriterView(View):
         context = {
             'form': forms.NewsForm(instance=article),
             'section_list': models.NewsSection.objects.filter(active=True),
-            'footer_extend': '<script src="https://cdn.tiny.cloud/1/lh4zfqr7jd1gvgc880bkn5z61dxah88ogs92zje69rgpmk0b/tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>'
+            'footer_extend': '<script src="https://cdn.tiny.cloud/1/lh4zfqr7jd1gvgc880bkn5z61dxah88ogs92zje69rgpmk0b/'
+                             'tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>'
                              "<script>tinymce.init({"
                              "selector:'#article-text-id',"
                              "menubar: false,"
                              'plugins: "code lists link image emoticons",'
-                             "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | emoticons | removeformat | forecolor backcolor | link image | code',"
+                             "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright "
+                             "alignjustify | bullist numlist outdent indent | emoticons | removeformat "
+                             "| forecolor backcolor | link image | code',"
             # "tinydrive_token_provider: '',"
                              "});</script>"
         }
@@ -81,16 +84,20 @@ class ProfileView(View):
         if pk:
             profile = models.Profile.objects.filter(pk=pk).first()
             if not profile:
-                request.session['message'] = 'Пользователь не найден'
-                profile = request.user.profile
+                # TODO request.session['message'] = 'Пользователь не найден'
+                # profile = request.user.profile
+                return redirect('/profile')
+            profile_news = profile.news_set.filter(date__lte=timezone.now())
         else:
             profile = request.user.profile
+            profile_news = profile.news_set.all()
         profile_html = render_to_string('include/profile.html', {
             'item': profile
         }, request)
         context = {
             'profile_html': profile_html,
-            'profile': profile
+            'profile': profile,
+            'profile_news': profile_news
         }
         return render(request, 'profile.html', context)
 
@@ -167,7 +174,7 @@ class NewsSectionView(View):
         if isinstance(news_section, HttpResponseRedirect):
             return news_section
         news_filter = request.GET.get('filter')
-        news_qset = news_section.news_set.filter(active=True)
+        news_qset = news_section.news_set.filter(active=True, date__lte=timezone.now())
         if news_filter:
             news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
         page = request.GET.get('page')
@@ -195,15 +202,17 @@ class ArticleView(View):
 
     def get(self, request, pk):
         try:
-            article = models.News.objects.get(pk=pk, date__lte=timezone.now())
-            article_html = render_to_string('include/article.html', {
-                'article': article,
-                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
-            }, request)
+            article = models.News.objects.get(pk=pk)
+            if not request.user.is_authenticated or article.author_profile != request.user.profile:
+                article = models.News.objects.get(pk=pk, date__lte=timezone.now())
         except Exception as Ex:
-            request.session['message'] = 'Статья не найдена'
+            # TODO request.session['message'] = 'Статья не найдена'
             print(Ex)
-            return redirect('/news')
+            return redirect('/news-1')
+        article_html = render_to_string('include/article.html', {
+            'article': article,
+            'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
+        }, request)
         context = {
             'article': article_html,
             'title': article.title,

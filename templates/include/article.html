@@ -84,7 +84,7 @@
                     {% endif %}
                 </div>
                 {% if article.author_profile == request.user.profile %}
-                    <a href="/writer/{{ article.pk }}" style="float: right" class="btn btn-sm btn-secondary display-4">Редактировать</a>
+                    <a href="/writer-{{ article.pk }}" style="float: right" class="btn btn-sm btn-secondary display-4">Редактировать</a>
                 {% endif %}
             </div>
         </div>

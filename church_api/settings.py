@@ -140,10 +140,21 @@ LOGGING = {
             'filename': os.path.join(LOG_PATH, 'django_info.log'),
             'formatter': 'standard'
         },
+        'other': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_PATH, 'other.log'),
+            'formatter': 'standard'
+        },
     },
     'loggers': {
         'django': {
             'handlers': ['info', 'django_error'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'api.tasks': {
+            'handlers': ['other',],
             'level': 'INFO',
             'propagate': True,
         },
@@ -192,3 +203,6 @@ GOOGLE_API_KEY = env.str('GOOGLE_API_KEY', '')
 
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 CELERY_TIMEZONE = 'Asia/Barnaul'
+
+TTP_ID = env.str('TTP_ID', '')
+TTP_TEXT = env.str('TTP_TEXT', '')

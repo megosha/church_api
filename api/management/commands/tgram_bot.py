@@ -48,12 +48,12 @@ class Command(BaseCommand):
         )
 
         dp.add_handler(broadcast_handler)
-        dp.add_handler(article_handler)
+        # dp.add_handler(article_handler)
         # dp.add_handler(CommandHandler("broadcast", self.broadcast))
-        dp.add_handler(CommandHandler("set", self.set_boss))
-        dp.add_handler(CommandHandler("boss", self.who_boss))
+        # dp.add_handler(CommandHandler("set", self.set_boss))
+        # dp.add_handler(CommandHandler("boss", self.who_boss))
         dp.add_handler(CommandHandler("help", self.help))
-        dp.add_handler(MessageHandler(Filters.text, self.on_board))
+        # dp.add_handler(MessageHandler(Filters.text, self.on_board))
 
         updater.start_polling()
         updater.idle()
@@ -71,12 +71,6 @@ class Command(BaseCommand):
         update.message.reply_text('Публикуем трансляцию и статью на сайт. Введите ссылку трансляции YouTube',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return 0
-
-    @staticmethod
-    def youtube_get_id(link: str):
-        youtube_id = link.split('/')[-1].split('=')[-1]
-        if len(youtube_id) == 11:
-            return youtube_id
 
     @staticmethod
     def broadcast_action(update, context):

@@ -19,3 +19,19 @@ def time_to_pray():
         text=text
     ))
     logger.info(f"time_to_pray end: {result}")
+
+
+@app.task(name="api.tasks.say2boss", ignore_result=True)
+def say2boss(text):
+    logger = logging.getLogger(__name__)
+    logger.info("say2boss start")
+    result = methods.TGram.say2boss(text)
+    logger.info(f"say2boss end: {result}")
+
+
+@app.task(name="api.tasks.send_email", ignore_result=True)
+def send_email(title, text, emails=None, as_html=False):
+    logger = logging.getLogger(__name__)
+    logger.info(f"send_email start ('{title}', {emails})")
+    result = methods.send_email(title, text, emails, as_html)
+    logger.info(f"send_email end: {result}")

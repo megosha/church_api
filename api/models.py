@@ -8,6 +8,11 @@ from solo.models import SingletonModel
 from sorl.thumbnail import ImageField
 
 
+class Site(models.Model):
+    name = models.CharField(max_length=64, default='Барнаул')
+    domain = models.CharField(max_length=64, default='church22.ru')
+
+
 class Config(SingletonModel):
     tgram = JSONField(default=dict)
 
@@ -16,6 +21,7 @@ class Profile(models.Model):
     class Meta:
         ordering = ('position', 'name',)
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, default='')
     birthday = models.DateField(null=True, blank=True)
     function = models.CharField(max_length=255, blank=True, default='')
@@ -40,6 +46,7 @@ class Profile(models.Model):
 
 
 class Form(models.Model):
+    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=32, default='')
     text = models.TextField(default='')
     sended = models.BooleanField(default=False)
@@ -50,6 +57,7 @@ class Form(models.Model):
 
 
 class NewsSection(models.Model):
+    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=255, blank=True, default='')
     icon = models.CharField(max_length=32, default='mbri-info')
     active = models.BooleanField(default=True)
@@ -63,6 +71,7 @@ class News(models.Model):
         ordering = ('-date',)
     section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True, blank=True)
     author_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
+    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField(default=timezone.now, blank=True)
     title = models.CharField(max_length=255, default='')
     cover = ImageField(null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
@@ -77,7 +86,8 @@ class News(models.Model):
         return self.title
 
 
-class Main(SingletonModel):
+class Main(models.Model):
+    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=255, default='')
     welcome = models.TextField(default='', blank=True)
     youtube = models.CharField(max_length=16, default='', blank=True)

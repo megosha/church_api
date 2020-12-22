@@ -6,7 +6,8 @@ from solo.admin import SingletonModelAdmin
 from api import models
 
 
-admin.site.register(models.Main, SingletonModelAdmin)
+# admin.site.register(models.Main, SingletonModelAdmin)
+admin.site.register(models.Config, SingletonModelAdmin)
 
 
 @admin.register(models.Profile)

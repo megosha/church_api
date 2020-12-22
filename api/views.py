@@ -9,7 +9,7 @@ from django.utils import timezone
 from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
 
-from api import models, serializers
+from api import models, serializers, tasks
 from front.methods import send_email
 
 
@@ -42,7 +42,10 @@ class FormViewSet(APIView):
         except Exception as e:
             return self.resp(False, f'Ошибка данных: {e}')
         emails = ('andrey@ngbarnaul.ru', 'artorop@mail.ru', 'elenarun@mail.ru',)
-        form_obj = models.Form.objects.create(title=title, text=json.dumps(data, ensure_ascii=False))
+        # emails = None
+        text = json.dumps(data, ensure_ascii=False)
+        form_obj = models.Form.objects.create(title=title, text=text)
+        tasks.say2boss(text)
         result = send_email(title, html, emails, as_html=True)
         if isinstance(result, Exception):
             return self.resp(False, f'Ошибка отправки сообщения: {result}')

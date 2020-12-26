@@ -10,7 +10,20 @@ from sorl.thumbnail import ImageField
 
 class Site(models.Model):
     name = models.CharField(max_length=64, default='Барнаул')
-    domain = models.CharField(max_length=64, default='church22.ru')
+    domain = models.CharField(max_length=64, default='church22.ru', unique=True)
+
+    def __str__(self):
+        return f'{self.name} - {self.domain}'
+
+
+class Main(models.Model):
+    site = models.OneToOneField(Site, on_delete=models.SET_NULL, null=True, blank=True)
+    title = models.CharField(max_length=255, default='')
+    welcome = models.TextField(default='', blank=True)
+    youtube = models.CharField(max_length=16, default='', blank=True)
+
+    def __str__(self):
+        return str(self.site)
 
 
 class Config(SingletonModel):
@@ -71,7 +84,6 @@ class News(models.Model):
         ordering = ('-date',)
     section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True, blank=True)
     author_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
-    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField(default=timezone.now, blank=True)
     title = models.CharField(max_length=255, default='')
     cover = ImageField(null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
@@ -84,10 +96,3 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Main(models.Model):
-    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
-    title = models.CharField(max_length=255, default='')
-    welcome = models.TextField(default='', blank=True)
-    youtube = models.CharField(max_length=16, default='', blank=True)

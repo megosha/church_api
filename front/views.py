@@ -25,9 +25,10 @@ class WriterView(View):
                 return redirect(f'/profile-{request.user.profile.pk}')
         else:
             article = models.News()
+        sections = models.NewsSection.objects.filter(active=True, site=request.site)
         context = {
             'form': forms.NewsForm(instance=article),
-            'section_list': models.NewsSection.objects.filter(active=True),
+            'section_list': sections,
             'footer_extend': '<script src="https://cdn.tiny.cloud/1/lh4zfqr7jd1gvgc880bkn5z61dxah88ogs92zje69rgpmk0b/'
                              'tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>'
                              "<script>tinymce.init({"
@@ -37,16 +38,10 @@ class WriterView(View):
                              "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright "
                              "alignjustify | bullist numlist outdent indent | emoticons | removeformat "
                              "| forecolor backcolor | link image | code',"
-            # "tinydrive_token_provider: '',"
+                             # "tinydrive_token_provider: '',"
                              "});</script>"
         }
         return render(request, 'writer.html', context)
-
-    @staticmethod
-    def youtube_get_id(link: str):
-        youtube_id = link.split('/')[-1].split('=')[-1]
-        if len(youtube_id) == 11:
-            return youtube_id
 
     def post(self, request, pk=None):
         if not request.user.is_authenticated:
@@ -66,7 +61,7 @@ class WriterView(View):
         if 'date' in form.data and not form.data.get('date'):
             del form.data['date']
         if 'youtube' in form.data and len(form.data['youtube']) > 11:
-            form.data['youtube'] = self.youtube_get_id(form.data['youtube'])
+            form.data['youtube'] = methods.youtube_get_id(form.data['youtube'])
         if form.is_valid():
             form = form.save(commit=False)
             form.author_profile = request.user.profile
@@ -104,10 +99,11 @@ class ProfileView(View):
 
 class IndexView(View):
     def get(self, request):
+        main = request.site.main
         context = {
             'news': models.News.objects.filter(active=True, date__lte=timezone.now())[:7],
-            'main': models.Main.get_solo(),
-            'title': models.Main.get_solo().title
+            'main': main,
+            'title': main.title
         }
         if 'message' in request.session:
             del request.session['message']
@@ -118,7 +114,8 @@ class AccountView(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/auth/login/')
-        profile, created = models.Profile.objects.get_or_create(user=request.user)
+        profile, created = models.Profile.objects.get_or_create(user=request.user,
+                                                                default={'site': request.site})
         if created:
             methods.fill_social(profile)
         account = render_to_string('include/account.html', {
@@ -139,17 +136,16 @@ class AccountView(View):
 
 class CommandView(View):
     def get(self, request):
-        command = render_to_string('include/command.html', {
-            'command': models.Profile.objects.filter(position__lt=90, active=True).order_by('position')
-        })
+        command = models.Profile.objects.filter(
+            position__lt=90, active=True, site=request.site
+        ).order_by('position')
         context = {
-            'command': command,
+            'command': render_to_string('include/command.html', {'command': command}),
         }
         return render(request, 'command.html', context)
 
 
 class NewsSectionView(View):
-
     def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
         news_section = models.NewsSection.objects.filter(pk=pk).first()
         if not news_section:
@@ -232,8 +228,8 @@ class StaticView(View):
     def get(self, request):
         path = request.path[1:] + '.html'
         context = {
-            'main': models.Main.get_solo(),
-            'title': models.Main.get_solo().title
+            'main': request.site.main,
+            'title': request.site.main.title
         }
         try:
             return render(request, path, context)

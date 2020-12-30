@@ -30,18 +30,25 @@ class TGram:
         if not boss_id:
             print('BOSS not found')
             return None
-        url = f'https://api.telegram.org/bot{TGram.get_token()}' \
-              f'/sendMessage?chat_id={boss_id}&parse_mode=Markdown&text={text}'
+        return TGram.send_message(text, boss_id)
+
+    @staticmethod
+    def send_message(text, chat_id, parse_mode='Markdown'):
         try:
-            response = requests.get(url)
-            if response.status_code == 200:
-                return response.json()
-            else:
-                raise Exception(f'status_code {response.status_code}')
+            response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/sendMessage', params=dict(
+                chat_id=chat_id,
+                text=text,
+                parse_mode=parse_mode
+            ))
         except Exception as Ex:
             print(Ex)
             return False
-
+        else:
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f'status_code {response.status_code}')
+                return False
 
 def get_set(item: str):
     if not settings.configured:

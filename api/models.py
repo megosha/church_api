@@ -21,7 +21,6 @@ class Main(models.Model):
     title = models.CharField(max_length=255, default='')
     welcome = models.TextField(default='', blank=True)
     youtube = models.CharField(max_length=16, default='', blank=True)
-    service_key = models.CharField(max_length=32, default='Узнать больше', blank=True)
 
     def __str__(self):
         return str(self.site)
@@ -97,20 +96,3 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class MainService(models.Model):
-    class Meta:
-        verbose_name = verbose_name_plural = 'Основное служение'
-        ordering = ('-number',)
-    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
-    position = models.SmallIntegerField(default=1)
-    title = models.CharField('Название', max_length=128, default='Социальная помощь')
-    card_up = models.TextField('Карточка верх', default='- Продуктовые пакеты и одежда\n- Помогаем всем!')
-    card_down = models.TextField('Карточка низ', default='Один шаг и ваша семья накормлена и одета!')
-    card_pict = ImageField('Карточка картинка', null=True,
-                           validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
-    page_title = models.CharField('Страница название', max_length=128, default='Социальная помощь')
-    timeline = JSONField('Таймлайн', default=list)
-    servant = JSONField('Служители', default=list)
-    form = JSONField('Форма для связи', default=dict)

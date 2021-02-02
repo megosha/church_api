@@ -49,9 +49,9 @@ class Command(BaseCommand):
 
         dp.add_handler(broadcast_handler)
         # dp.add_handler(article_handler)
-        dp.add_handler(CommandHandler("broadcast", self.broadcast))
+        # dp.add_handler(CommandHandler("broadcast", self.broadcast))
         # dp.add_handler(CommandHandler("set", self.set_boss))
-        # dp.add_handler(CommandHandler("boss", self.who_boss))
+        dp.add_handler(CommandHandler("boss", self.who_boss))
         dp.add_handler(CommandHandler("help", self.help))
         # dp.add_handler(MessageHandler(Filters.text, self.on_board))
 

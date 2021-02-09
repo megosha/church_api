@@ -14,6 +14,6 @@ urlpatterns = [
     re_path(r'^writer/?$', views.WriterView.as_view()),
     re_path(r'^profile/?$', views.ProfileView.as_view()),
     re_path(r'^article-(?P<pk>\d+)/?$', views.ArticleView.as_view(), name='article'),
-    re_path(r'^r-(?P<pk>\d+?)|(?P<yt>\w+)/?$', views.YTRedirectView.as_view()),
+    re_path(r'^r-(?P<pk>\d+/?$)|(?P<yt>\w+/?$)', views.YTRedirectView.as_view()),
 ]
 urlpatterns.append(re_path(r'', views.StaticView.as_view()))

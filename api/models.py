@@ -94,7 +94,7 @@ class News(models.Model):
     youtube = models.CharField(max_length=16, default='', blank=True)
     author = models.TextField(default='', blank=True)
     active = models.BooleanField(default=True)
-    meter = JSONField(default=dict)
+    meter = JSONField(default=dict, blank=True)
 
     def __str__(self):
         return self.title

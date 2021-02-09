@@ -21,6 +21,7 @@ class Main(models.Model):
     title = models.CharField(max_length=255, default='')
     welcome = models.TextField(default='', blank=True)
     youtube = models.CharField(max_length=16, default='', blank=True)
+    no_redirect_count = models.IntegerField(default=3)
 
     def __str__(self):
         return str(self.site)
@@ -93,6 +94,15 @@ class News(models.Model):
     youtube = models.CharField(max_length=16, default='', blank=True)
     author = models.TextField(default='', blank=True)
     active = models.BooleanField(default=True)
+    meter = JSONField(default=dict)
 
     def __str__(self):
         return self.title
+
+    def meter_inc(self, key: str):
+        if self.meter.get(key):
+            self.meter[key] += 1
+        else:
+            self.meter[key] = 1
+        self.save()
+        return self.meter[key]

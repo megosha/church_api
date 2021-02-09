@@ -115,7 +115,7 @@ class AccountView(View):
         if not request.user.is_authenticated:
             return redirect('/auth/login/')
         profile, created = models.Profile.objects.get_or_create(user=request.user,
-                                                                default={'site': request.site})
+                                                                defaults={'site': request.site})
         if created:
             methods.fill_social(profile)
         account = render_to_string('include/account.html', {
@@ -221,6 +221,7 @@ class ArticleView(View):
 <meta property="og:description" content="{self.truncatedwords(strip_tags(article.text), 30)}" />
 """
         }
+        article.meter_inc('view_count')
         return render(request, 'article.html', context)
 
 
@@ -236,3 +237,26 @@ class StaticView(View):
         except Exception as Ex:
             print(Ex)
             return redirect('/')
+
+
+class YTRedirectView(View):
+    @staticmethod
+    def redirect_youtube(yt):
+        return redirect(f'https://youtu.be/{yt}')
+
+    def get(self, request, pk=None, yt=None):
+        if yt:
+            return self.redirect_youtube(yt)
+
+        article = models.News.objects.filter(pk=pk).first()
+        if not article:
+            return redirect('index')
+
+        no_redirect_count = models.Main.objects.filter(site=request.site).values_list(
+            'no_redirect_count', flat=True).first()
+        redirect_count = article.meter_inc('redirect_count')
+
+        if article.youtube and redirect_count > no_redirect_count:
+            return self.redirect_youtube(article.youtube)
+
+        return redirect('article', pk=pk)

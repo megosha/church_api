@@ -84,8 +84,8 @@ class Command(BaseCommand):
         url = f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={youtube_id}&key={API_KEY}'
         try:
             data = requests.get(url).json()
-            if 'error' in data and 'message' in data:
-                raise Exception(data['message'])
+            if 'error' in data and 'message' in data['error']:
+                raise Exception(data['error']['message'])
             title = data['items'][0]['snippet']['title']
             try:
                 preview = data['items'][0]['snippet']['thumbnails']['maxres']['url']

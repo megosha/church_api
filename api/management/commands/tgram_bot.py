@@ -91,22 +91,18 @@ class Command(BaseCommand):
                 preview = data['items'][0]['snippet']['thumbnails']['maxres']['url']
             except:
                 preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
-            cover = NamedTemporaryFile(delete=True)
+            cover = NamedTemporaryFile(delete=True, suffix='.jpg')
             cover.write(requests.get(preview).content)
             cover.flush()
         except Exception as Ex:
             update.message.reply_text(f'Не удалось получить данные: {Ex}')
             return ConversationHandler.END
-        try:
-            article_title = title.split('"')[1] + ' - Трансляция'
-        except:
-            article_title = title
         section = models.NewsSection.objects.filter(title='Видео').first()
         if not section:
             section = models.NewsSection.objects.first()
         author = models.Profile.objects.filter(telegram=update.message.chat.username).first()
         article = models.News.objects.create(section=section, author_profile=author, date=timezone.now(),
-                                             title=article_title, youtube=youtube_id)
+                                             title=title, youtube=youtube_id)
         article.cover.save(f'broadcast_{article.pk}', File(cover))
         models.Main.objects.update(youtube=youtube_id)
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')

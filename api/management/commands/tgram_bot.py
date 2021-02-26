@@ -53,7 +53,7 @@ class Command(BaseCommand):
         # dp.add_handler(CommandHandler("set", self.set_boss))
         dp.add_handler(CommandHandler("boss", self.who_boss))
         dp.add_handler(CommandHandler("help", self.help))
-        # dp.add_handler(MessageHandler(Filters.text, self.on_board))
+        dp.add_handler(MessageHandler(Filters.text, self.on_board))
 
         updater.start_polling()
         updater.idle()
@@ -185,10 +185,20 @@ class Command(BaseCommand):
 
     @staticmethod
     def on_board(update, context):
-        update.message.reply_text(
-            emojize('Bot on board!'),
-            reply_markup=ReplyKeyboardMarkup(Command.get_keys(context), one_time_keyboard=True)
-        )
+        chat_id = update.effective_chat.id
+        username = update.effective_chat.username
+        text = update.effective_message.text
+        if update.channel_post:
+            print('Post to channel')
+        elif update.message:
+            print('Post to PM')
+            if update.effective_message.from_user.is_bot:
+                return
+            if models.Config.get_solo().tgram.get('boss_name') == username:
+                update.message.reply_text(
+                    emojize('Bot on board!'),
+                    reply_markup=ReplyKeyboardMarkup(Command.get_keys(context), one_time_keyboard=True)
+                )
 
     @staticmethod
     def who_boss(update, context):

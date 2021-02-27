@@ -6,6 +6,7 @@ from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from solo.models import SingletonModel
 from sorl.thumbnail import ImageField
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
 class Site(models.Model):
@@ -106,3 +107,30 @@ class News(models.Model):
             self.meter[key] = 1
         self.save()
         return self.meter[key]
+
+
+class BotContact(models.Model):
+    chat_id = models.BigIntegerField(primary_key=True)
+    username = models.CharField(max_length=255, default='')
+    last_message = models.DateTimeField(default=timezone.now)
+
+
+class BotMessage(models.Model):
+    contacts = models.ManyToManyField(BotContact)
+    text = models.TextField(default='', blank=True)
+    image = ImageField(blank=True, null=True)
+    crontab = models.CharField(max_length=255, default='', blank=True, help_text='m/h/dM/MY/dW')
+
+    def save(self, *args, **kwargs):
+        minute, hour, day_of_month, month_of_year, day_of_week = self.crontab.split('/')
+        # check timezone
+        crontab = CrontabSchedule.objects.get_or_create(
+            minute=minute, hour=hour, day_of_month=day_of_month, month_of_year=month_of_year, day_of_week=day_of_week)
+        PeriodicTask.objects.update_or_create(name=f'BotMessage {self.pk}', task="send_message",
+                                              defaults=dict(crontab=crontab))
+        super(self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        PeriodicTask.objects.filter(name=f'BotMessage {self.pk}').delete()
+        # Подчищать непривязаные кронтабы
+        super(self).delete(*args, **kwargs)

@@ -6,16 +6,18 @@
             <div onclick="window.location.href='/news-{{ item.pk }}'" class="card p-3 col-md-6 col-lg-4 col-xl-2"
                  onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'">
                 <div class="card-img pb-2">
-                    <div class="step{% if item.pk == newssection.pk %} section_active{% endif %}">
+                    <div class="step{% if item.pk != newssection.pk %} section_active{% endif %}">
                     {% if item.pk == newssection.pk %}
                         <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #8000ff; font-weight: bold"></span>
                     {% else %}
-                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px;"></span>
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #000000;"></span>
                     {% endif %}
                     </div>
                 </div>
                 <div class="card-box">
-                    <p class="mbr-text mbr-fonts-style display-7">{{ item.title }}</p>
+                    <p class="mbr-text mbr-fonts-style display-7{% if item.pk == newssection.pk %} mbr-bold{% endif %}">
+                        {{ item.title }}
+                    </p>
                 </div>
             </div>
             {% endfor %}
@@ -40,7 +42,9 @@
         <div class="row row-content justify-content-center">
             {% for item in news %}
             <div class="card p-3 col-lg-12 col-md-12">
-                <div class="card-wrapper">
+                <div class="card-wrapper"
+                     onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"
+                     onclick="window.location.href='/article-{{ item.pk }}'">
                     <div class="card-img">
                         {% thumbnail item.cover "320" as im %}
                         <img src="{{ im.url }}" title="" alt="" style="height: auto">

@@ -16,11 +16,7 @@
             <div onclick="window.location.href='/news-{{ item.pk }}'" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" class="card p-3 col-md-6 col-lg-4 col-xl-2">
                 <div class="card-img pb-2">
                     <div class="step{% if item.pk != article.section.pk %} section_active{% endif %}">
-                    {% if item.pk == article.section.pk %}
-                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #8000ff; font-weight: bold"></span>
-                    {% else %}
-                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px;"></span>
-                    {% endif %}
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #000000;"></span>
                     </div>
                 </div>
                 <div class="card-box">

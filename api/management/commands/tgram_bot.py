@@ -10,6 +10,7 @@ from emoji import emojize
 from django.core.management.base import BaseCommand
 
 from api import models
+from api.tasks import say2boss
 from front import methods
 
 
@@ -199,6 +200,9 @@ class Command(BaseCommand):
                     emojize('Bot on board!'),
                     reply_markup=ReplyKeyboardMarkup(Command.get_keys(context), one_time_keyboard=True)
                 )
+            else:
+                say2boss(f"{username} ({chat_id})\n{text}")
+                update.message.reply_text(emojize('Ваше сообщение передано боссу!'))
 
     @staticmethod
     def who_boss(update, context):

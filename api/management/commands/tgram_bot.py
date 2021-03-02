@@ -189,6 +189,8 @@ class Command(BaseCommand):
         chat_id = update.effective_chat.id
         username = update.effective_chat.username
         text = update.effective_message.text
+        models.BotContact.objects.update_or_create(chat_id=chat_id, username=username,
+                                                   defaults=dict(last_message=timezone.now()))
         if update.channel_post:
             print('Post to channel')
         elif update.message:

@@ -114,6 +114,9 @@ class BotContact(models.Model):
     username = models.CharField(max_length=255, default='')
     last_message = models.DateTimeField(default=timezone.now)
 
+    def __str__(self):
+        return f"{self.username} ({self.chat_id})"
+
 
 class BotMessage(models.Model):
     contacts = models.ManyToManyField(BotContact)

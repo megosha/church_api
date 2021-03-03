@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core.validators import FileExtensionValidator
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from solo.models import SingletonModel
@@ -119,21 +119,26 @@ class BotContact(models.Model):
 
 
 class BotMessage(models.Model):
-    contacts = models.ManyToManyField(BotContact)
+    contact = models.ForeignKey(BotContact, on_delete=models.CASCADE, null=True)
     text = models.TextField(default='', blank=True)
     image = ImageField(blank=True, null=True)
-    crontab = models.CharField(max_length=255, default='', blank=True, help_text='m/h/dM/MY/dW')
+    crontab = models.CharField(max_length=255, default='*/*/*/*/*', blank=True, help_text='m/h/dM/MY/dW')
 
     def save(self, *args, **kwargs):
         minute, hour, day_of_month, month_of_year, day_of_week = self.crontab.split('/')
-        # check timezone
-        crontab = CrontabSchedule.objects.get_or_create(
-            minute=minute, hour=hour, day_of_month=day_of_month, month_of_year=month_of_year, day_of_week=day_of_week)
-        PeriodicTask.objects.update_or_create(name=f'BotMessage {self.pk}', task="send_message",
-                                              defaults=dict(crontab=crontab))
-        super(self).save(*args, **kwargs)
+        with transaction.atomic():
+            super(BotMessage, self).save(*args, **kwargs)
+            crontab, created = CrontabSchedule.objects.get_or_create(
+                minute=minute, hour=hour, day_of_month=day_of_month, month_of_year=month_of_year,
+                day_of_week=day_of_week)
+            PeriodicTask.objects.update_or_create(name=f'BotMessage {self.pk}', defaults=dict(
+                crontab=crontab, task="api.tasks.say2group", args=f'["{self.text}", "{self.contact.chat_id}"]'))
 
     def delete(self, *args, **kwargs):
-        PeriodicTask.objects.filter(name=f'BotMessage {self.pk}').delete()
-        # Подчищать непривязаные кронтабы
-        super(self).delete(*args, **kwargs)
+        with transaction.atomic():
+            task = PeriodicTask.objects.get(name=f'BotMessage {self.pk}')
+            if task.crontab.periodictask_set.count() == 1:
+                task.crontab.delete()
+            else:
+                task.delete()
+            super(BotMessage, self).delete(*args, **kwargs)

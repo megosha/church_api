@@ -1,0 +1,72 @@
+{% load thumbnail %}
+<div class="card py-4 col-md-12">
+    <div class="card-wrapper">
+        <div class="card-img">
+            {% if item.image %}
+            {% thumbnail item.image "x500" as im %}
+            <img src="{{ im.url }}" title="" alt="">
+            {% endthumbnail %}
+            {% endif %}
+        </div>
+        <div class="card-box">
+            <div class="text-box">
+                <h4 class="card-title mbr-fonts-style mbr-normal display-5">{{ item.name }}</h4>
+                <p class="mbr-text mbr-fonts-style status mbr-normal display-4">{{ item.function }}</p>
+                <p class="mbr-text mbr-fonts-style mbr-normal display-4">{{ item.about }}</p>
+            </div>
+            <div class="ico-wrap">
+                {% if item.phone_visible %}
+                <div class="ico-box">
+                    <a href="tel:{{ item.phone }}">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social mbri-mobile2"></span>
+                    </a>
+                    <p class="mbr-text mbr-fonts-style mbr-normal display-4">{{ item.phone }}</p>
+                </div>
+                {% endif %}
+                {% if item.social_email %}
+                <div class="ico-box">
+                    <a href="mailto:{{ item.social_email }}">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social mbri-letter"></span>
+                    </a>
+                    <p class="mbr-text mbr-fonts-style mbr-normal display-4">{{ item.social_email }}</p>
+                </div>
+                {% endif %}
+                {% if item.social_page %}
+                <div class="ico-box">
+                    <a href="{{ item.social_page }}" target="_blank">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social mbri-link"></span>
+                    </a>
+                    <p class="mbr-text mbr-fonts-style mbr-normal display-4">{{ item.social_page }}</p>
+                </div>
+                {% endif %}
+                <div class="ico-box">
+                    {% if item.social_vk %}
+                    <a href="{{ item.social_vk }}" target="_blank">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-vkontakte socicon"></span>
+                    </a>
+                    {% endif %}
+                    {% if item.social_fb %}
+                    <a href="{{ item.social_fb }}" target="_blank">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-facebook socicon"></span>
+                    </a>
+                    {% endif %}
+                    {% if item.social_ok %}
+                    <a href="{{ item.social_ok }}" target="_blank">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-odnoklassniki socicon"></span>
+                    </a>
+                    {% endif %}
+                    {% if item.social_insta %}
+                    <a href="{{ item.social_insta }}" target="_blank">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-instagram socicon"></span>
+                    </a>
+                    {% endif %}
+                    {% if item.social_youtube %}
+                    <a href="{{ item.social_youtube }}" target="_blank">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-youtube socicon"></span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,119 @@
+{% load thumbnail %}
+<section class="mbr-section content5 cid-rWcOAIXKdt" id="content5-5u">
+    <div class="container">
+        <div class="media-container-row">
+            <div class="title col-12 col-md-8">
+                <h3 class="mbr-section-subtitle align-center mbr-light mbr-white pb-3 mbr-fonts-style display-2">
+                    {{ article.title }}</h3>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="extFeatures cid-rX28nqBFso" id="extFeatures3-71">
+    <div class="container-fluid">
+        <div class="row justify-content-center content-row">
+            {% for item in newssection_all %}
+            <div onclick="window.location.href='/news-{{ item.pk }}'" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" class="card p-3 col-md-6 col-lg-4 col-xl-2">
+                <div class="card-img pb-2">
+                    <div class="step{% if item.pk != article.section.pk %} section_active{% endif %}">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #000000;"></span>
+                    </div>
+                </div>
+                <div class="card-box">
+                    <p class="mbr-text mbr-fonts-style display-7{% if item.pk == article.section.pk %} mbr-bold{% endif %}">{{ item.title }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% if article.image %}
+    <section class="cid-rWEYJ8TePR" id="image3-6j">
+        <figure class="mbr-figure container">
+            <div class="image-block">
+                <img src="{{ article.image.url }}" alt="" title="">
+            </div>
+        </figure>
+    </section>
+{% endif %}
+{% if article.text %}
+<section class="mbr-section article content1 cid-rWcOAJGDus" id="content1-5v">
+    <div class="container">
+        <div class="media-container-row">
+            <div class="mbr-text col-12 mbr-fonts-style display-7 col-md-12">
+                {{ article.text|safe|linebreaks }}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% if article.html %}
+<div id="custom-html-73">
+    <div>
+        {{ article.html|safe }}
+    </div>
+</div>
+{% endif %}
+{% if article.youtube %}
+<section class="cid-rXjmWTcL4k" id="video3-72">
+    <figure class="mbr-figure align-center container">
+        <div class="video-block" style="width: 80%;">
+            <div><iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/{{ article.youtube }}?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe></div>
+        </div>
+    </figure>
+</section>
+{% endif %}
+{% if article.author or article.author_profile %}
+<section class="mbr-section article extСontent cid-rWe5Ro6y1U" id="extContent3-60">
+    <div class="container">
+        <div class="media-container-row">
+            <div class="mbr-text col-12 col-md-8 display-4">
+                <div class="flex-block pb-4">
+                    <span class="mbr-iconfont mbri-quote-right"></span>
+                    {% if article.author %}
+                    <p class="mbr-fonts-style block-quote display-4">
+                        {{ article.author|safe|linebreaksbr }}
+                    </p>
+                    {% endif %}
+                    {% if article.author_profile %}
+                    <a class="text-secondary" href="/profile-{{ article.author_profile.pk }}">
+                        {% thumbnail article.author_profile.image "50x50" crop="center" as im %}
+                        <img height="50px" style="border-radius: 50%;" src="{{ im.url }}">&nbsp;{{ article.author_profile.name }}
+                        {% endthumbnail %}
+                    </a>
+                    {% endif %}
+                </div>
+                {% if article.author_profile == request.user.profile %}
+                    <a href="/writer-{{ article.pk }}" style="float: right" class="btn btn-sm btn-secondary display-4">Редактировать</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+<section class="social1 cid-sbn3tXa5xK" id="share1-l">
+    <div class="container">
+        <div class="media-container-row">
+            <div class="col-12">
+                <div>
+                    <div class="mbr-social-likes align-right">
+                        <span class="h3">Поделиться:</span>
+
+                        <span class="btn btn-social socicon-bg-facebook facebook m-2">
+                            <i class="socicon socicon-facebook"></i>
+                        </span>
+
+                        <span class="btn btn-social vkontakte socicon-bg-vkontakte m-2">
+                            <i class="socicon socicon-vkontakte"></i>
+                        </span>
+
+                        <span class="btn btn-social odnoklassniki socicon-bg-odnoklassniki m-2">
+                            <i class="socicon socicon-odnoklassniki"></i>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -14,6 +14,7 @@ from front import forms, methods
 
 
 class WriterView(View):
+
     def get(self, request, pk=None):
         if not request.user.is_authenticated:
             request.session['message'] = 'Вы должны войти, чтобы редактировать статью'
@@ -72,6 +73,7 @@ class WriterView(View):
 
 
 class ProfileView(View):
+
     def get(self, request, pk=None):
         if not request.user.is_authenticated:
             request.session['message'] = 'Вы должны войти, чтобы увидеть профиль пользователя'
@@ -98,19 +100,24 @@ class ProfileView(View):
 
 
 class IndexView(View):
+
     def get(self, request):
-        main = request.site.main
-        context = {
-            'news': models.News.objects.filter(active=True, date__lte=timezone.now())[:7],
-            'main': main,
-            'title': main.title
-        }
+        site = request.site
+        news = models.News.objects.filter(
+            active=True, date__lte=timezone.now(), section__site=request.site
+        )[:7]
+        context = dict(
+            main=site.main,
+            title=site.main.title,
+            news=news,
+        )
         if 'message' in request.session:
             del request.session['message']
-        return render(request, 'index.html', context)
+        return render(request, site.add_prefix('index.html'), context)
 
 
 class AccountView(View):
+
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/auth/login/')
@@ -135,6 +142,7 @@ class AccountView(View):
 
 
 class CommandView(View):
+
     def get(self, request):
         command = models.Profile.objects.filter(
             position__lt=90, active=True, site=request.site
@@ -146,6 +154,7 @@ class CommandView(View):
 
 
 class NewsSectionView(View):
+
     def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
         news_section = models.NewsSection.objects.filter(pk=pk).first()
         if not news_section:
@@ -192,6 +201,7 @@ class NewsSectionView(View):
 
 
 class ArticleView(View):
+
     @staticmethod
     def truncatedwords(value, arg):
         return " ".join(value.split()[:arg])
@@ -240,6 +250,7 @@ class StaticView(View):
 
 
 class YTRedirectView(View):
+
     @staticmethod
     def redirect_youtube(yt):
         return redirect(f'https://youtu.be/{yt}')

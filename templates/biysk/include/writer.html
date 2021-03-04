@@ -1,0 +1,70 @@
+<section class="form cid-rXpns6YGF5" id="formbuilder-76">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto mbr-form" data-form-type="formoid">
+                <!--Formbuilder Form-->
+                <form enctype="multipart/form-data" method="POST" class="mbr-form form-with-styler">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">Oops...! some problem!</div>
+                    </div>
+                    <div class="dragArea form-row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <h4 class="mbr-fonts-style display-5">Заполните форму</h4>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <hr>
+                        </div>
+                        {% if request.user.is_staff %}
+                        <div data-for="name" class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <label for="section_id" class="form-control-label mbr-fonts-style display-7">Раздел</label>
+                            <select id="section_id" name="section" data-form-field="select" class="form-control display-7">
+                                <option>---</option>
+                                {% for section in section_list %}
+                                <option {% if section.pk == form.section.value %}selected {% endif %}value="{{ section.pk }}">{{ section.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div data-for="birthday" class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <label for="birthday-formbuilder-76" class="form-control-label mbr-fonts-style display-7">Дата публикации</label>
+                            <input type="date" name="date" data-form-field="birthday" class="form-control display-7" value="{{ form.date.value|date:"Y-m-d" }}" id="birthday-formbuilder-76">
+                        </div>
+                        {% endif %}
+                        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <label for="id_cover" class="form-control-label mbr-fonts-style display-7 mbr-bold">Обложка {{ form.cover.value }}</label>
+                            <input type="file" accept="image/jpeg" name="cover" data-form-field="image" class="form-control display-7" id="id_cover" value="{{ form.cover.value }}">
+                        </div>
+                        {% if request.user.is_staff %}
+                        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <label for="id_image" class="form-control-label mbr-fonts-style display-7">Изображение {{ form.image.value }}</label>
+                            <input type="file" accept="image/jpeg" name="image" data-form-field="image" class="form-control display-7" id="id_image" value="{{ form.image.value }}">
+                        </div>
+                        {% endif %}
+                        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <label for="id_title" class="form-control-label mbr-fonts-style display-7 mbr-bold">Заголовок статьи</label>
+                            <input required type="text" name="title" placeholder="" data-form-field="function" class="form-control display-7" value="{{ form.title.value }}" id="id_title">
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <label for="article-text-id" class="form-control-label mbr-fonts-style display-7">Статья</label>
+                            <textarea id="article-text-id" name="text" placeholder="Напишите статью" data-form-field="about" class="form-control display-7">{{ form.text.value }}</textarea>
+                        </div>
+                        {% if request.user.is_staff %}
+                        <div class="col-lg-12 col-md-12 col-sm-12 form-group" data-for="about">
+                            <label for="article-html-id" class="form-control-label mbr-fonts-style display-7">HTML код</label>
+                            <textarea id="article-html-id" name="html" placeholder="Вставить код" data-form-field="about" class="form-control display-7">{{ form.html.value }}</textarea>
+                        </div>
+                        <div data-for="function" class="col-lg-12 col-md-12 col-sm-12 form-group">
+                            <label for="function-formbuilder-76" class="form-control-label mbr-fonts-style display-7">Видео</label>
+                            <input type="text" name="youtube" placeholder="ссылка YouTube" data-form-field="function" class="form-control display-7" value="{{ form.youtube.value }}" id="function-formbuilder-76">
+                        </div>
+                        {% endif %}
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <button type="submit" class="btn btn-secondary display-7">Подтвердить</button>
+                        </div>
+                    </div>
+{#                    <span class="gdpr-block"><label><span class="textGDPR" style="color: #a7a7a7"><input type="checkbox" name="gdpr" id="gdpr-formbuilder-76" required="">Подтверждаю своё согласие c <a style="color: #149dcc; text-decoration: underline;" href="/policy">Пользовательским соглашением об использовании персональных данных</a> </span></label></span>#}
+                </form><!--Formbuilder Form-->
+            </div>
+        </div>
+    </div>
+</section>

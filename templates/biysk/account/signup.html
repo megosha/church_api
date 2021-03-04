@@ -1,0 +1,99 @@
+{% include "include/head.html" %}
+{% load account socialaccount %}
+{% load i18n %}
+
+<section class="mbr-section content5 cid-rYgxN4Lmvg" id="content5-7a">
+    <div class="container">
+        <div class="media-container-row">
+            <div class="title col-12 col-md-8">
+                <h3 class="mbr-section-subtitle align-center mbr-light mbr-white pb-3 mbr-fonts-style display-2">
+                    Страница регистрации</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="extForm cid-rYgxqNBfXl mbr-parallax-background" id="extForm11-79">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 form-wrapper">
+                <div class="form-head">
+                    {% get_providers as socialaccount_providers %}
+                    {% if socialaccount_providers %}
+                        <h2 class="mbr-section-title form-title mbr-fonts-style align-center display-5">Вы можете зарегистрироваться используя свой аккаунт социальной сети:</h2>
+                        <p class="textGDPR">
+                            Внимание! Регистрируясь вы подтверждаете своё согласие c <a style="color: #149dcc; text-decoration: underline;" href="/policy">Пользовательским соглашением об использовании персональных данных</a>
+                        </p>
+                        <div class="socialaccount_ballot">
+                            <p class="socialaccount_providers">
+                                {% for provider in socialaccount_providers %}
+                                    {% if provider.id == "openid" %}
+                                        {% for brand in provider.get_brands %}
+                                            <span>
+                                                <a title="{{brand.name}}" class="socialaccount_provider {{provider.id}} {{brand.id}} btn btn-secondary btn-sm" href="{% provider_login_url provider.id openid=brand.openid_url process=process %}">{{brand.name}}</a>
+                                            </span>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <span>
+                                        <a title="{{provider.name}}" class="socialaccount_provider {{provider.id}} btn btn-sm btn-secondary"
+                                            href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">{{provider.name}}</a>
+                                    </span>
+                                {% endfor %}
+                            </p>
+                        </div>
+                        {% include "socialaccount/snippets/login_extra.html" %}
+                    {% else %}
+                        <p>{% blocktrans %}If you have not created an account yet, then please
+                            <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+                    {% endif %}
+                    <h2 class="mbr-section-title form-title mbr-fonts-style align-center display-5">Или введя Email и пароль:</h2>
+                </div>
+                <div class="form1" data-form-type="formoid">
+                    <!--Formbuilder Form-->
+                    <form action="." method="POST" class="mbr-form form-with-styler">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12"></div>
+                        </div>
+                        <div class="dragArea row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group " data-for="email">
+                                <label for="email-extForm11-79" class="form-control-label mbr-fonts-style display-7">E-Mail</label>
+                                <input type="email" name="email" data-form-field="Email" required="required"
+                                       class="form-control display-7" value="" id="email-extForm11-79">
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group " data-for="username">
+                                <label for="id_username" class="form-control-label mbr-fonts-style display-7">Имя пользователя</label>
+                                <input type="text" name="username" data-form-field="Username" required="required"
+                                       class="form-control display-7" value="" id="id_username">
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group" data-for="password">
+                                <label for="id_password1" class="form-control-label mbr-fonts-style display-7">Пароль</label>
+                                <input type="password" name="password1" data-form-field="password" required="required"
+                                       class="form-control display-7" value="" id="id_password1">
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 form-group" data-for="password">
+                                <label for="id_password2" class="form-control-label mbr-fonts-style display-7">Подтвердить пароль</label>
+                                <input type="password" name="password2" data-form-field="password" required="required"
+                                       class="form-control display-7" value="" id="id_password2">
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 input-group-btn">
+                                <button type="submit" class="btn btn-lg btn-form btn-secondary-outline display-4">Зарегистрироваться</button>
+                            </div>
+                        </div>
+                        <span class="gdpr-block">
+                            <label><span class="textGDPR" style="color: #a7a7a7"><input type="checkbox" name="gdpr" id="gdpr-extForm11-79" required="">Подтверждаю своё согласие c <a style="color: #149dcc; text-decoration: underline;" href="/policy">Пользовательским соглашением об использовании персональных данных</a> </span></label>
+                        </span>
+                    </form><!--Formbuilder Form-->
+
+                    <h3 class="mbr-section-subtitle form-subtitle mbr-fonts-style align-center display-4 pt-4">Перейти на страницу входа:</h3>
+                    <a href="{{ login_url }}" class="btn btn-lg col-12 btn-secondary-outline display-4">Вход</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% include "include/footer.html" %}
+{% include "include/footer_js.html" %}

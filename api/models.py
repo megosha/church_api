@@ -12,9 +12,13 @@ from django_celery_beat.models import CrontabSchedule, PeriodicTask
 class Site(models.Model):
     name = models.CharField(max_length=64, default='Барнаул')
     domain = models.CharField(max_length=64, default='church22.ru', unique=True)
+    path_prefix = models.CharField(max_length=64, default='', help_text='biysk/')
 
     def __str__(self):
         return f'{self.name} - {self.domain}'
+
+    def add_prefix(self, path):
+        return self.path_prefix + path
 
 
 class Main(models.Model):

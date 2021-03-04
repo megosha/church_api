@@ -1,0 +1,50 @@
+<script src="/assets/web//assets/jquery/jquery.min.js"></script>
+<script src="/assets/popper/popper.min.js"></script>
+<script src="/assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/tether/tether.min.js"></script>
+<script src="/assets/smoothscroll/smooth-scroll.js"></script>
+<script src="/assets/parallax/jarallax.min.js"></script>
+<script src="/assets/viewportchecker/jquery.viewportchecker.js"></script>
+<script src="/assets/mbr-tabs/mbr-tabs.js"></script>
+<script src="/assets/bootstrapcarouselswipe/bootstrap-carousel-swipe.js"></script>
+<script src="/assets/sociallikes/social-likes.js"></script>
+<script src="/assets/dropdown/js/nav-dropdown.js"></script>
+<script src="/assets/dropdown/js/navbar-dropdown.js"></script>
+<script src="/assets/touchswipe/jquery.touch-swipe.min.js"></script>
+{#<script src="/assets/formstyler/jquery.formstyler.js"></script>#}
+{#<script src="/assets/formstyler/jquery.formstyler.min.js"></script>#}
+{#<script src="/assets/datepicker/jquery.datetimepicker.full.js"></script>#}
+<script src="/assets/popup-plugin/script.js"></script>
+<script src="/assets/popup-ontimer-plugin/script.js"></script>
+<script src="/assets/popup-overlay-plugin/script.js"></script>
+<script src="/assets/mbr-clients-slider/mbr-clients-slider.js"></script>
+<script src="/assets/theme/js/script.js"></script>
+<script src="/assets/formoid.min.js"></script>
+
+<div id="scrollToTop" class="scrollToTop mbr-arrow-up" style="left: 20px;bottom: 20px"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
+<input name="animation" type="hidden">
+<script type='text/javascript'>
+(function () {
+    window['yandexChatWidgetCallback'] = function() {
+        try {
+            window.yandexChatWidget = new Ya.ChatWidget({
+                guid: '8a9e3800-590c-9fa9-7e44-30e4b7dbe831',
+                buttonText: 'Ответим на ваши вопросы',
+                title: 'Чат с администратором',
+                theme: 'light',
+                collapsedDesktop: 'never',
+                collapsedTouch: 'always'
+            });
+        } catch(e) { }
+    };
+    var n = document.getElementsByTagName('script')[0],
+        s = document.createElement('script');
+    s.async = true;
+    s.charset = 'UTF-8';
+    s.src = 'https://yastatic.net/s3/chat/widget.js';
+    n.parentNode.insertBefore(s, n);
+})();
+</script>
+{{ footer_extend|safe }}
+</body>
+</html>

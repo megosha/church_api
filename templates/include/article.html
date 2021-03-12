@@ -9,24 +9,24 @@
         </div>
     </div>
 </section>
-<section class="extFeatures cid-rX28nqBFso" id="extFeatures3-71">
-    <div class="container-fluid">
-        <div class="row justify-content-center content-row">
-            {% for item in newssection_all %}
-            <div onclick="window.location.href='/news-{{ item.pk }}'" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" class="card p-3 col-md-6 col-lg-4 col-xl-2">
-                <div class="card-img pb-2">
-                    <div class="step{% if item.pk != article.section.pk %} section_active{% endif %}">
-                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #000000;"></span>
-                    </div>
-                </div>
-                <div class="card-box">
-                    <p class="mbr-text mbr-fonts-style display-7{% if item.pk == article.section.pk %} mbr-bold{% endif %}">{{ item.title }}</p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+{#<section class="extFeatures cid-rX28nqBFso" id="extFeatures3-71">#}
+{#    <div class="container">#}
+{#        <div class="row justify-content-center content-row">#}
+{#            {% for item in newssection_all %}#}
+{#            <div onclick="window.location.href='/news-{{ item.pk }}'" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" class="card p-3 col-md-6 col-lg-4 col-xl-2">#}
+{#                <div class="card-img pb-2">#}
+{#                    <div class="step{% if item.pk != article.section.pk %} section_active{% endif %}">#}
+{#                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #000000;"></span>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="card-box">#}
+{#                    <p class="mbr-text mbr-fonts-style display-7{% if item.pk == article.section.pk %} mbr-bold{% endif %}">{{ item.title }}</p>#}
+{#                </div>#}
+{#            </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#    </div>#}
+{#</section>#}
 {% if article.image %}
     <section class="cid-rWEYJ8TePR" id="image3-6j">
         <figure class="mbr-figure container">
@@ -96,8 +96,11 @@
         <div class="media-container-row">
             <div class="col-12">
                 <div>
-                    <div class="mbr-social-likes align-right">
-                        <span class="h3">Поделиться:</span>
+                    <div style="float: left">
+                        <a href="/news-{{ article.section.pk }}" class="btn btn-sm btn-secondary display-4">К разделу новостей</a>
+                    </div>
+                    <div class="mbr-social-likes" style="float: right">
+                        <span class="h3 align-right">Поделиться:</span>
 
                         <span class="btn btn-social socicon-bg-facebook facebook m-2">
                             <i class="socicon socicon-facebook"></i>

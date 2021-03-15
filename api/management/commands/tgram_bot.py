@@ -178,16 +178,10 @@ class Command(BaseCommand):
     def help(update, context):
         update.message.reply_text(f'Commands: {", ".join(Command.get_commands(context))}')
 
-    # @staticmethod
-    # def append_slash(l: list):
-    #     return [InlineKeyboardButton(i, callback_data=f'/{i}') for i in l]
-    # keyboard = [Command.append_slash(i) for i in Command.get_keys(context)]
-    # reply_markup=InlineKeyboardMarkup(keyboard)
-
     @staticmethod
     def on_board(update, context):
         chat_id = update.effective_chat.id
-        username = update.effective_chat.username
+        username = update.effective_chat.username or ''
         text = update.effective_message.text
         models.BotContact.objects.update_or_create(chat_id=chat_id, username=username,
                                                    defaults=dict(last_message=timezone.now()))

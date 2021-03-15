@@ -84,7 +84,10 @@ class ProfileView(View):
                 return redirect('/profile')
             profile_news = profile.news_set.filter(date__lte=timezone.now())
         else:
-            profile = request.user.profile
+            profile, created = models.Profile.objects.get_or_create(user=request.user,
+                                                                    defaults={'site': request.site})
+            if created:
+                methods.fill_social(profile)
             profile_news = profile.news_set.all()
         profile_html = render_to_string('include/profile.html', {
             'item': profile

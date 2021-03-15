@@ -41,12 +41,10 @@ class FormViewSet(APIView):
             html = f'<h2>{title}</h2>' + '<br>'.join([f"{d[0]}: {d[1]}" for d in data])
         except Exception as e:
             return self.resp(False, f'Ошибка данных: {e}')
-        emails = ('andrey@ngbarnaul.ru', 'artorop@mail.ru', 'elenarun@mail.ru',)
-        # emails = None
         text = json.dumps(data, ensure_ascii=False)
         form_obj = models.Form.objects.create(title=title, text=text)
         tasks.say2boss(text)
-        result = send_email(title, html, emails, as_html=True)
+        result = send_email(title, html, settings.FEEDBACK_EMAILS, as_html=True)
         if isinstance(result, Exception):
             return self.resp(False, f'Ошибка отправки сообщения: {result}')
         form_obj.sended = True

@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.instagram',
-    'allauth.socialaccount.providers.odnoklassniki',
+    # 'allauth.socialaccount.providers.odnoklassniki',
     'allauth.socialaccount.providers.vk',
     'sorl.thumbnail',
     'django_celery_beat',

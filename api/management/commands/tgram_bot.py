@@ -21,6 +21,9 @@ class Command(BaseCommand):
         ['Раздел', 'Заголовок', 'Обложка', 'Статья', 'YouTube'],
         ['Опубликовать', 'Отмена']
     ], one_time_keyboard=True)
+    user_commands = ReplyKeyboardMarkup([
+        ['/time_offset_start']
+    ], one_time_keyboard=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,15 +52,18 @@ class Command(BaseCommand):
             fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
         )
         time_offset_handler = ConversationHandler(
-            entry_points=[CommandHandler('time_offset_1', self.time_offset_1)],
+            entry_points=[CommandHandler('time_offset_start', self.time_offset_start)],
             states={
-                0: [CommandHandler('broadcast', self.broadcast), MessageHandler(Filters.text, self.broadcast_action)],
-                # TODO in progress
+                1: [MessageHandler(Filters.text, self.time_offset_1)],
+                2: [MessageHandler(Filters.text, self.time_offset_2)],
+                3: [MessageHandler(Filters.text, self.time_offset_repeat)],
+                0: [MessageHandler(Filters.text, self.conversation_end)]
             },
-            fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
+            fallbacks=[MessageHandler(Filters.regex('^/end'), self.conversation_end)]
         )
 
         dp.add_handler(broadcast_handler)
+        dp.add_handler(time_offset_handler)
         # dp.add_handler(article_handler)
         # dp.add_handler(CommandHandler("broadcast", self.broadcast))
         # dp.add_handler(CommandHandler("set", self.set_boss))
@@ -81,41 +87,54 @@ class Command(BaseCommand):
                 except ValueError:
                     raise
 
+    def conversation_end(self, update, context):
+        update.message.reply_text(
+            emojize('Bot on board!'),
+            reply_markup=Command.user_commands
+        )
+        return ConversationHandler.END
+
     @staticmethod
-    def time_offset_1(update, context):
-        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+    def time_offset_start(update, context):
+        keyboard = [[InlineKeyboardButton('/end', callback_data=0)]]
         update.message.reply_text('Высчитываем смещение времени.\nВведите время из первого видео (1:02:04)',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-        return 0
+        return 1
 
     # @staticmethod
-    def time_offset_2(self, update, context):
-        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+    def time_offset_1(self, update, context):
+        keyboard = [[InlineKeyboardButton('/end', callback_data=0)]]
         t1 = update.message.text
+        if t1 == '/end':
+            return 0
         self.dt1 = Command.str2dt(t1)
         update.message.reply_text('Введите соответствующее время из второго видео (32:45)',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-        return 0
+        return 2
 
     # @staticmethod
-    def time_offset_3(self, update, context):
-        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+    def time_offset_2(self, update, context):
+        keyboard = [[InlineKeyboardButton('/end', callback_data=0)]]
         t2 = update.message.text
+        if t2 == '/end':
+            return 0
         self.dt2 = Command.str2dt(t2)
         update.message.reply_text('Введите время из первого видео для расчета (1:22:34)',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-        return 0
+        return 3
 
     # @staticmethod
-    def time_offset_4(self, update, context):
-        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+    def time_offset_repeat(self, update, context):
+        keyboard = [[InlineKeyboardButton('/end', callback_data=0)]]
         t = update.message.text
+        if t == '/end':
+            return 0
         dt = Command.str2dt(t)
         result = (dt - self.dt1 + self.dt2).time()
         update.message.reply_text(f'Соответствуюзее время второго видео: {result}\n'
                                   f'Введите время из первого видео для расчета (1:22:34)',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
-        return 0
+        return 3
 
     @staticmethod
     def broadcast(update, context):
@@ -240,7 +259,7 @@ class Command(BaseCommand):
     def on_board(update, context):
         chat_id = update.effective_chat.id
         username = update.effective_chat.username or ''
-        text = update.effective_message.text
+        text: str = update.effective_message.text
         models.BotContact.objects.update_or_create(chat_id=chat_id, username=username,
                                                    defaults=dict(last_message=timezone.now()))
         if chat_id < 0:
@@ -254,9 +273,18 @@ class Command(BaseCommand):
                     emojize('Bot on board!'),
                     reply_markup=ReplyKeyboardMarkup(Command.get_keys(context), one_time_keyboard=True)
                 )
-            else:
+            elif not text.startswith('/'):
                 say2boss(f"{username} ({chat_id})\n{text}")
-                update.message.reply_text(emojize('Ваше сообщение передано боссу!'))
+                update.message.reply_text(
+                    emojize('Ваше сообщение передано боссу!'),
+                    reply_markup=Command.user_commands
+                )
+            else:
+                update.message.reply_text(
+                    emojize('Bot on board!'),
+                    reply_markup=Command.user_commands
+                )
+
 
     @staticmethod
     def who_boss(update, context):

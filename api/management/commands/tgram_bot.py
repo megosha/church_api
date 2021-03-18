@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 import requests
 from django.core.files import File
@@ -47,6 +48,14 @@ class Command(BaseCommand):
             },
             fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
         )
+        time_offset_handler = ConversationHandler(
+            entry_points=[CommandHandler('time_offset_1', self.time_offset_1)],
+            states={
+                0: [CommandHandler('broadcast', self.broadcast), MessageHandler(Filters.text, self.broadcast_action)],
+                # TODO in progress
+            },
+            fallbacks=[MessageHandler(Filters.regex('^Отмена'), self.article_cancel)]
+        )
 
         dp.add_handler(broadcast_handler)
         # dp.add_handler(article_handler)
@@ -58,6 +67,55 @@ class Command(BaseCommand):
 
         updater.start_polling()
         updater.idle()
+
+    @staticmethod
+    def str2dt(time):
+        try:
+            return datetime.strptime(time, '%H:%M:%S')
+        except ValueError:
+            try:
+                return datetime.strptime(time, '%M:%S')
+            except ValueError:
+                try:
+                    return datetime.strptime(time, '%S')
+                except ValueError:
+                    raise
+
+    @staticmethod
+    def time_offset_1(update, context):
+        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+        update.message.reply_text('Высчитываем смещение времени.\nВведите время из первого видео (1:02:04)',
+                                  reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        return 0
+
+    # @staticmethod
+    def time_offset_2(self, update, context):
+        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+        t1 = update.message.text
+        self.dt1 = Command.str2dt(t1)
+        update.message.reply_text('Введите соответствующее время из второго видео (32:45)',
+                                  reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        return 0
+
+    # @staticmethod
+    def time_offset_3(self, update, context):
+        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+        t2 = update.message.text
+        self.dt2 = Command.str2dt(t2)
+        update.message.reply_text('Введите время из первого видео для расчета (1:22:34)',
+                                  reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        return 0
+
+    # @staticmethod
+    def time_offset_4(self, update, context):
+        keyboard = [[InlineKeyboardButton('Отмена', callback_data='2')]]
+        t = update.message.text
+        dt = Command.str2dt(t)
+        result = (dt - self.dt1 + self.dt2).time()
+        update.message.reply_text(f'Соответствуюзее время второго видео: {result}\n'
+                                  f'Введите время из первого видео для расчета (1:22:34)',
+                                  reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
+        return 0
 
     @staticmethod
     def broadcast(update, context):

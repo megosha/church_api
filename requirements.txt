@@ -36,3 +36,4 @@ sorl-thumbnail==12.6.3
 sqlparse==0.3.1
 tornado==6.0.4
 urllib3==1.25.8
+youtube_dl~=2021.3.14

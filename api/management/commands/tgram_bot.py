@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 
 import requests
-import youtube_dl
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.utils import timezone
@@ -152,18 +151,6 @@ class Command(BaseCommand):
         return 0
 
     @staticmethod
-    def extract_info(youtube_id):
-        url = f'http://www.youtube.com/watch?v={youtube_id}'
-        with youtube_dl.YoutubeDL() as ydl:
-            try:
-                video = ydl.extract_info(url, download=False)
-            except youtube_dl.utils.DownloadError as exc:
-                raise
-        if 'entries' in video:
-            video = video['entries'][0]  # Can be a playlist or a list of videos
-        return video
-
-    @staticmethod
     def broadcast_action(update, context):
         youtube_id = methods.youtube_get_id(update.message.text)
         if not youtube_id:
@@ -172,17 +159,12 @@ class Command(BaseCommand):
         models.Main.objects.update(youtube=youtube_id)
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
         try:
-            video = Command.extract_info(youtube_id)
-            title = video['title']
-            try:
-                preview = video['thumbnail']
-            except KeyError:
-                preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
+            title, preview = methods.youtube_get_desc(youtube_id)
             cover = NamedTemporaryFile(delete=True, suffix='.jpg')
             cover.write(requests.get(preview).content)
             cover.flush()
-        except Exception as Ex:
-            update.message.reply_text(f'Не удалось получить данные: {Ex}')
+        except Exception as exc:
+            update.message.reply_text(f'Не удалось получить данные: {exc}')
             return ConversationHandler.END
         section = models.NewsSection.objects.filter(title='Видео').first()
         if not section:

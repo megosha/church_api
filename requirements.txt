@@ -3,7 +3,7 @@ celery==5.0.4
 certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
-cryptography==2.8
+cryptography==3.4.7
 decorator==4.4.2
 defusedxml==0.6.0
 Django~=2.2
@@ -20,9 +20,8 @@ idna==2.9
 oauthlib==3.1.0
 Pillow==7.1.2
 pkg-resources==0.0.0
-psycopg2-binary==2.8.5
+psycopg2-binary~=2.8.6
 pycparser==2.20
-PyJWT==1.7.1
 python-telegram-bot==12.8
 python3-openid==3.1.0
 pytz==2019.3

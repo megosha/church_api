@@ -2,12 +2,13 @@ from typing import Union
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.http import HttpResponseRedirect
-from django.template.loader import render_to_string
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import redirect
+from django.template import TemplateDoesNotExist
+from django.template.loader import select_template
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.views import View
-from django.shortcuts import render, redirect
 
 from api import models
 from front import forms, methods
@@ -27,22 +28,21 @@ class WriterView(View):
         else:
             article = models.News()
         sections = models.NewsSection.objects.filter(active=True, site=request.site)
-        context = {
-            'form': forms.NewsForm(instance=article),
-            'section_list': sections,
-            'footer_extend': '<script src="https://cdn.tiny.cloud/1/lh4zfqr7jd1gvgc880bkn5z61dxah88ogs92zje69rgpmk0b/'
-                             'tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>'
-                             "<script>tinymce.init({"
-                             "selector:'#article-text-id',"
-                             "menubar: false,"
-                             'plugins: "code lists link image emoticons",'
-                             "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright "
-                             "alignjustify | bullist numlist outdent indent | emoticons | removeformat "
-                             "| forecolor backcolor | link image | code',"
-                             # "tinydrive_token_provider: '',"
-                             "});</script>"
-        }
-        return render(request, 'writer.html', context)
+        context = dict(
+            form=forms.NewsForm(instance=article),
+            section_list=sections,
+            footer_extend='<script src="https://cdn.tiny.cloud/1/lh4zfqr7jd1gvgc880bkn5z61dxah88ogs92zje69rgpmk0b/'
+                          'tinymce/5/tinymce.min.js" referrerpolicy="origin"/></script>'
+                          "<script>tinymce.init({"
+                          "selector:'#article-text-id',"
+                          "menubar: false,"
+                          'plugins: "code lists link image emoticons",'
+                          "toolbar:  'undo redo | formatselect | bold italic | alignleft aligncenter alignright "
+                          "alignjustify | bullist numlist outdent indent | emoticons | removeformat "
+                          "| forecolor backcolor | link image | code',"
+                          "});</script>"  # "tinydrive_token_provider: '',"
+        )
+        return HttpResponse(methods.render_with_site('writer.html', request, context, True))
 
     def post(self, request, pk=None):
         if not request.user.is_authenticated:
@@ -78,45 +78,35 @@ class ProfileView(View):
         if not request.user.is_authenticated:
             request.session['message'] = 'Вы должны войти, чтобы увидеть профиль пользователя'
             return redirect('/auth/login/')
+
         if pk:
             profile = models.Profile.objects.filter(pk=pk).first()
             if not profile:
-                # TODO request.session['message'] = 'Пользователь не найден'
-                # profile = request.user.profile
+                request.session['message'] = 'Пользователь не найден'
                 return redirect('/profile')
             profile_news = profile.news_set.filter(date__lte=timezone.now())
         else:
-            profile, created = models.Profile.objects.get_or_create(user=request.user,
-                                                                    defaults={'site': request.site})
-            if created:
-                methods.fill_social(profile)
+            profile = methods.fill_profile(request)
             profile_news = profile.news_set.all()
-        profile_html = render_to_string('include/profile.html', {
-            'item': profile
-        }, request)
-        context = {
-            'profile_html': profile_html,
-            'profile': profile,
-            'profile_news': profile_news
-        }
-        return render(request, 'profile.html', context)
+
+        context = dict(
+            profile_html=methods.render_with_site('include/profile.html', request, dict(item=profile)),
+            profile=profile,
+            profile_news=profile_news
+        )
+        return HttpResponse(methods.render_with_site('profile.html', request, context, True))
 
 
 class IndexView(View):
 
     def get(self, request):
-        site = request.site
-        news = models.News.objects.filter(
-            active=True, date__lte=timezone.now(), section__site=request.site
-        )[:7]
         context = dict(
-            main=site.main,
-            title=site.main.title,
-            news=news,
+            news=models.News.objects.filter(active=True, date__lte=timezone.now(), section__site=request.site)[:7]
         )
         if 'message' in request.session:
+            context['message'] = request.session['message']
             del request.session['message']
-        return render(request, site.add_prefix('index.html'), context)
+        return HttpResponse(methods.render_with_site('index.html', request, context, True))
 
 
 class AccountView(View):
@@ -124,17 +114,12 @@ class AccountView(View):
     def get(self, request):
         if not request.user.is_authenticated:
             return redirect('/auth/login/')
-        profile, created = models.Profile.objects.get_or_create(user=request.user,
-                                                                defaults={'site': request.site})
-        if created:
-            methods.fill_social(profile)
-        account = render_to_string('include/account.html', {
-            'item': profile
-        }, request)
-        context = {
-            'account': account,
-        }
-        return render(request, 'account.html', context)
+
+        profile = methods.fill_profile(request)
+        context = dict(
+            account=methods.render_with_site('include/account.html', request, dict(item=profile))
+        )
+        return HttpResponse(methods.render_with_site('account.html', request, context, True))
 
     def post(self, request):
         profile = request.user.profile
@@ -150,10 +135,10 @@ class CommandView(View):
         command = models.Profile.objects.filter(
             position__lt=90, active=True, site=request.site
         ).order_by('position')
-        context = {
-            'command': render_to_string('include/command.html', {'command': command}),
-        }
-        return render(request, 'command.html', context)
+        context = dict(
+            command=methods.render_with_site('include/command.html', request, dict(command=command))
+        )
+        return HttpResponse(methods.render_with_site('command.html', request, context, True))
 
 
 class NewsSectionView(View):
@@ -181,26 +166,25 @@ class NewsSectionView(View):
         news_section = self.get_news_section(pk)
         if isinstance(news_section, HttpResponseRedirect):
             return news_section
+
         news_filter = request.GET.get('filter')
         news_qset = news_section.news_set.filter(active=True, date__lte=timezone.now())
         if news_filter:
             news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
+
         page = request.GET.get('page')
         try:
-            newssection = render_to_string('include/newssection.html', {
-                'newssection': news_section,
-                'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
-                'news': self.paginate(news_qset, page),
-                'page': page,
-                'filter': news_filter or ''
-            }, request=request)
-        except Exception as Ex:
-            print(Ex)
+            context = dict(newssection=methods.render_with_site('include/newssection.html', request, dict(
+                newssection=news_section,
+                newssection_all=models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
+                news=self.paginate(news_qset, page),
+                page=page,
+                filter=news_filter or ''
+            )))
+        except Exception as exc:
+            print(exc)
             return redirect('/')
-        context = {
-            'newssection': newssection,
-        }
-        return render(request, 'newssection.html', context)
+        return HttpResponse(methods.render_with_site('newssection.html', request, context, True))
 
 
 class ArticleView(View):
@@ -214,42 +198,42 @@ class ArticleView(View):
             article = models.News.objects.get(pk=pk)
             if not request.user.is_authenticated or article.author_profile != request.user.profile:
                 article = models.News.objects.get(pk=pk, date__lte=timezone.now())
-        except Exception as Ex:
-            # TODO request.session['message'] = 'Статья не найдена'
-            print(Ex)
+        except Exception as exc:
+            request.session['message'] = 'Статья не найдена'
+            print(exc)
             return redirect('/news-1')
-        article_html = render_to_string('include/article.html', {
-            'article': article,
-            'newssection_all': models.NewsSection.objects.filter(active=True, news__active=True).distinct()
-        }, request)
-        context = {
-            'article': article_html,
-            'title': article.title,
-            # https://ruogp.me/ | mb https://yandex.ru/dev/share/ ?
-            'head_extend': f"""
+
+        context = dict(
+            article=article,
+            newssection_all=models.NewsSection.objects.filter(active=True, news__active=True).distinct()
+        )
+        article_html = methods.render_with_site('include/article.html', request, context)
+
+        context = dict(
+            article=article_html,
+            title=article.title,
+            head_extend=f"""
 <meta property="og:title" content="{article.title}" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="{request.build_absolute_uri()}" />
 <meta property="og:image" content="{request._current_scheme_host + article.cover.url}" />
 <meta property="og:description" content="{self.truncatedwords(strip_tags(article.text), 30)}" />
-"""
-        }
+"""  # https://ruogp.me/ | mb https://yandex.ru/dev/share/ ?
+        )
         article.meter_inc('view_count')
-        return render(request, 'article.html', context)
+        return HttpResponse(methods.render_with_site('article.html', request, context))
 
 
 class StaticView(View):
+
     def get(self, request):
         path = request.path[1:] + '.html'
-        context = {
-            'main': request.site.main,
-            'title': request.site.main.title
-        }
         try:
-            return render(request, path, context)
-        except Exception as Ex:
-            print(Ex)
+            template = select_template([request.site.add_prefix(path), path])
+        except TemplateDoesNotExist as exc:
+            print(exc)
             return redirect('/')
+        return HttpResponse(template.render(methods.default_context(request), request))
 
 
 class YTRedirectView(View):
@@ -266,8 +250,7 @@ class YTRedirectView(View):
         if not article:
             return redirect('index')
 
-        no_redirect_count = models.Main.objects.filter(site=request.site).values_list(
-            'no_redirect_count', flat=True).first()
+        no_redirect_count = request.site.main.no_redirect_count
         redirect_count = article.meter_inc('redirect_count')
 
         if article.youtube and redirect_count > no_redirect_count:

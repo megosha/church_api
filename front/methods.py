@@ -1,12 +1,13 @@
-import os
-import youtube_dl
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs
 
+import os
 import requests
-from django.conf import settings
+import youtube_dl
 from allauth.socialaccount.models import SocialAccount
+from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
+from django.template.loader import select_template
 
 from api import models
 
@@ -51,6 +52,7 @@ class TGram:
                 print(f'status_code {response.status_code}')
                 return False
 
+
 def get_set(item: str):
     if not settings.configured:
         settings.configure()
@@ -66,6 +68,13 @@ def send_email(title, text, emails: iter = ('andrey@ngbarnaul.ru',), as_html: bo
         mail.send(fail_silently=False)
     except Exception as Ex:
         return Ex
+
+
+def fill_profile(request):
+    profile, created = models.Profile.objects.get_or_create(user=request.user, defaults=dict(site=request.site))
+    if created:
+        fill_social(profile)
+    return profile
 
 
 def fill_social(profile: models.Profile):
@@ -170,3 +179,20 @@ def youtube_get_desc(youtube_id):
     if not preview:
         preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'
     return title, preview
+
+
+def render_with_site(path: str, request, context: dict = None, update_context=False):
+    if not context:
+        context = {}
+    if update_context:
+        context.update(default_context(request))
+    template = select_template([request.site.add_prefix(path), path])
+    return template.render(context, request)
+
+
+def default_context(request) -> dict:
+    return dict(
+        main=request.site.main,
+        title=request.site.main.title,
+        names_domains=models.Site.objects.values_list('name', 'domain')
+    )

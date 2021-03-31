@@ -1,12 +1,13 @@
+from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core.validators import FileExtensionValidator
 from django.db import models, transaction
 from django.utils import timezone
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from rest_framework.authtoken.models import Token
 from solo.models import SingletonModel
 from sorl.thumbnail import ImageField
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
 class Site(models.Model):
@@ -37,8 +38,6 @@ class Config(SingletonModel):
 
 
 class Profile(models.Model):
-    class Meta:
-        ordering = ('position', 'name',)
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, default='')
@@ -59,6 +58,9 @@ class Profile(models.Model):
     social_youtube = models.CharField(max_length=64, blank=True, default='')
     telegram = models.CharField(max_length=64, blank=True, default='')
     position = models.SmallIntegerField(default=100)
+
+    class Meta:
+        ordering = ('position', 'name',)
 
     def __str__(self):
         return f'{self.position} - {self.name}'
@@ -86,8 +88,6 @@ class NewsSection(models.Model):
 
 
 class News(models.Model):
-    class Meta:
-        ordering = ('-date',)
     section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True, blank=True)
     author_profile = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True)
     date = models.DateField(default=timezone.now, blank=True)
@@ -100,6 +100,9 @@ class News(models.Model):
     author = models.TextField(default='', blank=True)
     active = models.BooleanField(default=True)
     meter = JSONField(default=dict, blank=True)
+
+    class Meta:
+        ordering = ('-date',)
 
     def __str__(self):
         return self.title

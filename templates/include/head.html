@@ -81,11 +81,19 @@
                         <img src="/assets/images/logo2x-160x279.png" alt="" title="" style="height: 5rem;">
                     </a>
                 </span>
-                <span class="navbar-caption-wrap"><a class="navbar-caption text-white display-7" href="/">Христианская церковь&nbsp;<br>Барнаула</a></span>
+                <span class="navbar-caption-wrap"><a class="navbar-caption text-white display-7" href="/">Христианская церковь&nbsp;<br>{{ request.site.name }}а</a></span>
             </div>
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+                <li class="nav-item dropdown">
+                    <a class="nav-link link dropdown-toggle text-primary display-7" data-toggle="dropdown-submenu" aria-expanded="false">Ваш город</a>
+                    <div class="dropdown-menu">
+                    {% for name, domain in names_domains %}
+                        <a class="dropdown-item text-primary display-7" href="http://{{ domain }}">{{ name }}</a>
+                    {% endfor %}
+                    </div>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link link dropdown-toggle text-primary display-7" data-toggle="dropdown-submenu" aria-expanded="false">О нас</a>
                     <div class="dropdown-menu">
@@ -96,7 +104,7 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link link dropdown-toggle text-primary display-7" data-toggle="dropdown-submenu" aria-expanded="false">Предлагаем помощь</a>
+                    <a class="nav-link link dropdown-toggle text-primary display-7" data-toggle="dropdown-submenu" aria-expanded="false">Помогаем</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item text-primary display-7" href="/heal">Исцеление болезней</a>
                         <a class="dropdown-item text-primary display-7" href="/social" aria-expanded="false">Социальная помощь</a>

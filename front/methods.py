@@ -194,5 +194,5 @@ def default_context(request) -> dict:
     return dict(
         main=request.site.main,
         title=request.site.main.title,
-        names_domains=models.Site.objects.values_list('name', 'domain')
+        names_domains=models.Site.objects.filter(active=True).values_list('name', 'domain')
     )

@@ -13,7 +13,8 @@ from sorl.thumbnail import ImageField
 class Site(models.Model):
     name = models.CharField(max_length=64, default='Барнаул')
     domain = models.CharField(max_length=64, default='church22.ru', unique=True)
-    path_prefix = models.CharField(max_length=64, default='', help_text='biysk/')
+    path_prefix = models.CharField(max_length=64, default='', help_text='biysk/', blank=True)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name} - {self.domain}'

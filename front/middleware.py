@@ -11,7 +11,7 @@ class SiteSelectMiddleware:
             domain = request.META['HTTP_HOST']
             site = models.Site.objects.get(domain=domain)
         except:
-            site = models.Site.objects.filter().first()
+            site = models.Site.objects.filter(active=True).first()
         request.site = site
 
         response = self.get_response(request)

@@ -101,7 +101,8 @@ class IndexView(View):
 
     def get(self, request):
         context = dict(
-            news=models.News.objects.filter(active=True, date__lte=timezone.now(), section__site=request.site)[:7]
+            news=models.News.objects.filter(active=True, date__lte=timezone.now(), section__site=request.site)[:7],
+            footer_html=methods.render_with_site('include/footer.html', request, update_context=True)
         )
         if 'message' in request.session:
             context['message'] = request.session['message']

@@ -81,14 +81,14 @@
                         <img src="/assets/images/logo2x-160x279.png" alt="" title="" style="height: 5rem;">
                     </a>
                 </span>
-                <span class="navbar-caption-wrap"><a class="navbar-caption text-white display-7" href="/">Христианская церковь&nbsp;<br>{{ request.site.name }}а</a></span>
+                <span class="navbar-caption-wrap"><a class="navbar-caption text-white display-7" href="/">Христианская церковь</a></span>
             </div>
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
                 {% if names_domains|length >= 2 %}
                 <li class="nav-item dropdown">
-                    <a class="nav-link link dropdown-toggle text-primary display-7" data-toggle="dropdown-submenu" aria-expanded="false">Ваш город</a>
+                    <a class="nav-link link dropdown-toggle text-primary display-7" data-toggle="dropdown-submenu" aria-expanded="false">{{ main.site.name }}</a>
                     <div class="dropdown-menu">
                     {% for name, domain in names_domains %}
                         <a class="dropdown-item text-primary display-7" href="http://{{ domain }}">{{ name }}</a>

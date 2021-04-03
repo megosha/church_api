@@ -223,7 +223,7 @@
             <div class="card p-3 col-12 col-md-6 col-lg-3">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        <img src="assets/images/pastor-pocket-592x888.jpeg" title="" alt="">
+                        <img src="/assets/images/pastor1.jpeg" title="" alt="">
                     </div>
                     <div class="card-box">
                         <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Артем Торопчин</h4>
@@ -259,7 +259,7 @@
             <div class="card p-3 col-12 col-md-6 col-lg-3">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        <img src="assets/images/fon-7-948x1420.jpeg" title="" alt="">
+                        <img src="/assets/images/fon1.jpg" title="" alt="">
                     </div>
                     <div class="card-box-show">
                         <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Вся команда</h4>
@@ -277,8 +277,7 @@
         <div class="row main">
             <div class="col-md-6 map">
                 <div class="google-map">
-{#                    <iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAEIpgj38KyLFELm2bK9Y7krBkz1K-cMq8&amp;q=place_id:ChIJh5wqdLOl3UIR12GQdbnrT0U" allowfullscreen=""></iframe>#}
-                    <iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d595.4961582923949!2d83.79063514358592!3d53.34353127359307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42dda5b3742a9c87%3A0xdb609724d251d54f!2z0KbQtdGA0LrQvtCy0YwgItCd0L7QstC-0LUg0L_QvtC60L7Qu9C10L3QuNC1IiDQsy7QkdCw0YDQvdCw0YPQuw!5e0!3m2!1sru!2sru!4v1600913976280!5m2!1sru!2sru" allowfullscreen=""></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3884376732635!2d85.16132820380356!3d52.508309069841005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42c4a99d59a9b4bf%3A0xddcf1a3824a9e77c!2z0YPQuy4g0KfQsNC50LrQvtCy0YHQutC-0LPQviwgNNCxLCDQkdC40LnRgdC6LCDQkNC70YLQsNC50YHQutC40Lkg0LrRgNCw0LksIDY1OTMxMQ!5e0!3m2!1sru!2sru!4v1617457091633!5m2!1sru!2sru" allowfullscreen="" loading="lazy"></iframe>
                 </div>
             </div>
             <div class="col-md-6 text-element">
@@ -294,9 +293,9 @@
                     </div>
                     <div class="mbr-list  mbr-fonts-style display-7">
                         <ul class="mbr-list mbr-fonts-style">
-                            <li><span class="mbri-globe mbr-iconfont"></span>пр. Комсомольский, д. 80, 2 этаж</li>
-                            <li><span class="mbri-alert mbr-iconfont"></span>+7 (960) 959 4332 &nbsp;Елена</li>
-                            <li><span class="mbri-letter mbr-iconfont"></span><a href="mailto:artorop@mail.ru">artorop@mail.ru</a></li>
+                            <li><span class="mbri-globe mbr-iconfont"></span>ул. Чайковского, д. 4 б</li>
+                            <li><span class="mbri-alert mbr-iconfont"></span>+7 (913) 259 8334 Елена</li>
+                            <li><span class="mbri-letter mbr-iconfont"></span><a href="mailto:elenapetrova-ng@mail.ru">elenapetrova-ng@mail.ru</a></li>
                         </ul>
                     </div>
 
@@ -305,8 +304,9 @@
         </div>
     </div>
 </section>
-{% include "include/footer.html" %}
-{% if not request.user.is_authenticated and 0 %}
+{# TODO {% include "include/footer.html" %}#}
+{{ footer_html }}
+{% if not request.user.is_authenticated %}
 <div class="modal mbr-popup cid-rW7OZ7QJxk fade" tabindex="-1" role="dialog" data-on-timer-delay="15"
      data-overlay-color="#000000" data-overlay-opacity="0.8" id="mbr-popup-5s" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

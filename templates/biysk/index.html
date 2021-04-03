@@ -130,36 +130,20 @@
         </div>
     </div>
 </section>
-{#<div id="custom-html-3c">#}
-{#    <section id="review-video">#}
-{#        <div class="container-fluid">#}
-{#            <div class="row">#}
-{#                <div class="col-lg-6 p-0">#}
-{#                    <iframe width="100%" height="480px" src="https://www.youtube.com/embed/V3x1CPGMSbA" frameborder="0"#}
-{#                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"#}
-{#                            allowfullscreen=""></iframe>#}
-{#                </div>#}
-{#                <div class="col-lg-6 p-0">#}
-{#                    <iframe width="100%" height="480px" src="https://www.youtube.com/embed/LuQEjIP1QQE" frameborder="0"#}
-{#                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"#}
-{#                            allowfullscreen=""></iframe>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </section>#}
-{#</div>#}
+
 <section class="tabs2 cid-rUA7It9snz" id="tabs2-4w">
     <div class="container">
         <h2 class="mbr-section-title align-center pb-5 mbr-bold mbr-fonts-style display-2">Трансляция служения</h2>
         <div class="media-container-row">
             <div class="col-12 col-md-8 mbr-text">
-                <a class="btn btn-md btn-secondary" href="https://www.youtube.com/channel/UCAdwiYei9LfBtbQH3quITmA"
+                <a class="btn btn-md btn-secondary" href="https://www.youtube.com/channel/UC_2S_NoKndT73gLRGcMcW6g"
                    target="_blank">Перейти ко всем видео</a>
             </div>
         </div>
     </div>
 </section>
 
+{% if main.youtube %}
 <section class="cid-rUA5E8RtMk" id="video3-4u">
     <figure class="mbr-figure align-center container">
         <div class="video-block" style="width: 100%;">
@@ -169,7 +153,9 @@
         </div>
     </figure>
 </section>
+{% endif %}
 
+{% if news %}
 <section class="extClients clients cid-rW2uY8SpjT" id="extClients4-5r">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1380px" height="810px" viewBox="0 -8.992806499463768e-14 1380 810" preserveAspectRatio="xMidYMid meet">
         <rect id="svgEditorBackground" x="0" y="0" width="1380" height="810" style="fill: none; stroke: none;"></rect>
@@ -206,6 +192,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 <section class="extSocialButtons cid-rRYrIN6DCR" id="extSocialButtons1-q">
     <div class="container">
@@ -213,23 +200,11 @@
             <h2 class="mbr-title pt-2 mbr-fonts-style mb-3 display-5">Оставайтесь с нами в социальных сетях</h2>
         </div>
         <div class="media-container-row">
-            <a href="https://www.instagram.com/church_ng/" target="_blank">
+            <a href="https://www.instagram.com/churchbiysk/" target="_blank">
                 <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-instagram socicon" style="color: rgb(237, 66, 102); fill: rgb(237, 66, 102);"></span>
                 <p class="mbr-fonts-style display-7">Instagram</p>
             </a>
-            <a href="https://www.facebook.com/ngbarnaul" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-facebook socicon"></span>
-                <p class="mbr-fonts-style display-7">Facebook</p>
-            </a>
-            <a href="https://vk.com/church22" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-vkontakte socicon" style="color: rgb(15, 118, 153); fill: rgb(15, 118, 153);"></span>
-                <p class="mbr-fonts-style display-7">VK</p>
-            </a>
-            <a href="https://ok.ru/mychurch22" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-odnoklassniki socicon" style="color: rgb(255, 99, 0); fill: rgb(255, 99, 0);"></span>
-                <p class="mbr-fonts-style display-7">OK</p>
-            </a>
-            <a href="http://www.youtube.com/c/church22" target="_blank">
+            <a href="https://www.youtube.com/channel/UC_2S_NoKndT73gLRGcMcW6g" target="_blank">
                 <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-youtube socicon" style="color: rgb(255, 0, 54); fill: rgb(255, 0, 54);"></span>
                 <p class="mbr-fonts-style display-7">Youtube</p>
             </a>
@@ -252,7 +227,7 @@
                     </div>
                     <div class="card-box">
                         <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Артем Торопчин</h4>
-                        <p class="mbr-text mbr-fonts-style display-4">Пастор</p>
+                        <p class="mbr-text mbr-fonts-style display-4">Старший пастор</p>
                         <div class="mbr-section-btn align-left"><a class="btn btn-md btn-secondary display-4" href="/command">Подробнее</a></div>
                     </div>
                 </div>
@@ -260,11 +235,11 @@
             <div class="card p-3 col-12 col-md-6 col-lg-3">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        <img src="assets/images/a7r02720-dxo-2-948x1421.jpeg" title="" alt="">
+                        <img src="/assets/images/dmitriy_grischenko.jpeg" title="" alt="">
                     </div>
                     <div class="card-box">
-                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Анастасия Торопчина</h4>
-                        <p class="mbr-text mbr-fonts-style display-4">Семейный психолог</p>
+                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Дмитрий Грищенко</h4>
+                        <p class="mbr-text mbr-fonts-style display-4">Ассистирующий пастор</p>
                         <div class="mbr-section-btn align-left"><a class="btn btn-md btn-secondary display-4" href="/command">Подробнее</a></div>
                     </div>
                 </div>
@@ -272,11 +247,11 @@
             <div class="card p-3 col-12 col-md-6 col-lg-3">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        <img src="assets/images/a7r02771-dxo-2-948x1421.jpeg" title="" alt="">
+                        <img src="/assets/images/elena_morovleva.jpeg" title="" alt="">
                     </div>
                     <div class="card-box">
-                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Елена Рунова</h4>
-                        <p class="mbr-text mbr-fonts-style display-4">Администратор</p>
+                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Елена Муровлева</h4>
+                        <p class="mbr-text mbr-fonts-style display-4">Администратор церкви</p>
                         <div class="align-left"><a class="btn btn-md btn-secondary display-4" href="/command">Подробнее</a></div>
                     </div>
                 </div>

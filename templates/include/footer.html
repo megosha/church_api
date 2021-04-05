@@ -7,23 +7,33 @@
                         <img src="/assets/images/logo-1-192x335.png" alt="" title="">
                     </a>
                 </div>
-                <p class="mb-3 mbr-fonts-style foot-title display-7">Христианская Церковь Барнаула</p>
+                <p class="mb-3 mbr-fonts-style foot-title display-7">{{ main.title }}</p>
                 <div class="media-container-row soc-container-row">
-                    <a href="https://www.instagram.com/church_ng/" target="_blank">
+                    {% if main.profile.social_insta %}
+                    <a href="{{ main.profile.social_insta }}" target="_blank">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-instagram socicon"></span>
                     </a>
-                    <a href="https://www.facebook.com/ngbarnaul" target="_blank">
+                    {% endif %}
+                    {% if main.profile.social_fb %}
+                    <a href="{{ main.profile.social_fb }}" target="_blank">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-facebook socicon"></span>
                     </a>
-                    <a href="https://vk.com/church22" target="_blank">
+                    {% endif %}
+                    {% if main.profile.social_vk %}
+                    <a href="{{ main.profile.social_vk }}" target="_blank">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-vkontakte socicon"></span>
                     </a>
-                    <a href="https://ok.ru/mychurch22" target="_blank">
+                    {% endif %}
+                    {% if main.profile.social_ok %}
+                    <a href="{{ main.profile.social_ok }}" target="_blank">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-odnoklassniki socicon"></span>
                     </a>
-                    <a href="http://www.youtube.com/c/church22" target="_blank">
+                    {% endif %}
+                    {% if main.profile.social_youtube %}
+                    <a href="{{ main.profile.social_youtube }}" target="_blank">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-youtube socicon"></span>
                     </a>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-4 col-sm-8">
@@ -94,10 +104,8 @@
             </div>
             <div class="media-container-row mbr-white">
                 <div class="col-sm-12 copyright">
-                    <p class="mb-3 mbr-fonts-style foot-title display-4">Местная религиозная организация Церковь Христиан Веры Евангельской (пятидесятников) «Новое Поколение» г. Барнаул, Алтайский край
-                        <br>Запись о некоммерческой организации внесена в Единый государственный реестр юр. лиц «14» апреля 2011г. за основным государственным регистрационным номером: 1112202000800 дата выдачи «11» августа 2016г. ИНН/КПП: 2223995025/222501001
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7">© Copyright 2020 info@electis.ru - все права защищены</p>
+                    <p class="mb-3 mbr-fonts-style foot-title display-4">{{ main.profile.about }}</p>
+                    <p class="mbr-text mbr-fonts-style display-7">© Copyright 2021 info@electis.ru - все права защищены</p>
                 </div>
             </div>
         </div>

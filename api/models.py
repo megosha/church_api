@@ -28,6 +28,7 @@ class Main(models.Model):
     title = models.CharField(max_length=255, default='')
     welcome = models.TextField(default='', blank=True)
     youtube = models.CharField(max_length=16, default='', blank=True)
+    profile = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True, blank=True)
     no_redirect_count = models.IntegerField(default=3)
 
     def __str__(self):

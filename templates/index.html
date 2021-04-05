@@ -151,15 +151,18 @@
 <section class="tabs2 cid-rUA7It9snz" id="tabs2-4w">
     <div class="container">
         <h2 class="mbr-section-title align-center pb-5 mbr-bold mbr-fonts-style display-2">Трансляция служения</h2>
+        {% if main.profile.social_youtube %}
         <div class="media-container-row">
             <div class="col-12 col-md-8 mbr-text">
-                <a class="btn btn-md btn-secondary" href="https://www.youtube.com/c/church22"
+                <a class="btn btn-md btn-secondary" href="{{ main.profile.social_youtube }}"
                    target="_blank">Перейти ко всем видео</a>
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 
+{% if main.youtube %}
 <section class="cid-rUA5E8RtMk" id="video3-4u">
     <figure class="mbr-figure align-center container">
         <div class="video-block" style="width: 100%;">
@@ -169,7 +172,9 @@
         </div>
     </figure>
 </section>
+{% endif %}
 
+{% if news %}
 <section class="extClients clients cid-rW2uY8SpjT" id="extClients4-5r">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1380px" height="810px" viewBox="0 -8.992806499463768e-14 1380 810" preserveAspectRatio="xMidYMid meet">
         <rect id="svgEditorBackground" x="0" y="0" width="1380" height="810" style="fill: none; stroke: none;"></rect>
@@ -206,6 +211,7 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 <section class="extSocialButtons cid-rRYrIN6DCR" id="extSocialButtons1-q">
     <div class="container">
@@ -213,26 +219,36 @@
             <h2 class="mbr-title pt-2 mbr-fonts-style mb-3 display-5">Оставайтесь с нами в социальных сетях</h2>
         </div>
         <div class="media-container-row">
-            <a href="https://www.instagram.com/church_ng/" target="_blank">
+            {% if main.profile.social_insta %}
+            <a href="{{ main.profile.social_insta }}" target="_blank">
                 <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-instagram socicon" style="color: rgb(237, 66, 102); fill: rgb(237, 66, 102);"></span>
                 <p class="mbr-fonts-style display-7">Instagram</p>
             </a>
-            <a href="https://www.facebook.com/ngbarnaul" target="_blank">
+            {% endif %}
+            {% if main.profile.social_fb %}
+            <a href="{{ main.profile.social_fb }}" target="_blank">
                 <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-facebook socicon"></span>
                 <p class="mbr-fonts-style display-7">Facebook</p>
             </a>
-            <a href="https://vk.com/church22" target="_blank">
+            {% endif %}
+            {% if main.profile.social_vk %}
+            <a href="{{ main.profile.social_vk }}" target="_blank">
                 <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-vkontakte socicon" style="color: rgb(15, 118, 153); fill: rgb(15, 118, 153);"></span>
                 <p class="mbr-fonts-style display-7">VK</p>
             </a>
-            <a href="https://ok.ru/mychurch22" target="_blank">
+            {% endif %}
+            {% if main.profile.social_ok %}
+            <a href="{{ main.profile.social_ok }}" target="_blank">
                 <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-odnoklassniki socicon" style="color: rgb(255, 99, 0); fill: rgb(255, 99, 0);"></span>
                 <p class="mbr-fonts-style display-7">OK</p>
             </a>
-            <a href="http://www.youtube.com/c/church22" target="_blank">
+            {% endif %}
+            {% if main.profile.social_youtube %}
+            <a href="{{ main.profile.social_youtube }}" target="_blank">
                 <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-youtube socicon" style="color: rgb(255, 0, 54); fill: rgb(255, 0, 54);"></span>
                 <p class="mbr-fonts-style display-7">Youtube</p>
             </a>
+            {% endif %}
         </div>
     </div>
 </section>
@@ -245,46 +261,28 @@
             </div>
         </div>
         <div class="row row-content justify-content-center">
+            {% for lider in liders %}
             <div class="card p-3 col-12 col-md-6 col-lg-3">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        <img src="assets/images/pastor-pocket-592x888.jpeg" title="" alt="">
+                        {% thumbnail lider.image "480x638" crop="center" as im %}
+                        <img src="{{ im.url }}" title="" alt="">
+                        {% endthumbnail %}
                     </div>
                     <div class="card-box">
-                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Артем Торопчин</h4>
-                        <p class="mbr-text mbr-fonts-style display-4">Пастор</p>
+                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">{{ lider.name }}</h4>
+                        <p class="mbr-text mbr-fonts-style display-4">{{ lider.function }}</p>
                         <div class="mbr-section-btn align-left"><a class="btn btn-md btn-secondary display-4" href="/command">Подробнее</a></div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
             <div class="card p-3 col-12 col-md-6 col-lg-3">
                 <div class="card-wrapper">
                     <div class="card-img">
-                        <img src="assets/images/a7r02720-dxo-2-948x1421.jpeg" title="" alt="">
-                    </div>
-                    <div class="card-box">
-                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Анастасия Торопчина</h4>
-                        <p class="mbr-text mbr-fonts-style display-4">Семейный психолог</p>
-                        <div class="mbr-section-btn align-left"><a class="btn btn-md btn-secondary display-4" href="/command">Подробнее</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="card p-3 col-12 col-md-6 col-lg-3">
-                <div class="card-wrapper">
-                    <div class="card-img">
-                        <img src="assets/images/a7r02771-dxo-2-948x1421.jpeg" title="" alt="">
-                    </div>
-                    <div class="card-box">
-                        <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Елена Рунова</h4>
-                        <p class="mbr-text mbr-fonts-style display-4">Администратор</p>
-                        <div class="align-left"><a class="btn btn-md btn-secondary display-4" href="/command">Подробнее</a></div>
-                    </div>
-                </div>
-            </div>
-            <div class="card p-3 col-12 col-md-6 col-lg-3">
-                <div class="card-wrapper">
-                    <div class="card-img">
-                        <img src="assets/images/fon-7-948x1420.jpeg" title="" alt="">
+                        {% thumbnail main.all_command "480x638" crop="center" as im %}
+                        <img src="{{ im.url }}" title="" alt="">
+                        {% endthumbnail %}
                     </div>
                     <div class="card-box-show">
                         <h4 class="card-title pb-2 mbr-fonts-style mbr-bold display-5">Вся команда</h4>
@@ -292,7 +290,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -300,12 +297,15 @@
 <section class="extMap cid-rRYvB0Oioi" id="extMap4-t">
     <div class="container-fluid">
         <div class="row main">
+            {% if main.on_map %}
             <div class="col-md-6 map">
                 <div class="google-map">
-{#                    <iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAEIpgj38KyLFELm2bK9Y7krBkz1K-cMq8&amp;q=place_id:ChIJh5wqdLOl3UIR12GQdbnrT0U" allowfullscreen=""></iframe>#}
-                    <iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d595.4961582923949!2d83.79063514358592!3d53.34353127359307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42dda5b3742a9c87%3A0xdb609724d251d54f!2z0KbQtdGA0LrQvtCy0YwgItCd0L7QstC-0LUg0L_QvtC60L7Qu9C10L3QuNC1IiDQsy7QkdCw0YDQvdCw0YPQuw!5e0!3m2!1sru!2sru!4v1600913976280!5m2!1sru!2sru" allowfullscreen=""></iframe>
+                    {{ main.on_map|safe }}
+{#                    <iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d595.4961582923949!2d83.79063514358592!3d53.34353127359307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42dda5b3742a9c87%3A0xdb609724d251d54f!2z0KbQtdGA0LrQvtCy0YwgItCd0L7QstC-0LUg0L_QvtC60L7Qu9C10L3QuNC1IiDQsy7QkdCw0YDQvdCw0YPQuw!5e0!3m2!1sru!2sru!4v1600913976280!5m2!1sru!2sru" allowfullscreen=""></iframe>#}
+{#                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3884376732635!2d85.16132820380356!3d52.508309069841005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42c4a99d59a9b4bf%3A0xddcf1a3824a9e77c!2z0YPQuy4g0KfQsNC50LrQvtCy0YHQutC-0LPQviwgNNCxLCDQkdC40LnRgdC6LCDQkNC70YLQsNC50YHQutC40Lkg0LrRgNCw0LksIDY1OTMxMQ!5e0!3m2!1sru!2sru!4v1617457091633!5m2!1sru!2sru" allowfullscreen="" loading="lazy"></iframe>#}
                 </div>
             </div>
+            {% endif %}
             <div class="col-md-6 text-element">
                 <div class="text-content">
                     <h2 class="mbr-title pt-2 mbr-fonts-style display-2">Расположение</h2>
@@ -314,27 +314,24 @@
                     </div>
                     <div class="mbr-section-text">
                         <p class="mbr-text pt-3 mbr-light mbr-fonts-style display-7">
-                            Служения проводятся каждое воскресение в 11:00 в большом зале (2 этаж)<br>Администратор
-                            принимает по будням в 303 каб.<br>Проезд до остановки Чкалова (Мед.институт).
+                            {{ main.profile.about }}
                         </p>
                     </div>
                     <div class="mbr-list  mbr-fonts-style display-7">
                         <ul class="mbr-list mbr-fonts-style">
-                            <li><span class="mbri-globe mbr-iconfont"></span>пр. Комсомольский, д. 80, 2 этаж</li>
-                            <li><span class="mbri-alert mbr-iconfont"></span>+7 (960) 959 4332 Елена</li>
-                            <li><span class="mbri-letter mbr-iconfont"></span><a href="mailto:elenarun81@mail.ru">elenarun81@mail.ru</a></li>
+                            <li><span class="mbri-globe mbr-iconfont"></span>{{ main.profile.city }}</li>
+                            <li><span class="mbri-alert mbr-iconfont"></span>{{ main.profile.phone }}</li>
+                            <li><span class="mbri-letter mbr-iconfont"></span><a href="mailto:{{ main.profile.social_email }}">{{ main.profile.social_email }}</a></li>
                         </ul>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
 </section>
-{#{% include "include/footer.html" %}#}
-{{ footer_html }}
-{% if not request.user.is_authenticated and 0 %}
-<div class="modal mbr-popup cid-rW7OZ7QJxk fade" tabindex="-1" role="dialog" data-on-timer-delay="15"
+{% include "include/footer.html" %}
+{% if not request.user.is_authenticated %}
+<div class="modal mbr-popup cid-rW7OZ7QJxk fade" tabindex="-1" role="dialog" data-on-timer-delay="30"
      data-overlay-color="#000000" data-overlay-opacity="0.8" id="mbr-popup-5s" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

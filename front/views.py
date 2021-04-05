@@ -102,6 +102,7 @@ class IndexView(View):
     def get(self, request):
         context = dict(
             news=models.News.objects.filter(active=True, date__lte=timezone.now(), section__site=request.site)[:7],
+            liders=models.Profile.objects.filter(active=True, site=request.site).order_by('position')[:3],
         )
         if 'message' in request.session:
             context['message'] = request.session['message']

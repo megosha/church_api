@@ -29,6 +29,10 @@ class Main(models.Model):
     welcome = models.TextField(default='', blank=True)
     youtube = models.CharField(max_length=16, default='', blank=True)
     profile = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True, blank=True)
+    on_map = models.TextField(default='', blank=True)
+    requisite = models.TextField(default='', blank=True)
+    all_command = ImageField(blank=True, null=True,
+                             validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
     no_redirect_count = models.IntegerField(default=3)
 
     def __str__(self):

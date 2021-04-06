@@ -66,7 +66,7 @@ class Profile(models.Model):
     position = models.SmallIntegerField(default=100)
 
     class Meta:
-        ordering = ('position', 'name',)
+        ordering = ('position', 'site', 'name',)
 
     def __str__(self):
         return f'{self.position} - {self.name}'

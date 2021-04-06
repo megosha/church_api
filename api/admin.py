@@ -10,7 +10,7 @@ admin.site.register(models.Config, SingletonModelAdmin)
 
 @admin.register(models.Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["name", "position", "active"]
+    list_display = ["name", "site", "position", "active"]
 
 
 @admin.register(models.News)

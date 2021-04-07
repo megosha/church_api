@@ -156,10 +156,16 @@ class Command(BaseCommand):
         if not youtube_id:
             update.message.reply_text(f'youtube_id не найден')
             return ConversationHandler.END
-        boss = models.Profile.objects.get(telegram=update.message.chat.username)
-        boss.site.main.youtube = youtube_id
-        boss.site.main.save()
+
+        boss = models.Profile.objects.filter(telegram=update.message.chat.username).first()
+        if boss:
+            main = boss.site.main
+        else:
+            main = models.Main.objects.filter().first()
+        main.youtube = youtube_id
+        main.save()
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
+
         try:
             title, preview = methods.youtube_get_desc(youtube_id)
             cover = NamedTemporaryFile(delete=True, suffix='.jpg')
@@ -171,8 +177,7 @@ class Command(BaseCommand):
         section = models.NewsSection.objects.filter(title='Видео').first()
         if not section:
             section = models.NewsSection.objects.first()
-        author = models.Profile.objects.filter(telegram=update.effective_chat.username or '').first()
-        article = models.News.objects.create(section=section, author_profile=author, date=timezone.now(),
+        article = models.News.objects.create(section=section, author_profile=main.profile, date=timezone.now(),
                                              title=title, youtube=youtube_id)
         article.cover.save(f'broadcast_{article.pk}.jpg', File(cover))
         # logger.info("Location of %s: %s", user.first_name, update.message.text)

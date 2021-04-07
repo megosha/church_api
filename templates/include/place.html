@@ -1,0 +1,33 @@
+<section class="extMap cid-rRYvB0Oioi" id="extMap4-t">
+    <div class="container-fluid">
+        <div class="row main">
+            {% if main.on_map %}
+            <div class="col-md-6 map">
+                <div class="google-map">
+                    {{ main.on_map|safe }}
+{#<iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d595.4961582923949!2d83.79063514358592!3d53.34353127359307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42dda5b3742a9c87%3A0xdb609724d251d54f!2z0KbQtdGA0LrQvtCy0YwgItCd0L7QstC-0LUg0L_QvtC60L7Qu9C10L3QuNC1IiDQsy7QkdCw0YDQvdCw0YPQuw!5e0!3m2!1sru!2sru!4v1600913976280!5m2!1sru!2sru" allowfullscreen=""></iframe>#}
+{#<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3884376732635!2d85.16132820380356!3d52.508309069841005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42c4a99d59a9b4bf%3A0xddcf1a3824a9e77c!2z0YPQuy4g0KfQsNC50LrQvtCy0YHQutC-0LPQviwgNNCxLCDQkdC40LnRgdC6LCDQkNC70YLQsNC50YHQutC40Lkg0LrRgNCw0LksIDY1OTMxMQ!5e0!3m2!1sru!2sru!4v1617457091633!5m2!1sru!2sru" allowfullscreen="" loading="lazy"></iframe>#}
+                </div>
+            </div>
+            {% endif %}
+            <div class="col-md-6 text-element">
+                <div class="text-content">
+                    <h2 class="mbr-title pt-2 mbr-fonts-style display-2">Расположение</h2>
+                    <div class="underline align-left">
+                        <div class="line"></div>
+                    </div>
+                    <div class="mbr-section-text">
+                        <p class="mbr-text pt-3 mbr-light mbr-fonts-style display-7">{{ main.profile.about|linebreaksbr }}</p>
+                    </div>
+                    <div class="mbr-list  mbr-fonts-style display-7">
+                        <ul class="mbr-list mbr-fonts-style">
+                            <li><span class="mbri-globe mbr-iconfont"></span>{{ main.profile.city }}</li>
+                            <li><span class="mbri-alert mbr-iconfont"></span><a href="tel:{{ main.profile.phone }}">{{ main.profile.phone }}</a></li>
+                            <li><span class="mbri-letter mbr-iconfont"></span><a href="mailto:{{ main.profile.social_email }}">{{ main.profile.social_email }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

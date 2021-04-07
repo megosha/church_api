@@ -147,9 +147,9 @@ class CommandView(View):
 class NewsSectionView(View):
 
     def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
-        news_section = models.NewsSection.objects.filter(pk=pk).first()
+        news_section = models.NewsSection.objects.filter(pk=pk, site=self.request.site).first()
         if not news_section:
-            news_section = models.NewsSection.objects.first()
+            news_section = models.NewsSection.objects.filter(site=self.request.site).first()
             if not news_section:
                 return redirect('/')
             return redirect(f'/news-{news_section.pk}')
@@ -179,7 +179,8 @@ class NewsSectionView(View):
         try:
             context = dict(newssection=methods.render_with_site('include/newssection.html', request, dict(
                 newssection=news_section,
-                newssection_all=models.NewsSection.objects.filter(active=True, news__active=True).distinct(),
+                newssection_all=models.NewsSection.objects.filter(
+                    site=request.site, active=True, news__active=True).distinct(),
                 news=self.paginate(news_qset, page),
                 page=page,
                 filter=news_filter or ''

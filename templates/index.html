@@ -6,14 +6,13 @@
         <div class="row">
             <div class="mbr-white col-lg-6 col-md-6">
                 <div class="wrapper">
-                    <h1 class="mbr-section-title mbr-bold pb-2 mbr-fonts-style display-5">{{ main.welcome|safe|linebreaks }}</h1>
+                    <h1 class="mbr-section-title mbr-bold pb-2 mbr-fonts-style display-5">{{ main.welcome|safe|linebreaksbr }}</h1>
                     <div><img src="assets/images/mbr-260x118.png" title="mobirise" alt=""></div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
 <section class="extTeams cid-rSarTUpv7X" id="extTeams14-x">
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -100,7 +99,6 @@
         </div>
     </div>
 </section>
-
 <section class="features9 cid-rRpbuMaKcr" id="extFeatures47-8">
     <div class="container-fluid">
         <div class="row">
@@ -111,7 +109,7 @@
             </div>
             <div class="card col-12 col-md-6 col-lg-3">
                 <div class="card-wrapper">
-                    <h4 class="card-title align-left mbr-fonts-style display-2">Информация о церкви</h4>
+                    <h4 class="card-title align-left mbr-fonts-style display-2">О церкви</h4>
                     <div class="mbr-section-btn"><a href="/about" class="btn btn-secondary-outline display-4">Перейти</a>
                     </div>
                 </div>
@@ -161,7 +159,6 @@
         {% endif %}
     </div>
 </section>
-
 {% if main.youtube %}
 <section class="cid-rUA5E8RtMk" id="video3-4u">
     <figure class="mbr-figure align-center container">
@@ -173,7 +170,6 @@
     </figure>
 </section>
 {% endif %}
-
 {% if news %}
 <section class="extClients clients cid-rW2uY8SpjT" id="extClients4-5r">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1380px" height="810px" viewBox="0 -8.992806499463768e-14 1380 810" preserveAspectRatio="xMidYMid meet">
@@ -183,7 +179,6 @@
         <path d="M12434.469938292996,-979.2324603008726c496.600000000004,747.8000000000001,1953.3704016668398,1862.673472583247,2752.000000000018,1967.9999999999995s1884.2999999999865,-198.90000000000055,2718.7056474818364,-552.6365690040473s1746.4898225846846,-519.9524548776479,2593.2943525181618,-567.3634309959524s2251,-23.400000000001455,4384,1520s3205.199999999997,1437.1999999999962,4048,1519.9999999999955s3304.9999999999927,-270.3000000000011,4640,-1151.9999999999955s74.60000000000582,3328.3,32,3791.9999999999955s-19509.400000000023,4590.999999999997,-21088.000000000015,-127.99999999999818s-1679.5999999999985,-6358.300000000008,-80,-6400.0000000000055Z" style="stroke:black;fill:aqua;stroke-width:0px;" id="e19_areaS3" transform="matrix(0.0647268 0.00608646 -0.00608646 0.0647268 -823.261 331.266)"></path>
         <text dy="-0.5em" style="fill:black;font-family:Arial;font-size:20px;" id="e14_texte" transform="matrix(0.0640454 0 0 0.0640454 -832.187 329.878)"><textPath id="e13_textPath" xlink:href="#e12_areaS3">T</textPath></text>
     </svg>
-
     <div class="container mb-5">
         <div class="media-container-row">
             <div class="col-12 align-center">
@@ -212,47 +207,7 @@
     </div>
 </section>
 {% endif %}
-
-<section class="extSocialButtons cid-rRYrIN6DCR" id="extSocialButtons1-q">
-    <div class="container">
-        <div>
-            <h2 class="mbr-title pt-2 mbr-fonts-style mb-3 display-5">Оставайтесь с нами в социальных сетях</h2>
-        </div>
-        <div class="media-container-row">
-            {% if main.profile.social_insta %}
-            <a href="{{ main.profile.social_insta }}" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-instagram socicon" style="color: rgb(237, 66, 102); fill: rgb(237, 66, 102);"></span>
-                <p class="mbr-fonts-style display-7">Instagram</p>
-            </a>
-            {% endif %}
-            {% if main.profile.social_fb %}
-            <a href="{{ main.profile.social_fb }}" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-facebook socicon"></span>
-                <p class="mbr-fonts-style display-7">Facebook</p>
-            </a>
-            {% endif %}
-            {% if main.profile.social_vk %}
-            <a href="{{ main.profile.social_vk }}" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-vkontakte socicon" style="color: rgb(15, 118, 153); fill: rgb(15, 118, 153);"></span>
-                <p class="mbr-fonts-style display-7">VK</p>
-            </a>
-            {% endif %}
-            {% if main.profile.social_ok %}
-            <a href="{{ main.profile.social_ok }}" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-odnoklassniki socicon" style="color: rgb(255, 99, 0); fill: rgb(255, 99, 0);"></span>
-                <p class="mbr-fonts-style display-7">OK</p>
-            </a>
-            {% endif %}
-            {% if main.profile.social_youtube %}
-            <a href="{{ main.profile.social_youtube }}" target="_blank">
-                <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-youtube socicon" style="color: rgb(255, 0, 54); fill: rgb(255, 0, 54);"></span>
-                <p class="mbr-fonts-style display-7">Youtube</p>
-            </a>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
+{% include "include/social.html" %}
 <section class="extTeams cid-rRpbLmHpVI" id="extTeams14-a">
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -293,40 +248,7 @@
         </div>
     </div>
 </section>
-
-<section class="extMap cid-rRYvB0Oioi" id="extMap4-t">
-    <div class="container-fluid">
-        <div class="row main">
-            {% if main.on_map %}
-            <div class="col-md-6 map">
-                <div class="google-map">
-                    {{ main.on_map|safe }}
-{#                    <iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d595.4961582923949!2d83.79063514358592!3d53.34353127359307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42dda5b3742a9c87%3A0xdb609724d251d54f!2z0KbQtdGA0LrQvtCy0YwgItCd0L7QstC-0LUg0L_QvtC60L7Qu9C10L3QuNC1IiDQsy7QkdCw0YDQvdCw0YPQuw!5e0!3m2!1sru!2sru!4v1600913976280!5m2!1sru!2sru" allowfullscreen=""></iframe>#}
-{#                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2428.3884376732635!2d85.16132820380356!3d52.508309069841005!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x42c4a99d59a9b4bf%3A0xddcf1a3824a9e77c!2z0YPQuy4g0KfQsNC50LrQvtCy0YHQutC-0LPQviwgNNCxLCDQkdC40LnRgdC6LCDQkNC70YLQsNC50YHQutC40Lkg0LrRgNCw0LksIDY1OTMxMQ!5e0!3m2!1sru!2sru!4v1617457091633!5m2!1sru!2sru" allowfullscreen="" loading="lazy"></iframe>#}
-                </div>
-            </div>
-            {% endif %}
-            <div class="col-md-6 text-element">
-                <div class="text-content">
-                    <h2 class="mbr-title pt-2 mbr-fonts-style display-2">Расположение</h2>
-                    <div class="underline align-left">
-                        <div class="line"></div>
-                    </div>
-                    <div class="mbr-section-text">
-                        <p class="mbr-text pt-3 mbr-light mbr-fonts-style display-7">{{ main.profile.about|linebreaks }}</p>
-                    </div>
-                    <div class="mbr-list  mbr-fonts-style display-7">
-                        <ul class="mbr-list mbr-fonts-style">
-                            <li><span class="mbri-globe mbr-iconfont"></span>{{ main.profile.city }}</li>
-                            <li><span class="mbri-alert mbr-iconfont"></span>{{ main.profile.phone }}</li>
-                            <li><span class="mbri-letter mbr-iconfont"></span><a href="mailto:{{ main.profile.social_email }}">{{ main.profile.social_email }}</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{% include "include/place.html" %}
 {% include "include/footer.html" %}
 {% if not request.user.is_authenticated %}
 <div class="modal mbr-popup cid-rW7OZ7QJxk fade" tabindex="-1" role="dialog" data-on-timer-delay="30"

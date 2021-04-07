@@ -196,3 +196,45 @@ def default_context(request) -> dict:
         title=request.site.main.title,
         names_domains=models.Site.objects.filter(active=True).values_list('name', 'domain')
     )
+
+
+def validate_url(url):
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc, result.path])
+    except:
+        return False
+
+
+def clean_text(text: str):
+    text = text.strip()
+    if text.startswith('@'):
+        text = text[1:]
+    return text
+
+
+def social_id_to_url(social_id: str, service):
+    if not social_id:
+        return ''
+    if validate_url(social_id):
+        return social_id
+    social_id = clean_text(social_id)
+    d = dict(
+        fb=f'https://www.facebook.com/{social_id}',
+        vk=f'https://vk.com/{social_id}',
+        ok=f'https://ok.ru/{social_id}',
+        insta=f'https://www.instagram.com/{social_id}/',
+        youtube=(f'https://www.youtube.com/channel/{social_id}' if len(social_id) >= 24
+                 else f'https://www.youtube.com/{social_id}'),
+        page=f'http://{social_id}'
+    )
+    return d[service]
+
+
+def profile_social_proceed(profile: models.Profile):
+    profile.social_fb = social_id_to_url(profile.social_fb, 'fb')
+    profile.social_vk = social_id_to_url(profile.social_vk, 'vk')
+    profile.social_ok = social_id_to_url(profile.social_ok, 'ok')
+    profile.social_insta = social_id_to_url(profile.social_insta, 'insta')
+    profile.social_youtube = social_id_to_url(profile.social_youtube, 'youtube')
+    profile.social_page = social_id_to_url(profile.social_page, 'page')

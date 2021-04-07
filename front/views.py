@@ -127,6 +127,7 @@ class AccountView(View):
         profile = request.user.profile
         form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
+            methods.profile_social_proceed(form.instance)
             form.save()
         return redirect('/profile')
 

@@ -219,6 +219,8 @@ def social_id_to_url(social_id: str, service):
     if validate_url(social_id):
         return social_id
     social_id = clean_text(social_id)
+    if '@' in social_id:
+        return social_id
     d = dict(
         fb=f'https://www.facebook.com/{social_id}',
         vk=f'https://vk.com/{social_id}',

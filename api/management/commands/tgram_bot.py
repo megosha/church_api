@@ -156,7 +156,9 @@ class Command(BaseCommand):
         if not youtube_id:
             update.message.reply_text(f'youtube_id не найден')
             return ConversationHandler.END
-        models.Main.objects.update(youtube=youtube_id)
+        boss = models.Profile.objects.get(telegram=update.message.chat.username)
+        boss.site.main.youtube = youtube_id
+        boss.site.main.save()
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
         try:
             title, preview = methods.youtube_get_desc(youtube_id)
@@ -273,7 +275,6 @@ class Command(BaseCommand):
                     emojize('Bot on board!'),
                     reply_markup=Command.user_commands
                 )
-
 
     @staticmethod
     def who_boss(update, context):

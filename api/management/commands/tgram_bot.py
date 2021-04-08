@@ -138,8 +138,8 @@ class Command(BaseCommand):
 
     @staticmethod
     def broadcast(update, context):
-        config = models.Config.get_solo()
-        if config.tgram.get('boss_name') != update.message.chat.username:
+        boss = models.BotContact.objects.filter(chat_id=update.effective_chat.id).first()
+        if not boss or boss.rights < 10:
             update.message.reply_text(emojize('You are not Boss :suspect:'))
             return
         #     return [InlineKeyboardButton(i, callback_data=f'/{i}') for i in l]
@@ -157,13 +157,9 @@ class Command(BaseCommand):
             update.message.reply_text(f'youtube_id не найден')
             return ConversationHandler.END
 
-        boss = models.Profile.objects.filter(telegram=update.message.chat.username).first()
-        if boss:
-            main = boss.site.main
-        else:
-            main = models.Main.objects.filter().first()
-        main.youtube = youtube_id
-        main.save()
+        boss = models.BotContact.objects.get(chat_id=update.effective_chat.id)
+        boss.profile.site.main.youtube = youtube_id
+        boss.profile.site.main.save()
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')
 
         try:
@@ -177,8 +173,8 @@ class Command(BaseCommand):
         section = models.NewsSection.objects.filter(title='Видео').first()
         if not section:
             section = models.NewsSection.objects.first()
-        article = models.News.objects.create(section=section, author_profile=main.profile, date=timezone.now(),
-                                             title=title, youtube=youtube_id)
+        article = models.News.objects.create(section=section, author_profile=boss.profile.site.main.profile,
+                                             date=timezone.now(), title=title, youtube=youtube_id)
         article.cover.save(f'broadcast_{article.pk}.jpg', File(cover))
         # logger.info("Location of %s: %s", user.first_name, update.message.text)
         update.message.reply_text(emojize('200 OK :thumbs_up:'))
@@ -256,15 +252,15 @@ class Command(BaseCommand):
         chat_id = update.effective_chat.id
         username = update.effective_chat.username or ''
         text: str = update.effective_message.text
-        models.BotContact.objects.update_or_create(chat_id=chat_id, username=username,
-                                                   defaults=dict(last_message=timezone.now()))
+        bot_user, created = models.BotContact.objects.update_or_create(
+            chat_id=chat_id, defaults=dict(username=username,last_message=timezone.now()))
         if chat_id < 0:
             print('Post to channel')
         else:
             print('Post to PM')
             if update.effective_message.from_user.is_bot:
                 return
-            if models.Config.get_solo().tgram.get('boss_name') == username:
+            if bot_user.rights > 10:
                 update.message.reply_text(
                     emojize('Bot on board!'),
                     reply_markup=ReplyKeyboardMarkup(Command.get_keys(context), one_time_keyboard=True)

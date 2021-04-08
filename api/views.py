@@ -42,8 +42,8 @@ class FormViewSet(APIView):
         except Exception as e:
             return self.resp(False, f'Ошибка данных: {e}')
         text = json.dumps(data, ensure_ascii=False)
-        form_obj = models.Form.objects.create(title=title, text=text)
-        tasks.say2boss(text)
+        form_obj = models.Form.objects.create(title=title, text=text, site=request.site)
+        tasks.say2boss(title, text)
         result = send_email(title, html, settings.FEEDBACK_EMAILS, as_html=True)
         if isinstance(result, Exception):
             return self.resp(False, f'Ошибка отправки сообщения: {result}')

@@ -46,6 +46,7 @@ class Config(SingletonModel):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
+    bot_user = models.OneToOneField('BotContact', on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=255, blank=True, default='')
     birthday = models.DateField(null=True, blank=True)
     function = models.CharField(max_length=255, blank=True, default='')
@@ -124,7 +125,8 @@ class News(models.Model):
 
 class BotContact(models.Model):
     chat_id = models.BigIntegerField(primary_key=True)
-    username = models.CharField(max_length=255, default='')
+    username = models.CharField(max_length=255, default='', blank=True)
+    rights = models.SmallIntegerField(default=0, blank=True)
     last_message = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

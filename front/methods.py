@@ -228,7 +228,8 @@ def social_id_to_url(social_id: str, service):
         insta=f'https://www.instagram.com/{social_id}/',
         youtube=(f'https://www.youtube.com/channel/{social_id}' if len(social_id) >= 24
                  else f'https://www.youtube.com/{social_id}'),
-        page=f'http://{social_id}'
+        page=f'http://{social_id}',
+        telegram=f'https://t.me/{social_id}',
     )
     return d[service]
 
@@ -240,3 +241,4 @@ def profile_social_proceed(profile: models.Profile):
     profile.social_insta = social_id_to_url(profile.social_insta, 'insta')
     profile.social_youtube = social_id_to_url(profile.social_youtube, 'youtube')
     profile.social_page = social_id_to_url(profile.social_page, 'page')
+    profile.telegram = social_id_to_url(profile.telegram, 'telegram')

@@ -17,8 +17,8 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', False)
 
 ALLOWED_HOSTS = ['*']
-
-# Application definition
+SESSION_COOKIE_DOMAIN = '.church22.ru'
+SESSION_COOKIE_NAME = 'church22.ru'
 
 INSTALLED_APPS = [
     'django.contrib.admin',

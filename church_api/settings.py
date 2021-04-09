@@ -19,6 +19,7 @@ DEBUG = env.bool('DEBUG', False)
 ALLOWED_HOSTS = ['*']
 SESSION_COOKIE_DOMAIN = '.church22.ru'
 SESSION_COOKIE_NAME = 'church22.ru'
+SESSION_COOKIE_AGE = 7777777  # 90 days
 
 INSTALLED_APPS = [
     'django.contrib.admin',

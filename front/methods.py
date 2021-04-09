@@ -174,7 +174,7 @@ def youtube_get_desc(youtube_id):
                 preview = video['thumbnail']
         except Exception as exc:
             error += f' | {exc}' if error else str(exc)
-    if error:
+    if not title:
         raise Exception(error)
     if not preview:
         preview = f'https://img.youtube.com/vi/{youtube_id}/maxresdefault.jpg'

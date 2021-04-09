@@ -158,6 +158,9 @@ class Command(BaseCommand):
             return ConversationHandler.END
 
         boss = models.BotContact.objects.get(chat_id=update.effective_chat.id)
+        if not boss.profile:
+            update.message.reply_text('Choice bot user in your profile')
+            return ConversationHandler.END
         boss.profile.site.main.youtube = youtube_id
         boss.profile.site.main.save()
         update.message.reply_text(f'Ссылка обновлена на: {youtube_id}')

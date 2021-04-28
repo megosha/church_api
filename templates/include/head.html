@@ -91,7 +91,7 @@
                     <a class="nav-link link dropdown-toggle text-primary display-7" data-toggle="dropdown-submenu" aria-expanded="false">{{ main.site.name }}</a>
                     <div class="dropdown-menu">
                     {% for name, domain in names_domains %}
-                        <a class="dropdown-item text-primary display-7" href="http://{{ domain }}">{{ name }}</a>
+                        <a class="dropdown-item text-primary display-7" href="http://{{ domain }}{{ path }}">{{ name }}</a>
                     {% endfor %}
                     </div>
                 </li>

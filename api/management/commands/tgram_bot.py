@@ -97,7 +97,7 @@ class Command(BaseCommand):
     @staticmethod
     def time_offset_start(update, context):
         keyboard = [[InlineKeyboardButton('/end', callback_data=0)]]
-        update.message.reply_text('Высчитываем смещение времени.\nВведите время из первого видео (1:02:04)',
+        update.message.reply_text('Высчитываем смещение времени.\nВведите время из исходного видео (1:02:04)',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return 1
 
@@ -119,7 +119,7 @@ class Command(BaseCommand):
         if t2 == '/end':
             return 0
         self.dt2 = Command.str2dt(t2)
-        update.message.reply_text('Введите время из первого видео для расчета (1:22:34)',
+        update.message.reply_text('Введите время из исходного видео для расчета (1:22:34)',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return 3
 
@@ -131,8 +131,8 @@ class Command(BaseCommand):
             return 0
         dt = Command.str2dt(t)
         result = (dt - self.dt1 + self.dt2).time()
-        update.message.reply_text(f'Соответствуюзее время второго видео: {result}\n'
-                                  f'Введите время из первого видео для расчета (1:22:34)',
+        update.message.reply_text(f'Соответствующее время второго видео: {result}\n'
+                                  f'Введите время из исходного видео для расчета (1:22:34)',
                                   reply_markup=ReplyKeyboardMarkup(keyboard, one_time_keyboard=True))
         return 3
 

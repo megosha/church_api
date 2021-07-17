@@ -32,7 +32,7 @@
                         {% endif %}
                         <div class="col-lg-12 col-md-12 col-sm-12 form-group">
                             <label for="id_cover" class="form-control-label mbr-fonts-style display-7 mbr-bold">Обложка {{ form.cover.value }}</label>
-                            <input type="file" accept="image/jpeg" name="cover" data-form-field="image" class="form-control display-7" id="id_cover" value="{{ form.cover.value }}">
+                            <input required type="file" accept="image/jpeg" name="cover" data-form-field="image" class="form-control display-7" id="id_cover" value="{{ form.cover.value }}">
                         </div>
                         {% if request.user.is_staff %}
                         <div class="col-lg-12 col-md-12 col-sm-12 form-group">

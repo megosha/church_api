@@ -86,13 +86,10 @@
                         <div class="line-wrap">
                             <div class="line"></div>
                         </div>
-                        <p class="mbr-text mbr-fonts-style display-7">
-                            - Профессиональная консультация<br>- Решение долговых обязательств<br>- Увеличение бюджета
-                        </p>
-
+                        <p class="mbr-text mbr-fonts-style display-7">- Профессиональная консультация<br>- Решение долговых обязательств<br>- Увеличение бюджета</p>
                         <div class="mbr-section-btn"><p>Завершение вашего кризиса!</p>
-                            <a class="btn btn-md btn-secondary display-4" href="/finance">
-                                Узнать больше</a></div>
+                            <a class="btn btn-md btn-secondary display-4" href="/finance">Узнать больше</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,12 +145,11 @@
 {#</div>#}
 <section class="tabs2 cid-rUA7It9snz" id="tabs2-4w">
     <div class="container">
-        <h2 class="mbr-section-title align-center pb-5 mbr-bold mbr-fonts-style display-2">Трансляция служения</h2>
+        <h2 class="mbr-section-title align-center pb-5 mbr-bold mbr-fonts-style display-2">Последнее видео</h2>
         {% if main.profile.social_youtube %}
         <div class="media-container-row">
             <div class="col-12 col-md-8 mbr-text">
-                <a class="btn btn-md btn-secondary" href="{{ main.profile.social_youtube }}"
-                   target="_blank">Перейти ко всем видео</a>
+                <a class="btn btn-md btn-secondary" href="{{ main.profile.social_youtube }}" target="_blank">Перейти ко всем видео</a>
             </div>
         </div>
         {% endif %}
@@ -165,6 +161,8 @@
         <div class="video-block" style="width: 100%;">
             <div>
                 <iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/{{ main.youtube }}?rel=0&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe>
+{#                https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=UCXswCcAMb5bvEUIDEzXFGYg&type=video&eventType=live&key=[API_KEY]#}
+{#                <iframe class="mbr-embedded-video" src="https://www.youtube.com/embed/live_stream?channel=UCAdwiYei9LfBtbQH3quITmA&amp;amp;showinfo=0&amp;autoplay=0&amp;loop=0" width="1280" height="720" frameborder="0" allowfullscreen></iframe>#}
             </div>
         </div>
     </figure>

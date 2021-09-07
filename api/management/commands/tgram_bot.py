@@ -259,6 +259,38 @@ class Command(BaseCommand):
             chat_id=chat_id, defaults=dict(username=username,last_message=timezone.now()))
         if chat_id < 0:
             print('Post to channel')
+            listen_group = models.Config.get_solo().tgram.get('listen_group')
+            if listen_group and username == listen_group:
+                youtube_id = methods.youtube_get_id(text.strip())
+                if not youtube_id:
+                    return
+                profile = models.BotContact.objects.get(chat_id=update.effective_chat.id).profile
+                if not profile:
+                    say2boss('Error: Choice bot user in your profile')
+                    return ConversationHandler.END
+
+                try:
+                    title, preview = methods.youtube_get_desc(youtube_id)
+                    cover = NamedTemporaryFile(delete=True, suffix='.jpg')
+                    cover.write(requests.get(preview).content)
+                    cover.flush()
+                except Exception as exc:
+                    print(exc)
+                    say2boss(f'Не удалось получить данные: {youtube_id}')
+                    return ConversationHandler.END
+                
+                profile.site.main.youtube = youtube_id
+                profile.site.main.save()
+                say2boss(f'Ссылка обновлена на: {youtube_id}')
+                
+                section = models.NewsSection.objects.filter(title='Видео').first()
+                if not section:
+                    section = models.NewsSection.objects.first()
+                article = models.News.objects.create(section=section, author_profile=profile.site.main.profile,
+                                                     date=timezone.now(), title=title, youtube=youtube_id)
+                article.cover.save(f'broadcast_{article.pk}.jpg', File(cover))
+                # logger.info("Location of %s: %s", user.first_name, update.message.text)
+                say2boss(emojize('200 OK :thumbs_up:'))
         else:
             print('Post to PM')
             if update.effective_message.from_user.is_bot:

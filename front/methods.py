@@ -1,4 +1,5 @@
 from datetime import datetime
+import string
 from urllib.parse import urlparse, parse_qs
 
 import os
@@ -49,7 +50,7 @@ class TGram:
             if response.status_code == 200:
                 return response.json()
             else:
-                print(f'status_code {response.status_code}')
+                print(f'status_code: {response.status_code}, text: {response.text}')
                 return False
 
 
@@ -243,3 +244,7 @@ def profile_social_proceed(profile: models.Profile):
     profile.social_youtube = social_id_to_url(profile.social_youtube, 'youtube')
     profile.social_page = social_id_to_url(profile.social_page, 'page')
     profile.telegram = social_id_to_url(profile.telegram, 'telegram')
+
+
+def to_repr(obj):
+    return ''.join(filter(lambda x: x in string.printable, str(obj)))

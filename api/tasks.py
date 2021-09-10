@@ -43,3 +43,9 @@ def say2group(text, chat_id=None):
     chat_id = chat_id or methods.get_set('TTP_ID')
     result = methods.TGram.send_message(text, chat_id)
     logger.info(f"say2group end: {result}")
+
+
+class ViewTasks:
+
+    def post2group(self):
+        ...

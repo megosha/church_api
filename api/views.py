@@ -25,7 +25,7 @@ class NewsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.DjangoModelPermissions]
 
 
-class FormViewSet(APIView):
+class FormView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def resp(self, status: bool = True, msg: str = 'OK'):
@@ -55,7 +55,7 @@ class FormViewSet(APIView):
         return self.resp()
 
 
-class RobokassaViewSet(APIView):
+class RobokassaView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -71,7 +71,7 @@ class RobokassaViewSet(APIView):
         return HttpResponse(html)
 
 
-class LogViewSet(APIView):
+class LogView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def dispatch(self, request, *args, **kwargs):
@@ -80,9 +80,16 @@ class LogViewSet(APIView):
         return HttpResponse('OK')
 
 
-class AccountViewSet(APIView):
+class AccountView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         if not request.user.is_authenticated:
             return HttpResponse(render_to_string('login_form.html'))
+
+
+class TaskView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        return HttpResponse('OK')

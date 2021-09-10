@@ -10,6 +10,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
 
 from api import models, serializers, tasks
+from api.tasks import ViewTasks
 from front.methods import send_email
 
 
@@ -90,6 +91,11 @@ class AccountView(APIView):
 
 class TaskView(APIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = serializers.TaskSerializer
 
     def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        task = ViewTasks(**serializer.validated_data)
+        task.proceed()
         return HttpResponse('OK')

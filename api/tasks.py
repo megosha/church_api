@@ -1,5 +1,6 @@
 import logging
 
+from django_celery_beat.models import CrontabSchedule, ClockedSchedule, PeriodicTask
 from emoji import emojize
 
 from church_api.celery import app
@@ -46,6 +47,22 @@ def say2group(text, chat_id=None):
 
 
 class ViewTasks:
+    def __init__(self, params, task, delayed, clocked_time=None):
+        self.params: dict = params
+        self.task = task
+        self.delayed: bool = delayed
+        self.clocked_time: str = clocked_time
 
-    def post2group(self):
+    def proceed(self):
+        task = getattr(ViewTasks, self.task)
+        if not self.delayed:
+            task.delay(**self.params)
+        else:
+            clocked, created = ClockedSchedule.objects.get_or_create(self.clocked_time)
+            PeriodicTask.objects.create(name=f'ViewTasks {self.task}', clocked=clocked, task=task.name,
+                                        kwargs=self.params)
+
+    @staticmethod
+    @app.task(ignore_result=True)
+    def post2group():
         ...

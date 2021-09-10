@@ -14,12 +14,16 @@ class TaskViewTestCase(TestCase):
     @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     @override_settings(CELERY_TASK_EAGER_PROPAGATES=True)
     def test_post_task(self):
-        response = self.client.post(reverse('api:task'))
+        path = reverse('api:task')
+        response = self.client.post(path)
         self.assertEqual(response.status_code, 401)
 
         user = User.objects.create()
         self.assertTrue(Token.objects.exists())
 
         headers = dict(HTTP_AUTHORIZATION=f"Token {user.auth_token.key}")
-        response = self.client.post(reverse('api:task'), **headers)
+        data=dict(task='post2group')
+        response = self.client.post(path, data, **headers)
         self.assertEqual(response.status_code, 200)
+
+        # TODO delayed

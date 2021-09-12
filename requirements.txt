@@ -22,7 +22,7 @@ Pillow==8.2.0
 pkg-resources==0.0.0
 psycopg2-binary~=2.8.6
 pycparser==2.20
-python-telegram-bot==13.7
+python-telegram-bot~=12.8
 python3-openid==3.1.0
 pytz==2019.3
 redis==3.5.3

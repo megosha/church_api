@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from api import models
 from rest_framework import serializers
 
@@ -21,8 +23,8 @@ class NewsSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.Serializer):
     task = serializers.CharField()
-    delayed = serializers.BooleanField(default=False)
-    clocked_time = serializers.DateTimeField(required=False)
+    clocked_time = serializers.DateTimeField(default=None)
+    delta_time = serializers.DurationField(default=None, min_value=10)
     params = serializers.DictField(required=False)
 
     def validate_task(self, value):
@@ -32,6 +34,8 @@ class TaskSerializer(serializers.Serializer):
 
     def validate(self, data):
         data = super().validate(data)
-        if data['delayed'] and not data['clocked_time']:
-            raise serializers.ValidationError('Delayed task must have clocked_time')
+        if data['delta_time']:
+            if data['clocked_time']:
+                raise serializers.ValidationError('Only one clocked_time or delta_time allowed')
+            data['clocked_time'] = timezone.now() + data['delta_time']
         return data

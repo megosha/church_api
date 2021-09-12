@@ -53,6 +53,22 @@ class TGram:
                 print(f'status_code: {response.status_code}, text: {response.text}')
                 return False
 
+    @staticmethod
+    def delete_message(chat_id, message_id):
+        try:
+            response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/deleteMessages', params=dict(
+                chat_id=chat_id,
+                id=[message_id],
+            ))
+        except Exception as Ex:
+            print(Ex)
+            return False
+        else:
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f'status_code: {response.status_code}, text: {response.text}')
+                return False
 
 def get_set(item: str):
     if not settings.configured:

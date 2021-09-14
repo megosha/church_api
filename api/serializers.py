@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.utils.dateparse import parse_duration
 
 from api import models
 from rest_framework import serializers
@@ -24,7 +25,12 @@ class NewsSerializer(serializers.ModelSerializer):
 class TaskParams(serializers.Serializer):
     chat_id = serializers.IntegerField()
     text = serializers.CharField()
-    delete_after = serializers.DurationField(required=False)
+    delete_after = serializers.CharField(required=False)
+
+    def validate_delete_after(self, value):
+        if not parse_duration(value):
+            self.fail('invalid', format='[DD] [HH:[MM:]]ss[.uuuuuu]')
+        return value
 
 
 class TaskSerializer(serializers.Serializer):

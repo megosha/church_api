@@ -2,7 +2,8 @@ import logging
 from datetime import timedelta
 
 from django.utils import timezone
-from django_celery_beat.models import CrontabSchedule, ClockedSchedule, PeriodicTask
+from django.utils.dateparse import parse_duration
+from django_celery_beat.models import ClockedSchedule, PeriodicTask
 from emoji import emojize
 
 from church_api.celery import app
@@ -62,21 +63,21 @@ class ViewTasks:
         self.clocked_time = clocked_time
 
     def proceed(self):
-        # TODO task_log?
         task = getattr(ViewTasks, self.task)
         if not self.clocked_time:
             task.delay(**self.params)
         else:
-            clocked, _ = ClockedSchedule.objects.get_or_create(self.clocked_time)
-            PeriodicTask.objects.create(name=f'ViewTasks {self.task}', clocked=clocked, task=task.name,
+            clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=self.clocked_time)
+            PeriodicTask.objects.create(name=f'ViewTasks {self.task}', clocked=clocked, task=task.name, one_off=True,
                                         kwargs=self.params)
 
     @staticmethod
     @app.task(ignore_result=True)
-    def post2group(chat_id, text, delete_after: timedelta=None):
+    def post2group(chat_id, text, delete_after: timedelta = None):
         response = methods.TGram.send_message(text, chat_id)
         if delete_after:
-            clocked, _ = ClockedSchedule.objects.get_or_create(timezone.now() + delete_after)
+            delete_after = parse_duration(delete_after)
+            clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=timezone.now() + delete_after)
             task = 'api.tasks.delete_message'
-            PeriodicTask.objects.create(name=f'ViewTasks post2group - {task}', clocked=clocked, task=task,
+            PeriodicTask.objects.create(name=f'ViewTasks post2group - {task}', clocked=clocked, task=task, one_off=True,
                                         kwargs=dict(chat_id=chat_id, message_id=response['result']['message_id']))

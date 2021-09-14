@@ -73,7 +73,7 @@ class ViewTasks:
 
     @staticmethod
     @app.task(ignore_result=True)
-    def post2group(chat_id, text, delete_after: timedelta = None):
+    def post2group(chat_id, text, delete_after = None):
         response = methods.TGram.send_message(text, chat_id)
         if delete_after:
             delete_after = parse_duration(delete_after)

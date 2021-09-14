@@ -36,7 +36,7 @@ class TaskParams(serializers.Serializer):
 class TaskSerializer(serializers.Serializer):
     task = serializers.CharField()
     clocked_time = serializers.DateTimeField(default=None)
-    delta_time = serializers.DurationField(required=False, min_value=10)
+    delta_time = serializers.DurationField(required=False)
     params = TaskParams()
 
     def validate_task(self, value):

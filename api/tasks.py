@@ -1,3 +1,4 @@
+import json
 import logging
 from datetime import timedelta
 
@@ -69,7 +70,7 @@ class ViewTasks:
         else:
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=self.clocked_time)
             PeriodicTask.objects.create(name=f'ViewTasks {self.task}', clocked=clocked, task=task.name, one_off=True,
-                                        kwargs=self.params)
+                                        kwargs=json.dumps(self.params))
 
     @staticmethod
     @app.task(ignore_result=True)
@@ -80,4 +81,5 @@ class ViewTasks:
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=timezone.now() + delete_after)
             task = 'api.tasks.delete_message'
             PeriodicTask.objects.create(name=f'ViewTasks post2group - {task}', clocked=clocked, task=task, one_off=True,
-                                        kwargs=dict(chat_id=chat_id, message_id=response['result']['message_id']))
+                                        kwargs=json.dumps(dict(
+                                            chat_id=chat_id, message_id=response['result']['message_id'])))

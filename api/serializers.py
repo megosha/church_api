@@ -21,11 +21,17 @@ class NewsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TaskParams(serializers.Serializer):
+    chat_id = serializers.IntegerField()
+    text = serializers.CharField()
+    delete_after = serializers.DurationField(required=False)
+
+
 class TaskSerializer(serializers.Serializer):
     task = serializers.CharField()
     clocked_time = serializers.DateTimeField(default=None)
-    delta_time = serializers.DurationField(default=None, min_value=10)
-    params = serializers.DictField(required=False)
+    delta_time = serializers.DurationField(required=False, min_value=10)
+    params = TaskParams()
 
     def validate_task(self, value):
         if not hasattr(ViewTasks, value):
@@ -34,8 +40,9 @@ class TaskSerializer(serializers.Serializer):
 
     def validate(self, data):
         data = super().validate(data)
-        if data['delta_time']:
+        if 'delta_time' in data:
             if data['clocked_time']:
                 raise serializers.ValidationError('Only one clocked_time or delta_time allowed')
             data['clocked_time'] = timezone.now() + data['delta_time']
+            del data['delta_time']
         return data

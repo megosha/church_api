@@ -56,12 +56,13 @@ def delete_message(chat_id, message_id):
 
 
 class ViewTasks:
-    def __init__(self, params, task, clocked_time=None):
-        self.params: dict = params
+    def __init__(self, task, params=None, clocked_time=None):
+        self.params: dict = params or dict()
         self.task = task
-        self.clocked_time: str = clocked_time
+        self.clocked_time = clocked_time
 
     def proceed(self):
+        # TODO task_log?
         task = getattr(ViewTasks, self.task)
         if not self.clocked_time:
             task.delay(**self.params)

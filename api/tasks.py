@@ -50,13 +50,6 @@ def say2group(text, chat_id=None):
     logger.info(f"say2group end: {result}")
 
 
-@app.task(name="api.tasks.delete_message", ignore_result=True)
-def delete_message(chat_id, message_id):
-    logger.info("delete_message start")
-    result = methods.TGram().delete_message(chat_id, message_id)
-    logger.info(f"delete_message end: {result}")
-
-
 class ViewTasks:
     def __init__(self, task, params=None, clocked_time=None):
         self.params: dict = params or dict()

@@ -39,7 +39,9 @@ class TaskSerializer(serializers.Serializer):
     delta_time = serializers.DurationField(required=False)
     params = TaskParams()
 
-    def validate_task(self, value):
+    def validate_task(self, value: str):
+        if value.startswith('_'):
+            raise serializers.ValidationError('Task can not start with underline')
         if not hasattr(ViewTasks, value):
             raise serializers.ValidationError('Task not found')
         return value

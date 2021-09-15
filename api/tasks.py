@@ -63,26 +63,42 @@ class ViewTasks:
         self.task = task
         self.clocked_time = clocked_time
 
-    def proceed(self):
+    @staticmethod
+    def _add_task_id(p_task: PeriodicTask, kwargs: dict):
+        kwargs['task_id'] = p_task.id
+        p_task.kwargs = json.dumps(kwargs)
+        p_task.save()
+
+    def _proceed(self):
         task = getattr(ViewTasks, self.task)
         if not self.clocked_time:
             task.delay(**self.params)
         else:
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=self.clocked_time)
-            PeriodicTask.objects.create(
+            p_task = PeriodicTask.objects.create(
                 name=f'ViewTasks {self.task} ({self.clocked_time})', clocked=clocked, task=task.name, one_off=True,
-                kwargs=json.dumps(self.params)
             )
+            self._add_task_id(p_task, self.params)
 
     @staticmethod
     @app.task(ignore_result=True)
-    def post2group(chat_id, text, delete_after = None):
+    def post2group(chat_id, text, delete_after=None, task_id=None):
         result = methods.TGram().send_message(chat_id, text)
         if delete_after:
-            task = 'api.tasks.delete_message'
+            task = getattr(ViewTasks, 'delete_message')
             clocked_time = timezone.now() + parse_duration(delete_after)
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=clocked_time)
-            PeriodicTask.objects.create(
-                name=f'ViewTasks post2group - {task} ({clocked_time})', clocked=clocked, task=task, one_off=True,
-                kwargs=json.dumps(dict(chat_id=chat_id, message_id=result['message_id']))
+            p_task = PeriodicTask.objects.create(
+                name=f'ViewTasks post2group - delete_message ({clocked_time})', clocked=clocked, task=task.name,
+                one_off=True,
             )
+            ViewTasks._add_task_id(p_task, dict(chat_id=chat_id, message_id=result['message_id']))
+        if task_id:
+            PeriodicTask.objects.get(id=task_id).clocked.delete()
+
+    @staticmethod
+    @app.task(ignore_result=True)
+    def delete_message(chat_id, message_id, task_id=None):
+        result = methods.TGram().delete_message(chat_id, message_id)
+        if task_id:
+            PeriodicTask.objects.get(id=task_id).clocked.delete()

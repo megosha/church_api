@@ -248,3 +248,24 @@ def profile_social_proceed(profile: models.Profile):
 
 def to_repr(obj):
     return ''.join(filter(lambda x: x in string.printable, str(obj)))
+
+
+class YouTube:
+    def __init__(self):
+        self.api_key = get_set('GOOGLE_API_KEY')
+        self.api_prefix = 'https://www.googleapis.com/youtube/v3/'
+
+    def get_live(self, channel_id, filter=None):
+        response = requests.get(
+            f'{self.api_prefix}search?part=snippet&channelId={channel_id}&type=video&eventType=live&key={self.api_key}'
+        )
+        if response.status_code != 200:
+            return False
+        for item in response.json()['items']:
+            video_id = item['id']['videoId']
+            title = item['snippet']['title']
+            if filter:
+                if title in filter:
+                    return video_id
+            else:
+                return video_id

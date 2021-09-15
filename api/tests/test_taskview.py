@@ -47,4 +47,3 @@ class TaskViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         post_task = PeriodicTask.objects.get(name=f'ViewTasks {task}')
         self.assertEqual(post_task.kwargs, '{"chat_id": 123, "text": "test", "delete_after": "10"}')
-

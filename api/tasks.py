@@ -69,17 +69,20 @@ class ViewTasks:
             task.delay(**self.params)
         else:
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=self.clocked_time)
-            PeriodicTask.objects.create(name=f'ViewTasks {self.task}', clocked=clocked, task=task.name, one_off=True,
-                                        kwargs=json.dumps(self.params))
+            PeriodicTask.objects.create(
+                name=f'ViewTasks {self.task} ({self.clocked_time})', clocked=clocked, task=task.name, one_off=True,
+                kwargs=json.dumps(self.params)
+            )
 
     @staticmethod
     @app.task(ignore_result=True)
     def post2group(chat_id, text, delete_after = None):
         result = methods.TGram().send_message(chat_id, text)
         if delete_after:
-            delete_after = parse_duration(delete_after)
-            clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=timezone.now() + delete_after)
             task = 'api.tasks.delete_message'
-            PeriodicTask.objects.create(name=f'ViewTasks post2group - {task}', clocked=clocked, task=task, one_off=True,
-                                        kwargs=json.dumps(dict(
-                                            chat_id=chat_id, message_id=result['message_id'])))
+            clocked_time = timezone.now() + parse_duration(delete_after)
+            clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=clocked_time)
+            PeriodicTask.objects.create(
+                name=f'ViewTasks post2group - {task} ({clocked_time})', clocked=clocked, task=task, one_off=True,
+                kwargs=json.dumps(dict(chat_id=chat_id, message_id=result['message_id']))
+            )

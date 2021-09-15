@@ -83,8 +83,11 @@ class ViewTasks:
     @staticmethod
     @app.task(ignore_result=True)
     def post2group(chat_id, text, delete_after=None, task_id=None):
+        logger.info("post2group start")
         result = methods.TGram().send_message(chat_id, text)
+        logger.info(f"post2group result: {result}")
         if delete_after:
+            logger.info("post2group delete_after start")
             task = getattr(ViewTasks, 'delete_message')
             clocked_time = timezone.now() + parse_duration(delete_after)
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=clocked_time)
@@ -93,12 +96,17 @@ class ViewTasks:
                 one_off=True,
             )
             ViewTasks._add_task_id(p_task, dict(chat_id=chat_id, message_id=result['message_id']))
+            logger.info("post2group delete_after end")
         if task_id:
             PeriodicTask.objects.get(id=task_id).clocked.delete()
+            logger.info(f"post2group task_id: {task_id} deleted")
 
     @staticmethod
     @app.task(ignore_result=True)
     def delete_message(chat_id, message_id, task_id=None):
+        logger.info("delete_message start")
         result = methods.TGram().delete_message(chat_id, message_id)
+        logger.info(f"delete_message result: {result}")
         if task_id:
             PeriodicTask.objects.get(id=task_id).clocked.delete()
+            logger.info(f"delete_message task_id: {task_id} deleted")

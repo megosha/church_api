@@ -39,14 +39,12 @@ class TaskViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         del_task = PeriodicTask.objects.get(name=f'ViewTasks {task} - api.tasks.delete_message')
-        self.assertEqual(del_task.kwargs,
-                         str({'chat_id': params['chat_id'], 'message_id': return_value['result']['message_id']}))
+        self.assertEqual(del_task.kwargs, '{"chat_id": 123, "message_id": 773}')
 
         data['delta_time'] = '10'
         response = self.client.post(path, json.dumps(data), content_type='application/json', **headers)
 
         self.assertEqual(response.status_code, 200)
         post_task = PeriodicTask.objects.get(name=f'ViewTasks {task}')
-        self.assertEqual(post_task.kwargs,
-                         'OrderedDict([(\'chat_id\', 123), (\'text\', \'test\'), (\'delete_after\', \'10\')])')
+        self.assertEqual(post_task.kwargs, '{"chat_id": 123, "text": "test", "delete_after": "10"}')
 

@@ -58,7 +58,7 @@ class TGram:
         try:
             response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/deleteMessages', params=dict(
                 chat_id=chat_id,
-                id=[message_id],
+                message_id=[message_id],
             ))
         except Exception as Ex:
             print(Ex)

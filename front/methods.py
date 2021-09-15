@@ -4,6 +4,7 @@ from urllib.parse import urlparse, parse_qs
 
 import os
 import requests
+from telegram.bot import Bot
 import youtube_dl
 from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
@@ -14,6 +15,9 @@ from api import models
 
 
 class TGram:
+
+    def __init__(self):
+        self._bot = Bot(self.get_token())
 
     @staticmethod
     def get_token(phraze=False):
@@ -33,42 +37,22 @@ class TGram:
         if not boss_id:
             print('BOSS not found')
             return None
-        return TGram.send_message(text, boss_id)
+        return TGram().send_message(boss_id, text)
 
-    @staticmethod
-    def send_message(text, chat_id, parse_mode='Markdown'):
+    def send_message(self, chat_id, text, parse_mode='Markdown'):
         try:
-            response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/sendMessage', params=dict(
-                chat_id=chat_id,
-                text=text,
-                parse_mode=parse_mode
-            ))
+            return self._bot.send_message(chat_id, text, parse_mode)
         except Exception as Ex:
             print(Ex)
             return False
-        else:
-            if response.status_code == 200:
-                return response.json()
-            else:
-                print(f'status_code: {response.status_code}, text: {response.text}')
-                return False
 
-    @staticmethod
-    def delete_message(chat_id, message_id):
+    def delete_message(self, chat_id, message_id):
         try:
-            response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/deleteMessages', params=dict(
-                chat_id=chat_id,
-                message_id=[message_id],
-            ))
+            return self._bot.delete_message(chat_id, message_id)
         except Exception as Ex:
             print(Ex)
             return False
-        else:
-            if response.status_code == 200:
-                return response.json()
-            else:
-                print(f'status_code: {response.status_code}, text: {response.text}')
-                return False
+
 
 def get_set(item: str):
     if not settings.configured:

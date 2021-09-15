@@ -46,7 +46,7 @@ def send_email(title, text, emails=None, as_html=False):
 def say2group(text, chat_id=None):
     logger.info("say2group start")
     chat_id = chat_id or methods.get_set('TTP_ID')
-    result = methods.TGram.send_message(text, chat_id)
+    result = methods.TGram().send_message(chat_id, text)
     logger.info(f"say2group end: {result}")
 
 
@@ -75,11 +75,11 @@ class ViewTasks:
     @staticmethod
     @app.task(ignore_result=True)
     def post2group(chat_id, text, delete_after = None):
-        response = methods.TGram.send_message(text, chat_id)
+        result = methods.TGram().send_message(chat_id, text)
         if delete_after:
             delete_after = parse_duration(delete_after)
             clocked, _ = ClockedSchedule.objects.get_or_create(clocked_time=timezone.now() + delete_after)
             task = 'api.tasks.delete_message'
             PeriodicTask.objects.create(name=f'ViewTasks post2group - {task}', clocked=clocked, task=task, one_off=True,
                                         kwargs=json.dumps(dict(
-                                            chat_id=chat_id, message_id=response['result']['message_id'])))
+                                            chat_id=chat_id, message_id=result['message_id'])))

@@ -265,7 +265,7 @@ class YouTube:
             video_id = item['id']['videoId']
             title = item['snippet']['title']
             if filter:
-                if title in filter:
+                if filter in title:
                     return video_id
             else:
                 return video_id

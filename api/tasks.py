@@ -75,10 +75,14 @@ class ViewTasks:
 
     @staticmethod
     @app.task(ignore_result=True)
-    def post2group(chat_id, text, delete_after=None, task_id=None, youtube_live=False):
+    def post2group(chat_id, text, delete_after=None, task_id=None, youtube_live: str=None, youtube_filter: str=None):
         logger.info("post2group start")
         if youtube_live:
-            text = methods.YouTube().get_live(text)
+            link = methods.YouTube().get_live(youtube_live, youtube_filter)
+            if not link:
+                logger.warning(f"post2group YouTube link not found: {youtube_live}")
+                return
+            text = f'{text}\nhttps://youtu.be/{link}'
         result = methods.TGram().send_message(chat_id, text)
         logger.info(f"post2group result: {result}")
         if delete_after:

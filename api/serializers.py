@@ -25,6 +25,8 @@ class NewsSerializer(serializers.ModelSerializer):
 class TaskParams(serializers.Serializer):
     chat_id = serializers.IntegerField()
     text = serializers.CharField()
+    youtube_live = serializers.CharField(required=False)
+    youtube_filter = serializers.CharField(required=False)
     delete_after = serializers.CharField(required=False)
 
     def validate_delete_after(self, value):

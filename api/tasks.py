@@ -81,7 +81,9 @@ class ViewTasks:
             link = methods.YouTube().get_live(youtube_live, youtube_filter)
             if not link:
                 logger.warning(f"post2group YouTube link not found: {youtube_live}")
-                return
+                if task_id:
+                    PeriodicTask.objects.get(id=task_id).clocked.delete()
+                    logger.info(f"post2group task_id: {task_id} deleted")
             text = f'{text}\nhttps://youtu.be/{link}'
         result = methods.TGram().send_message(chat_id, text)
         logger.info(f"post2group result: {result}")

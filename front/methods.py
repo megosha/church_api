@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 import string
 from urllib.parse import urlparse, parse_qs
@@ -260,7 +261,7 @@ class YouTube:
             f'{self.api_prefix}search?part=snippet&channelId={channel_id}&type=video&eventType=live&key={self.api_key}'
         )
         if response.status_code != 200:
-            return False
+            raise Exception(f'response.status_code: {response.status_code}')
         for item in response.json()['items']:
             video_id = item['id']['videoId']
             title = item['snippet']['title']
@@ -269,3 +270,5 @@ class YouTube:
                     return video_id
             else:
                 return video_id
+        logging.warning(response.json())
+        raise Exception(f'channel {channel_id}, filter {filter} not found. lives count {len(response.json()["items"])}')

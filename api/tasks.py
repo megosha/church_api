@@ -78,9 +78,10 @@ class ViewTasks:
     def post2group(chat_id, text, delete_after=None, task_id=None, youtube_live: str=None, youtube_filter: str=None):
         logger.info("post2group start")
         if youtube_live:
-            link = methods.YouTube().get_live(youtube_live, youtube_filter)
-            if not link:
-                logger.warning(f"post2group YouTube link not found: {youtube_live}")
+            try:
+                link = methods.YouTube().get_live(youtube_live, youtube_filter)
+            except Exception as exc:
+                logger.warning(f"post2group YouTube.get_live Exception {exc}")
                 if task_id:
                     PeriodicTask.objects.get(id=task_id).clocked.delete()
                     logger.info(f"post2group task_id: {task_id} deleted")

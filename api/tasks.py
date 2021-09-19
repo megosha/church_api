@@ -1,5 +1,7 @@
+import inspect
 import json
 import logging
+from contextlib import contextmanager
 from datetime import timedelta
 
 from django.utils import timezone
@@ -48,6 +50,24 @@ def say2group(text, chat_id=None):
     chat_id = chat_id or methods.get_set('TTP_ID')
     result = methods.TGram().send_message(chat_id, text)
     logger.info(f"say2group end: {result}")
+
+
+@contextmanager
+def log(text=''):
+    func = inspect.stack()[2].function
+    func = f'{text} {func}' if text else func
+    logger.info(f'{func} start')
+    try:
+        yield
+    except Exception as exc:
+        logger.warning(f'{func} Exception: {exc}')
+    finally:
+        logger.info(f'{func} stop')
+
+
+def test():
+    with log():
+        raise Exception('asd')
 
 
 class ViewTasks:

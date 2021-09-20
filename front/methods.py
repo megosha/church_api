@@ -41,10 +41,19 @@ class TGram:
         return TGram().send_message(boss_id, text)
 
     def send_message(self, chat_id, text, parse_mode='Markdown'):
+        response = None
         try:
-            return self._bot.send_message(chat_id, text, parse_mode)
+            # return self._bot.send_message(chat_id, text, parse_mode)
+            response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/sendMessage', params=dict(
+                chat_id=chat_id,
+                text=text,
+                parse_mode=parse_mode
+            ))
+            return response.json()['result']
         except Exception as Ex:
             print(Ex)
+            if response:
+                print(response.text)
             return False
 
     def delete_message(self, chat_id, message_id):

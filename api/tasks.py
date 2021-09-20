@@ -55,19 +55,26 @@ def say2group(text, chat_id=None):
 @contextmanager
 def log(text=''):
     func = inspect.stack()[2].function
-    func = f'{text} {func}' if text else func
+    func = f'{func} {text}' if text else func
     logger.info(f'{func} start')
     try:
         yield
     except Exception as exc:
         logger.warning(f'{func} Exception: {exc}')
-    finally:
+    else:
         logger.info(f'{func} stop')
 
 
+def test2():
+    return 'qwe'
+    # raise Exception('asd')
+
+
 def test():
-    with log():
-        raise Exception('asd')
+    with log() as q:
+        q = test2()
+    print(q)
+
 
 
 class ViewTasks:
@@ -98,10 +105,9 @@ class ViewTasks:
     def post2group(chat_id, text, delete_after=None, task_id=None, youtube_live: str=None, youtube_filter: str=None):
         logger.info("post2group start")
         if youtube_live:
-            try:
+            with log('YouTube.get_live') as link:
                 link = methods.YouTube().get_live(youtube_live, youtube_filter)
-            except Exception as exc:
-                logger.warning(f"post2group YouTube.get_live Exception {exc}")
+            if not link:
                 if task_id:
                     PeriodicTask.objects.get(id=task_id).clocked.delete()
                     logger.info(f"post2group task_id: {task_id} deleted")

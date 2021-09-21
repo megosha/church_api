@@ -6,6 +6,7 @@ from urllib.parse import urlparse, parse_qs
 import os
 import requests
 from telegram.bot import Bot
+from telegram.utils.helpers import escape_markdown
 import youtube_dl
 from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
@@ -40,18 +41,20 @@ class TGram:
             return None
         return TGram().send_message(boss_id, text)
 
-    def send_message(self, chat_id, text, parse_mode='Markdown'):
+    def send_message(self, chat_id, text, parse_mode=None):
         response = None
+        if not parse_mode:
+            text = escape_markdown(text)
         try:
-            # return self._bot.send_message(chat_id, text, parse_mode)
-            response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/sendMessage', params=dict(
-                chat_id=chat_id,
-                text=text,
-                parse_mode=parse_mode
-            ))
-            if response.status_code != 200:
-                raise Exception(f'response.status_code: {response.status_code}')
-            return response.json()['result']
+            return self._bot.send_message(chat_id, text, parse_mode)
+            # response = requests.get(f'https://api.telegram.org/bot{TGram.get_token()}/sendMessage', params=dict(
+            #     chat_id=chat_id,
+            #     text=text,
+            #     parse_mode=parse_mode
+            # ))
+            # if response.status_code != 200:
+            #     raise Exception(f'response.status_code: {response.status_code}')
+            # return response.json()['result']
         except Exception as Ex:
             print(Ex)
             if response:

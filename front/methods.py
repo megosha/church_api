@@ -49,6 +49,8 @@ class TGram:
                 text=text,
                 parse_mode=parse_mode
             ))
+            if response.status_code != 200:
+                raise Exception(f'response.status_code: {response.status_code}')
             return response.json()['result']
         except Exception as Ex:
             print(Ex)

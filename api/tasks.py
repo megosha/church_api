@@ -32,9 +32,8 @@ def time_to_pray():
 
 @app.task(name="api.tasks.say2boss", ignore_result=True)
 def say2boss(text):
-    logger.info("say2boss start")
-    result = methods.TGram.say2boss(text)
-    logger.info(f"say2boss end: {result}")
+    with log():
+        methods.TGram.say2boss(text)
 
 
 @app.task(name="api.tasks.send_email", ignore_result=True)
@@ -63,18 +62,6 @@ def log(text=''):
         logger.warning(f'{func} Exception: {exc}')
     else:
         logger.info(f'{func} stop')
-
-
-def test2():
-    return 'qwe'
-    # raise Exception('asd')
-
-
-def test():
-    with log() as q:
-        q = test2()
-    print(q)
-
 
 
 class ViewTasks:

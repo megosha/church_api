@@ -42,8 +42,6 @@ class TGram:
         return TGram().send_message(boss_id, text)
 
     def send_message(self, chat_id, text, parse_mode=None):
-        if not parse_mode:
-            text = escape_markdown(text)
         try:
             return self._bot.send_message(chat_id, text, parse_mode)
         except Exception as Ex:

@@ -99,6 +99,7 @@ class ViewTasks:
                     PeriodicTask.objects.get(id=task_id).clocked.delete()
                     logger.info(f"post2group task_id: {task_id} deleted")
                 return
+            say2boss(f'Ссылка на настройки трансляции:\nhttps://studio.youtube.com/video/{link}/livestreaming')
             text = f'{text}\nhttps://youtu.be/{link}'
         result = methods.TGram().send_message(chat_id, text)
         logger.info(f"post2group result: {result}")

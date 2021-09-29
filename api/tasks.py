@@ -65,10 +65,11 @@ def log(text=''):
 
 
 class ViewTasks:
-    def __init__(self, task, params=None, clocked_time=None):
+    def __init__(self, task, profile, params=None, clocked_time=None):
         self.params: dict = params or dict()
         self.task = task
         self.clocked_time = clocked_time
+        self.profile = profile
 
     @staticmethod
     def _add_task_id(p_task: PeriodicTask, kwargs: dict):
@@ -89,6 +90,20 @@ class ViewTasks:
 
     @staticmethod
     @app.task(ignore_result=True)
+    def start_worship(chat_id, text, youtube_live: str, task_id=None, youtube_filter: str=None):
+        with log('YouTube.get_live') as link:
+            link = methods.YouTube().get_live(youtube_live, youtube_filter)
+        if not link:
+            if task_id:
+                PeriodicTask.objects.get(id=task_id).clocked.delete()
+                logger.info(f"post2group task_id: {task_id} deleted")
+            say2boss(f'Ошибка! Прямые эфиры не найдены')
+            return
+        say2boss(f'Ссылка на настройки трансляции:\nhttps://studio.youtube.com/video/{link}/livestreaming')
+        text = f'{text}\nhttps://youtu.be/{link}'
+
+    @staticmethod
+    @app.task(ignore_result=True)
     def post2group(chat_id, text, delete_after=None, task_id=None, youtube_live: str=None, youtube_filter: str=None):
         logger.info("post2group start")
         if youtube_live:
@@ -98,6 +113,7 @@ class ViewTasks:
                 if task_id:
                     PeriodicTask.objects.get(id=task_id).clocked.delete()
                     logger.info(f"post2group task_id: {task_id} deleted")
+                say2boss(f'Ошибка! Прямые эфиры не найдены')
                 return
             say2boss(f'Ссылка на настройки трансляции:\nhttps://studio.youtube.com/video/{link}/livestreaming')
             text = f'{text}\nhttps://youtu.be/{link}'

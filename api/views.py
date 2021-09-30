@@ -94,8 +94,9 @@ class TaskView(APIView):
     serializer_class = serializers.TaskSerializer
 
     def post(self, request):
+        profile = request.user.profile
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        task = ViewTasks(**serializer.validated_data)
+        task = ViewTasks(**serializer.validated_data, profile_id=profile.id)
         task._proceed()
         return HttpResponse('OK')

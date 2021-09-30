@@ -11,6 +11,7 @@ from emoji import emojize
 
 from church_api.celery import app
 from front import methods
+from api import models
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -65,10 +66,11 @@ def log(text=''):
 
 
 class ViewTasks:
-    def __init__(self, task, params=None, clocked_time=None):
+    def __init__(self, task, profile_id, params=None, clocked_time=None):
         self.params: dict = params or dict()
         self.task = task
         self.clocked_time = clocked_time
+        self.params['profile_id'] = profile_id
 
     @staticmethod
     def _add_task_id(p_task: PeriodicTask, kwargs: dict):
@@ -89,7 +91,30 @@ class ViewTasks:
 
     @staticmethod
     @app.task(ignore_result=True)
-    def post2group(chat_id, text, delete_after=None, task_id=None, youtube_live: str=None, youtube_filter: str=None):
+    def start_worship(chat_id, text, youtube_live: str, profile_id, task_id=None, youtube_filter: str=None,
+                      **kwargs):
+        with log('YouTube.get_live') as link:
+            link = methods.YouTube().get_live(youtube_live, youtube_filter)
+        if not link:
+            if task_id:
+                # Если это был отложенный запуск, то удалить задачу
+                PeriodicTask.objects.get(id=task_id).clocked.delete()
+                logger.info(f"post2group task_id: {task_id} deleted")
+            say2boss(f'Ошибка! Прямые эфиры не найдены')
+            return
+        say2boss(f'Ссылка на настройки трансляции:\nhttps://studio.youtube.com/video/{link}/livestreaming')
+        text = f'{text}\nhttps://youtu.be/{link}'
+        result = methods.TGram().send_message(chat_id, text)
+        message_id = result['message_id']
+        last_message_id = models.Profile.get_data(profile_id, 'start_worship/message_id')
+        models.Profile.set_data(profile_id, 'start_worship/message_id', message_id)
+        if last_message_id:
+            result = methods.TGram().delete_message(chat_id, last_message_id)
+
+    @staticmethod
+    @app.task(ignore_result=True)
+    def post2group(chat_id, text, delete_after=None, task_id=None, youtube_live: str=None, youtube_filter: str=None,
+                   **kwargs):
         logger.info("post2group start")
         if youtube_live:
             with log('YouTube.get_live') as link:
@@ -98,6 +123,7 @@ class ViewTasks:
                 if task_id:
                     PeriodicTask.objects.get(id=task_id).clocked.delete()
                     logger.info(f"post2group task_id: {task_id} deleted")
+                say2boss(f'Ошибка! Прямые эфиры не найдены')
                 return
             say2boss(f'Ссылка на настройки трансляции:\nhttps://studio.youtube.com/video/{link}/livestreaming')
             text = f'{text}\nhttps://youtu.be/{link}'

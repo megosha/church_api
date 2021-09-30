@@ -65,12 +65,25 @@ class Profile(models.Model):
     social_youtube = models.CharField(max_length=64, blank=True, default='')
     telegram = models.CharField(max_length=64, blank=True, default='')
     position = models.SmallIntegerField(default=100)
+    data = JSONField(default=dict, blank=True)
 
     class Meta:
         ordering = ('position', 'site', 'name',)
 
     def __str__(self):
         return f'{self.position} - {self.name}'
+
+    @classmethod
+    def get_data(cls, profile_id, key: str = None):
+        data = cls.objects.only('data').get(id=profile_id).data
+        if key:
+            return data.get(key)
+        return data
+
+    @classmethod
+    def set_data(cls, profile_id, key, value):
+        cls.objects.filter(id=profile_id).update(data=models.Func(
+            models.F("data"), models.Value([key]), models.Value(value, JSONField()), function="jsonb_set"))
 
 
 class Form(models.Model):

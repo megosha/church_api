@@ -252,6 +252,12 @@ def to_repr(obj):
     return ''.join(filter(lambda x: x in string.printable, str(obj)))
 
 
+def dict_get(data: dict, keys: list):
+    if keys[0] in data:
+        return dict_get(data[keys[0]], keys[1:]) if keys else data
+    return
+
+
 class YouTube:
     def __init__(self):
         self.api_key = get_set('GOOGLE_API_KEY')

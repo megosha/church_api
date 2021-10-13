@@ -49,11 +49,7 @@ class TGram:
             return False
 
     def delete_message(self, chat_id, message_id):
-        try:
-            return self._bot.delete_message(chat_id, message_id)
-        except Exception as Ex:
-            print(Ex)
-            return False
+        return self._bot.delete_message(chat_id, message_id)
 
 
 def get_set(item: str):

@@ -104,12 +104,14 @@ class ViewTasks:
             return
         say2boss(f'Ссылка на настройки трансляции:\nhttps://studio.youtube.com/video/{link}/livestreaming')
         text = f'{text}\nhttps://youtu.be/{link}'
-        result = methods.TGram().send_message(chat_id, text)
+        tg = methods.TGram()
+        result = tg.send_message(chat_id, text)
         message_id = result['message_id']
         last_message_id = models.Profile.get_data(profile_id, 'start_worship/message_id')
         models.Profile.set_data(profile_id, 'start_worship/message_id', message_id)
         if last_message_id:
-            result = methods.TGram().delete_message(chat_id, last_message_id)
+            with log('delete_message'):
+                tg.delete_message(chat_id, last_message_id)
 
     @staticmethod
     @app.task(ignore_result=True)
@@ -147,9 +149,8 @@ class ViewTasks:
     @staticmethod
     @app.task(ignore_result=True)
     def delete_message(chat_id, message_id, task_id=None):
-        logger.info("delete_message start")
-        result = methods.TGram().delete_message(chat_id, message_id)
-        logger.info(f"delete_message result: {result}")
+        with log('delete_message'):
+            methods.TGram().delete_message(chat_id, message_id)
         if task_id:
             PeriodicTask.objects.get(id=task_id).clocked.delete()
             logger.info(f"delete_message task_id: {task_id} deleted")

@@ -91,15 +91,14 @@ class ViewTasks:
 
     @staticmethod
     @app.task(ignore_result=True)
-    def start_worship(chat_id, text, youtube_live: str, profile_id, task_id=None, youtube_filter: str=None,
-                      **kwargs):
+    def start_worship(chat_id, text, youtube_live: str, profile_id, task_id=None, youtube_filter: str=None, **kwargs):
+        if task_id:
+            # Если это был отложенный запуск, то удалить задачу
+            PeriodicTask.objects.get(id=task_id).clocked.delete()
+            logger.info(f"post2group task_id: {task_id} deleted")
         with log('YouTube.get_live') as link:
             link = methods.YouTube().get_live(youtube_live, youtube_filter)
         if not link:
-            if task_id:
-                # Если это был отложенный запуск, то удалить задачу
-                PeriodicTask.objects.get(id=task_id).clocked.delete()
-                logger.info(f"post2group task_id: {task_id} deleted")
             say2boss(f'Ошибка! Прямые эфиры не найдены')
             return
         say2boss(f'Ссылка на настройки трансляции:\nhttps://studio.youtube.com/video/{link}/livestreaming')

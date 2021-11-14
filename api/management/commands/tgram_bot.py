@@ -290,7 +290,8 @@ class Command(BaseCommand):
                                                      date=timezone.now(), title=title, youtube=youtube_id)
                 article.cover.save(f'broadcast_{article.pk}.jpg', File(cover))
                 # logger.info("Location of %s: %s", user.first_name, update.message.text)
-                say2boss(emojize('200 OK :thumbs_up:'))
+                say2boss(f'Ссылка на настройки трансляции:\n'
+                         f'https://studio.youtube.com/video/{youtube_id}/livestreaming')
         else:
             print('Post to PM')
             if update.effective_message.from_user.is_bot:

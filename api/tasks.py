@@ -153,3 +153,6 @@ class ViewTasks:
         if task_id:
             PeriodicTask.objects.get(id=task_id).clocked.delete()
             logger.info(f"delete_message task_id: {task_id} deleted")
+
+
+# TODO ДР база и рассылка https://smsaero.ru/cabinet/settings/apikey/

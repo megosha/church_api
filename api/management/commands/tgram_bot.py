@@ -252,13 +252,15 @@ class Command(BaseCommand):
 
     @staticmethod
     def on_board(update, context):
+        # TODO log chat_id+
+        # logger.info("Location of %s: %s", user.first_name, update.message.text)
         chat_id = update.effective_chat.id
         username = update.effective_chat.username or ''
         text: str = update.effective_message.text
         bot_user, created = models.BotContact.objects.update_or_create(
             chat_id=chat_id, defaults=dict(username=username,last_message=timezone.now()))
         if chat_id < 0:
-            print('Post to channel')
+            print('Post to channel', chat_id)
             listen_group = models.Config.get_solo().tgram.get('listen_group')
             if listen_group and username == listen_group:
                 youtube_id = methods.youtube_get_id(text.strip())

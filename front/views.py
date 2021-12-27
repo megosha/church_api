@@ -165,13 +165,18 @@ class NewsSectionView(View):
             items = paginator.page(paginator.num_pages)
         return items
 
-    def get(self, request, pk):
-        news_section = self.get_news_section(pk)
-        if isinstance(news_section, HttpResponseRedirect):
-            return news_section
+    def get(self, request, pk=None):
+        if pk:
+            news_section = self.get_news_section(pk)
+            if isinstance(news_section, HttpResponseRedirect):
+                return news_section
+            news_qset = news_section.news_set.all()
+        else:
+            news_section = None
+            news_qset = models.News.objects.filter(section__site=self.request.site)
+        news_qset = news_qset.filter(active=True, date__lte=timezone.now())
 
         news_filter = request.GET.get('filter')
-        news_qset = news_section.news_set.filter(active=True, date__lte=timezone.now())
         if news_filter:
             news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
 
@@ -205,7 +210,7 @@ class ArticleView(View):
         except Exception as exc:
             request.session['message'] = 'Статья не найдена'
             print(exc)
-            return redirect('/news-1')
+            return redirect('/news')
 
         context = dict(
             article=article,

@@ -9,6 +9,7 @@ urlpatterns = [
     re_path(r'^profile-(?P<pk>\d+)/?$', views.ProfileView.as_view()),
     re_path(r'^news-(?P<pk>\d+)/?$', views.NewsSectionView.as_view()),
     re_path(r'^writer-(?P<pk>\d+)/?$', views.WriterView.as_view()),
+    re_path(r'^news/?$', views.NewsSectionView.as_view()),
     re_path(r'^command/?$', views.CommandView.as_view()),
     re_path(r'^account/?$', views.AccountView.as_view()),
     re_path(r'^writer/?$', views.WriterView.as_view()),

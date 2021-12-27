@@ -54,7 +54,7 @@
                                 <h4 class="card-title2 mbr-fonts-style mbr-normal align-left display-5">{{ item.title }}</h4>
                                 <div class="ico-box">
                                     <span class="pr-2 mbr-iconfont mbr-iconfont-social ico2 mbri-calendar"></span>
-                                    <p class="mbr-text mbr-fonts-style phone mbr-normal display-4">{{ item.date|date:"d E Y" }}</p>
+                                    <p class="mbr-text mbr-fonts-style phone mbr-normal display-4">{{ item.date|date:"d E Y" }}{% if newssection is None %} - {{ item.section }}{% endif %}</p>
                                 </div>
                             </div>
                         </div>

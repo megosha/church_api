@@ -1,5 +1,6 @@
 from datetime import date
 
+import csv
 import requests
 from django.db import models
 
@@ -34,6 +35,18 @@ class SmsConfig(models.Model):
         response = requests.post(self.url + 'auth')
         if response.status_code == requests.status_codes.ok:
             return True
+
+    def import_csv(self, path):
+        peoples = list()
+        with open(path) as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get('fio'):
+                    birthday = row['Дата']
+                    phone = row['телефон']
+                    fio = row['Ф.И.О.']
+                    peoples.append(People(site=self.site, fio=fio, phone=phone, birthday=birthday))
+        People.objects.bulk_create(peoples, ignore_conflicts=True)
 
 
 class People(models.Model):

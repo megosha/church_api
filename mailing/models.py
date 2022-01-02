@@ -17,7 +17,7 @@ class SmsConfig(models.Model):
 
     def mailing(self):
         now = date.today()
-        peoples = People.objects.filter(birthday=now, sent__ne=now).values_list('pk', 'fio', 'phone')
+        peoples = People.objects.filter(birthday=now, sent__ne=now, phone__ne='').values_list('pk', 'fio', 'phone')
         success = list()
         for pk, fio, phone in peoples:
             if self.send(phone, self.text.format(fio=fio)):
@@ -43,7 +43,9 @@ class SmsConfig(models.Model):
             for row in reader:
                 if row.get('fio'):
                     birthday = row['Дата']
-                    phone = row['телефон']
+                    phone = ''.join(x for x in row['телефон'] if x.isdigit())
+                    if phone[0] == '8':
+                        phone = '7' + phone[1:]
                     fio = row['Ф.И.О.']
                     peoples.append(People(site=self.site, fio=fio, phone=phone, birthday=birthday))
         People.objects.bulk_create(peoples, ignore_conflicts=True)

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.vk',
     'sorl.thumbnail',
     'django_celery_beat',
+    'import_export',
 ]
 
 MIDDLEWARE = [

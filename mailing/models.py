@@ -2,11 +2,14 @@ from datetime import date
 
 import csv
 import requests
+from requests.auth import HTTPBasicAuth
 from django.db import models
+
+from api.tasks import say2boss
 
 
 class SmsConfig(models.Model):
-    site = models.OneToOneField("api.Site", on_delete=models.SET_NULL, null=True, blank=True)
+    site = models.OneToOneField("api.Site", on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     url = models.CharField(max_length=64, default='https://gate.smsaero.ru/v2/', blank=True)
     login = models.CharField(max_length=32, default='', blank=True)
     key = models.CharField(max_length=32, default='', blank=True)
@@ -20,14 +23,16 @@ class SmsConfig(models.Model):
         peoples = People.objects.filter(birthday=now, sent__ne=now, phone__ne='').values_list('pk', 'fio', 'phone')
         success = list()
         for pk, fio, phone in peoples:
-            if self.send(phone, self.text.format(fio=fio)):
+            if self.send(phone, self.text):
+                say2boss(f'Отправлено поздравление с др {fio}')
                 success.append(pk)
         if success:
             People.objects.filter(pk__in=success).update(sent=now)
 
     def send(self, phone, text):
         sign = ''
-        response = requests.post(self.url + 'sms/send', params=dict(number=phone, text=text, sign=sign))
+        response = requests.post(self.url + 'sms/send', params=dict(number=phone, text=text, sign=sign),
+                                 auth=HTTPBasicAuth(self.login, self.key))
         if response.status_code == requests.status_codes.ok:
             return True
 

@@ -13,6 +13,7 @@ class SmsConfig(models.Model):
     url = models.CharField(max_length=64, default='https://gate.smsaero.ru/v2/', blank=True)
     login = models.CharField(max_length=32, default='', blank=True)
     key = models.CharField(max_length=32, default='', blank=True)
+    sign = models.CharField(max_length=32, default='Church22', blank=True)
     text = models.TextField(default='', blank=True)
 
     def __str__(self):
@@ -29,18 +30,6 @@ class SmsConfig(models.Model):
         if success:
             People.objects.filter(pk__in=success).update(sent=now)
 
-    def send(self, phone, text):
-        sign = ''
-        response = requests.post(self.url + 'sms/send', params=dict(number=phone, text=text, sign=sign),
-                                 auth=HTTPBasicAuth(self.login, self.key))
-        if response.status_code == requests.status_codes.ok:
-            return True
-
-    def test(self):
-        response = requests.post(self.url + 'auth')
-        if response.status_code == requests.status_codes.ok:
-            return True
-
     def import_csv(self, path):
         peoples = list()
         with open(path) as f:
@@ -54,6 +43,27 @@ class SmsConfig(models.Model):
                     fio = row['Ф.И.О.']
                     peoples.append(People(site=self.site, fio=fio, phone=phone, birthday=birthday))
         People.objects.bulk_create(peoples, ignore_conflicts=True)
+
+    def request(self, endpoint='auth', *, answer=None, json: dict = None):
+        """False | True | None | Any"""
+        response = requests.post(f'{self.url}{endpoint}', json=json, auth=HTTPBasicAuth(self.login, self.key))
+        if response.ok:
+            if answer is True:
+                return response.json()
+            elif answer:
+                return (response.json()['data'] or {}).get(answer)
+            return True
+        print(response.text)
+        return False
+
+    def send(self, phone, text):
+        return self.request('sms/send', answer='id', json=dict(number=phone, text=text, sign=self.sign))
+
+    def balance(self):
+        return self.request('balance', answer='balance')
+
+    def status(self, msg_id: int):
+        return self.request('sms/status', answer='status', json=dict(id=msg_id))
 
 
 class People(models.Model):

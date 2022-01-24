@@ -1,4 +1,4 @@
-from api.tasks import log
+from api.tasks import log, say2boss
 from church_api.celery import app
 from mailing import models
 
@@ -8,3 +8,5 @@ def congratulation():
     for conf in models.SmsConfig.objects.all():
         with log(conf.site.name):
             conf.mailing()
+            if conf.balance() < 10:
+                say2boss('smsaero.ru balance < 10')

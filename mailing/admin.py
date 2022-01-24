@@ -80,14 +80,14 @@ class CustomImportForm(ImportForm):
 
 @admin.register(models.People)
 class PeopleAdmin(ImportMixin, admin.ModelAdmin):
-    # TODO site
-    list_display = ["fio", "site", "birthday"]
+    list_display = ["fio", "phone", "birthday", "site", "sent"]
     resource_class = PeopleResource
 
     def get_import_form(self):
         return CustomImportForm
 
     def get_form_kwargs(self, form, *args, **kwargs):
+        # TODO site empty
         if isinstance(form, CustomImportForm):
             if form.is_valid():
                 site = form.cleaned_data['site']

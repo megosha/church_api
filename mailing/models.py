@@ -21,7 +21,8 @@ class SmsConfig(models.Model):
 
     def mailing(self):
         now = date.today()
-        peoples = People.objects.filter(birthday=now, sent__ne=now, phone__ne='').values_list('pk', 'fio', 'phone')
+        peoples = People.objects.filter(site=self.site, birthday=now).exclude(sent=now).exclude(phone='').values_list(
+            'pk', 'fio', 'phone')
         success = list()
         for pk, fio, phone in peoples:
             if self.send(phone, self.text):
@@ -31,6 +32,7 @@ class SmsConfig(models.Model):
             People.objects.filter(pk__in=success).update(sent=now)
 
     def import_csv(self, path):
+        # TODO site empty
         peoples = list()
         with open(path) as f:
             reader = csv.DictReader(f)

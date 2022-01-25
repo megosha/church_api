@@ -2,7 +2,7 @@ import inspect
 import json
 import logging
 from contextlib import contextmanager
-from datetime import timedelta
+from time import sleep
 
 from django.utils import timezone
 from django.utils.dateparse import parse_duration
@@ -98,6 +98,10 @@ class ViewTasks:
             logger.info(f"post2group task_id: {task_id} deleted")
         with log('YouTube.get_live') as link:
             link = methods.YouTube().get_live(youtube_live, youtube_filter)
+        if not link:
+            sleep(60 * 3)
+            with log('YouTube.get_live 2') as link:
+                link = methods.YouTube().get_live(youtube_live, youtube_filter)
         if not link:
             say2boss(f'Ошибка! Прямые эфиры не найдены')
             return

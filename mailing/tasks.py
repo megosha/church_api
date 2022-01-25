@@ -7,6 +7,6 @@ from mailing import models
 def congratulation():
     for conf in models.SmsConfig.objects.all():
         with log(conf.site.name):
-            conf.mailing()
             if conf.balance() < 10:
                 say2boss('smsaero.ru balance < 10')
+            conf.mailing()

@@ -28,6 +28,8 @@ class SmsConfig(models.Model):
             if self.send(phone, self.text):
                 say2boss(f'Отправлено поздравление с др {fio}')
                 success.append(pk)
+            else:
+                say2boss(f'Ошибка отправки поздравления с др {fio}')
         if success:
             People.objects.filter(pk__in=success).update(sent=now)
 
@@ -55,7 +57,7 @@ class SmsConfig(models.Model):
             elif answer:
                 return (response.json()['data'] or {}).get(answer)
             return True
-        print(response.text)
+        say2boss(response.text)
         return False
 
     def send(self, phone, text):

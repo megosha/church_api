@@ -41,6 +41,11 @@ class Main(models.Model):
 
 class Config(SingletonModel):
     tgram = JSONField(default=dict)
+    commands = JSONField(default=dict)
+
+    @classmethod
+    def command(cls, command: str) -> dict:
+        return cls.get_solo().commands.get(command, dict())
 
 
 class Profile(models.Model):

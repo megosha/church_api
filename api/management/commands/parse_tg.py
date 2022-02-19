@@ -21,7 +21,7 @@ class Command(BaseCommand):
         section = models.NewsSection.objects.get(title='Медиа')
         title = f'{parse_book} - Библия - аудиоверсия - РБО'
         text_start = f'Библия - {parse_book} - аудиоверсия - Современный русский перевод Русского Библейского Общества'
-        author = 'Телеграм "Слушать Библию" @bible_fj'
+        author = f'Телеграм "Слушать Библию" @{config["channel"]}'
         media_path = 'media/books'
         audio = '<audio id="{num}" controls preload=none type="audio/mpeg" src="/{media_path}/{filename}">' \
                 'not support audio</audio>'

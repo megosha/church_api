@@ -30,7 +30,7 @@ class FormAdmin(admin.ModelAdmin):
     list_display = ["created", "title", "sended"]
 
 
-skip_models = ('authtoken.Token.objects', 'account.EmailAddress.objects', 'socialaccount.SocialApp.objects',
+skip_models = ('authtoken.Token.objects', 'authtoken.TokenProxy.objects', 'account.EmailAddress.objects', 'socialaccount.SocialApp.objects',
                'socialaccount.SocialToken.objects', 'socialaccount.SocialAccount.objects',
                'django_celery_beat.IntervalSchedule.objects', 'django_celery_beat.CrontabSchedule.objects',
                'django_celery_beat.SolarSchedule.objects', 'django_celery_beat.ClockedSchedule.objects',

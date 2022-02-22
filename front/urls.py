@@ -4,7 +4,7 @@ from front import views
 
 
 urlpatterns = [
-    re_path(r'^/?$', views.IndexView.as_view(), name='index'),
+    path('', views.IndexView.as_view(), name='index'),
     re_path(r'^article-(?P<pk>\d+)/?$', views.ArticleView.as_view()),
     re_path(r'^profile-(?P<pk>\d+)/?$', views.ProfileView.as_view()),
     re_path(r'^news-(?P<pk>\d+)/?$', views.NewsSectionView.as_view()),

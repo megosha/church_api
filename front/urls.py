@@ -14,6 +14,8 @@ urlpatterns = [
     re_path(r'^account/?$', views.AccountView.as_view()),
     re_path(r'^writer/?$', views.WriterView.as_view()),
     re_path(r'^profile/?$', views.ProfileView.as_view()),
+    re_path(r'^bible/?$', views.BibleView.as_view()),
+    re_path(r'^bible/(?P<pk>\d+)/?$', views.BibleView.as_view()),
     re_path(r'^article-(?P<pk>\d+)/?$', views.ArticleView.as_view(), name='article'),
     re_path(r'^r-(?P<pk>\d+/?$)|^r-(?P<yt>\w+/?$)', views.YTRedirectView.as_view()),
 ]

@@ -144,6 +144,35 @@ class CommandView(View):
         return HttpResponse(methods.render_with_site('command.html', request, context, True))
 
 
+class BibleView(View):
+    def get(self, request, pk=None):
+        news_section = models.NewsSection.objects.filter(title='Библия', site=self.request.site).first()
+        if not news_section:
+            return redirect('/')
+        if pk:
+            return ArticleView.render(request, pk)
+        else:
+            news_qset = news_section.news_set.filter(active=True, date__lte=timezone.now())
+            news_filter = request.GET.get('filter')
+            if news_filter:
+                news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
+
+            page = request.GET.get('page')
+            try:
+                context = dict(newssection=methods.render_with_site('include/newssection.html', request, dict(
+                    newssection=news_section,
+                    newssection_all=models.NewsSection.objects.filter(
+                        site=request.site, active=True, news__active=True).distinct(),
+                    news=NewsSectionView.paginate(news_qset, page),
+                    page=page,
+                    filter=news_filter or ''
+                )))
+            except Exception as exc:
+                print(exc)
+                return redirect('/')
+            return HttpResponse(methods.render_with_site('newssection.html', request, context, True))
+
+
 class NewsSectionView(View):
 
     def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
@@ -155,7 +184,8 @@ class NewsSectionView(View):
             return redirect(f'/news-{news_section.pk}')
         return news_section
 
-    def paginate(self, qset, page, per_page=10):
+    @staticmethod
+    def paginate(qset, page, per_page=10):
         paginator = Paginator(qset, per_page)
         try:
             items = paginator.page(page)
@@ -203,6 +233,10 @@ class ArticleView(View):
         return " ".join(value.split()[:arg])
 
     def get(self, request, pk):
+        return self.render(request, pk)
+
+    @classmethod
+    def render(cls, request, pk):
         try:
             article = models.News.objects.get(pk=pk)
             if not request.user.is_authenticated or article.author_profile != request.user.profile:
@@ -226,7 +260,7 @@ class ArticleView(View):
 <meta property="og:type" content="website" />
 <meta property="og:url" content="{request.build_absolute_uri()}" />
 <meta property="og:image" content="{request._current_scheme_host + article.cover.url}" />
-<meta property="og:description" content="{self.truncatedwords(strip_tags(article.text), 30)}" />
+<meta property="og:description" content="{cls.truncatedwords(strip_tags(article.text), 30)}" />
 """  # https://ruogp.me/ | mb https://yandex.ru/dev/share/ ?
         )
         article.meter_inc('view_count')

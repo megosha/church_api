@@ -9,6 +9,11 @@ from api.tasks import say2boss
 
 
 class SmsConfig(models.Model):
+    FINAL_STATUSES = (1, 2, 6)
+    STATUSES = (
+        (0, 'в очереди'), (1, 'доставлено'), (2, 'не доставлено'), (3, 'передано'), (8, 'на модерации'),
+        (6, 'сообщение отклонено'), (4, 'ожидание статуса сообщения')
+    )
     site = models.OneToOneField("api.Site", on_delete=models.SET_NULL, null=True, blank=True, unique=True)
     url = models.CharField(max_length=64, default='https://gate.smsaero.ru/v2/', blank=True)
     login = models.CharField(max_length=32, default='', blank=True)
@@ -19,19 +24,22 @@ class SmsConfig(models.Model):
     def __str__(self):
         return f'{self.site}'
 
-    def mailing(self):
+    def mailing(self) -> list:
         now = date.today()
         peoples = People.objects.filter(site=self.site, birthday__day=now.day, birthday__month=now.month
                                         ).exclude(sent=now).exclude(phone='').values_list('pk', 'fio', 'phone')
         success = list()
+        msg_ids = list()
         for pk, fio, phone in peoples:
-            if self.send(phone, self.text):
-                say2boss(f'Отправлено поздравление с др {fio}')
+            if msg_id := self.send(phone, self.text):
+                say2boss(f'Отправлено поздравление с др {fio}, {msg_id}')
                 success.append(pk)
+                msg_ids.append(msg_id)
             else:
                 say2boss(f'Ошибка отправки поздравления с др {fio}')
         if success:
             People.objects.filter(pk__in=success).update(sent=now)
+        return msg_ids
 
     def import_csv(self, path):
         # TODO site empty
@@ -50,6 +58,7 @@ class SmsConfig(models.Model):
 
     def request(self, endpoint='auth', *, answer=None, json: dict = None):
         """False | True | None | Any"""
+        # https://smsaero.ru/cabinet/settings/apikey/
         response = requests.post(f'{self.url}{endpoint}', json=json, auth=HTTPBasicAuth(self.login, self.key))
         if response.ok:
             if answer is True:
@@ -57,7 +66,7 @@ class SmsConfig(models.Model):
             elif answer:
                 return (response.json()['data'] or {}).get(answer)
             return True
-        say2boss(response.text)
+        say2boss(f'Error: {response.url} - {response.status_code} {response.text}')
         return False
 
     def send(self, phone, text):

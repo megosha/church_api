@@ -9,24 +9,22 @@
         </div>
     </div>
 </section>
-{#<section class="extFeatures cid-rX28nqBFso" id="extFeatures3-71">#}
-{#    <div class="container">#}
-{#        <div class="row justify-content-center content-row">#}
-{#            {% for item in newssection_all %}#}
-{#            <div onclick="window.location.href='/news-{{ item.pk }}'" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" class="card p-3 col-md-6 col-lg-4 col-xl-2">#}
-{#                <div class="card-img pb-2">#}
-{#                    <div class="step{% if item.pk != article.section.pk %} section_active{% endif %}">#}
-{#                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 {{ item.icon }}" style="font-size: 50px; color: #000000;"></span>#}
-{#                    </div>#}
-{#                </div>#}
-{#                <div class="card-box">#}
-{#                    <p class="mbr-text mbr-fonts-style display-7{% if item.pk == article.section.pk %} mbr-bold{% endif %}">{{ item.title }}</p>#}
-{#                </div>#}
-{#            </div>#}
-{#            {% endfor %}#}
-{#        </div>#}
-{#    </div>#}
-{#</section>#}
+<section class="extFeatures cid-rX28nqBFso" id="extFeatures3-71">
+    <div class="container">
+        <div class="row justify-content-center content-row">
+            <div onclick="history.back(); return false;" onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'" class="card p-3 col-md-6 col-lg-4 col-xl-2">
+                <div class="card-img ">
+                    <div class="step">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social ico2 mbri-left" style="font-size: 50px; color: #000000;"></span>
+                    </div>
+                </div>
+                <div class="card-box">
+                    <p class="mbr-text mbr-fonts-style display-7">Назад</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% if article.image %}
     <section class="cid-rWEYJ8TePR" id="image3-6j">
         <figure class="mbr-figure container">
@@ -37,7 +35,7 @@
     </section>
 {% endif %}
 {% if article.text %}
-<section class="mbr-section article content1 cid-rWcOAJGDus" id="content1-5v">
+<section class="mbr-section article content1 cid-rWcOAJGDus pt-0" id="content1-5v">
     <div class="container">
         <div class="media-container-row">
             <div class="mbr-text col-12 mbr-fonts-style display-7 col-md-12">

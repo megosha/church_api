@@ -13,6 +13,6 @@ def congratulation():
                 say2boss(f'smsaero.ru balance is low ({balance})')
             if msg_ids := conf.mailing():
                 for msg_id in msg_ids:
-                    while status := conf.status(msg_id) not in conf.FINAL_STATUSES:
+                    while (status := conf.status(msg_id)) not in conf.FINAL_STATUSES:
                         time.sleep(3)
                     say2boss(f'Status {msg_id}: {dict(conf.STATUSES).get(status)}')

@@ -181,8 +181,7 @@ def youtube_get_desc(youtube_id):
 
 
 def render_with_site(path: str, request, context: dict = None, update_context=False):
-    if not context:
-        context = {}
+    context = context or {}
     if update_context:
         context.update(default_context(request))
     template = select_template([request.site.add_prefix(path), path])

@@ -1,0 +1,62 @@
+{% load thumbnail %}
+
+<section class="extFeatures cid-rWKLYBGipj" id="extFeatures34-6v">
+    <div class="container">
+        <form method="GET" class="mbr-form form-with-styler pt-2">
+            <div class="dragArea form-row">
+                <div data-for="find" class="col-lg-10 col-md-10 col-sm-10 col-10 form-group">
+                    <input style="background-color: #f7fffd" type="text" name="filter" placeholder="Поиск" class="form-control input-sm" value="{{ filter }}" id="filter">
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-secondary-outline"><span class="display-7 mobi-mbri-search mbr-iconfont"></span></button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row row-content justify-content-center">
+            {% for item in news %}
+            <div class="card p-3 col-lg-12 col-md-12">
+                <div class="card-wrapper"
+                     onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'"
+                     onclick="window.location.href='/bible/{{ item.pk }}'">
+                    <div class="card-img">
+                        {% thumbnail item.cover "320" as im %}
+                        <img src="{{ im.url }}" title="" alt="" style="height: auto">
+                        {% endthumbnail %}
+                        <div class="card-box">
+                        </div>
+                    </div>
+                    <div class="content-wrapper">
+                        <div class="text-box">
+                            <div>
+                                <h4 class="card-title2 mbr-fonts-style mbr-normal align-left display-5">{{ item.title }}</h4>
+                                <div class="ico-box">
+                                    <span class="pr-2 mbr-iconfont mbr-iconfont-social ico2 mbri-calendar"></span>
+                                    <p class="mbr-text mbr-fonts-style phone mbr-normal display-4">{{ item.date|date:"d E Y" }}{% if newssection is None %} - {{ item.section }}{% endif %}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-box">
+                            <p class="mbr-text mbr-fonts-style mbr-normal card-text display-7">{{ item.text|safe|truncatewords_html:30 }}</p>
+                        </div>
+                        <div class="mbr-section-btn">
+                            <a href="/bible/{{ item.pk }}" class="btn btn-sm btn-secondary-outline display-4">Перейти</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="pagination">
+         <span class="step-links">
+          {% if news.has_previous %}
+              <a class="btn btn-sm btn-secondary-outline display-4 mbr-iconfont mbri-left" href="?page={{ news.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}"></a>
+          {% endif %}
+            <span class="current">Страница {{ news.number }} из {{ news.paginator.num_pages }}</span>
+          {% if news.has_next %}
+              <a class="btn btn-sm btn-secondary-outline display-4 mbr-iconfont mbri-right" href="?page={{ news.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}"></a>
+          {% endif %}
+          </span>
+        </div>
+    </div>
+</section>

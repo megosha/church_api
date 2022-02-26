@@ -145,8 +145,10 @@ class CommandView(View):
 
 
 class BibleView(View):
+    title = 'Библия'
+
     def get(self, request, pk=None):
-        news_section = models.NewsSection.objects.filter(title='Библия', site=self.request.site).first()
+        news_section = models.NewsSection.objects.filter(title=self.title, site=self.request.site).first()
         if not news_section:
             return redirect('/')
         if pk:
@@ -159,14 +161,14 @@ class BibleView(View):
 
             page = request.GET.get('page')
             try:
-                context = dict(newssection=methods.render_with_site('include/newssection.html', request, dict(
-                    newssection=news_section,
-                    newssection_all=models.NewsSection.objects.filter(
-                        site=request.site, active=True, news__active=True).distinct(),
-                    news=NewsSectionView.paginate(news_qset, page),
-                    page=page,
-                    filter=news_filter or ''
-                )))
+                context = dict(
+                    newssection=methods.render_with_site('include/bible.html', request, dict(
+                        newssection=news_section,
+                        news=NewsSectionView.paginate(news_qset, page),
+                        page=page,
+                        filter=news_filter or '')),
+                    sec_title=self.title,
+                )
             except Exception as exc:
                 print(exc)
                 return redirect('/')
@@ -174,6 +176,7 @@ class BibleView(View):
 
 
 class NewsSectionView(View):
+    title = 'Новости'
 
     def get_news_section(self, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
         news_section = models.NewsSection.objects.filter(pk=pk, site=self.request.site).first()
@@ -212,14 +215,16 @@ class NewsSectionView(View):
 
         page = request.GET.get('page')
         try:
-            context = dict(newssection=methods.render_with_site('include/newssection.html', request, dict(
-                newssection=news_section,
-                newssection_all=models.NewsSection.objects.filter(
-                    site=request.site, active=True, news__active=True).distinct(),
-                news=self.paginate(news_qset, page),
-                page=page,
-                filter=news_filter or ''
-            )))
+            context = dict(
+                newssection=methods.render_with_site('include/newssection.html', request, dict(
+                    newssection=news_section,
+                    newssection_all=models.NewsSection.objects.filter(
+                        site=request.site, active=True, news__active=True).distinct(),
+                    news=self.paginate(news_qset, page),
+                    page=page,
+                    filter=news_filter or '')),
+                sec_title=self.title,
+            )
         except Exception as exc:
             print(exc)
             return redirect('/')

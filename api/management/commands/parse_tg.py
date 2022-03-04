@@ -10,7 +10,7 @@ from api import models
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
-        parser.add_argument('parse_book', type=str, nargs='?', default='Левит')
+        parser.add_argument('parse_book', type=str, nargs='?', default='Числа')
 
     def handle(self, *args, **options):
         config = models.Config.command('parse_tg')
@@ -24,6 +24,7 @@ class Command(BaseCommand):
     async def parse_channel(self, config: dict, parse_book: str):
         print(parse_book)
         section = models.NewsSection.objects.get(title='Библия')
+        def_article = models.News.objects.get(id=198)
         title = f'{parse_book} - аудиоверсия РБО'
         text_start = f'Библия - {parse_book} - аудиоверсия - Современный русский перевод Русского Библейского Общества'
         author = f'Телеграм "Слушать Библию" @{config["channel"]}'
@@ -71,8 +72,8 @@ function play_start(evt) {{
                         print(book, part, path, message.text[:40])
                     elif right_book:
                         break
-        news = models.News.objects.create(
+        article = models.News.objects.create(
             section=section, author_profile=models.Main.objects.first().profile,
-            title=title, text=text, html=html.format(total=num), author=author
+            title=title, text=text, html=html.format(total=num), author=author, cover=def_article.cover
         )
-        print(news.pk)
+        print(article.pk)

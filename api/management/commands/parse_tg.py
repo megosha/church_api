@@ -8,18 +8,23 @@ from api import models
 
 
 class Command(BaseCommand):
+
+    def add_arguments(self, parser):
+        parser.add_argument('parse_book', type=str, nargs='?', default='Левит')
+
     def handle(self, *args, **options):
         config = models.Config.command('parse_tg')
         if not config or not ('api_id' in config and 'api_hash' in config and 'channel' in config):
             print('parse_tg settings not found, example: '
                   '{"parse_tg": {"api_id": "api_id", "api_hash": "api_hash", "channel": "channel"}}')
             return
-        asyncio.run(self.parse_channel(config))
+        parse_book = options['parse_book']
+        asyncio.run(self.parse_channel(config, parse_book))
 
-    async def parse_channel(self, config: dict):
-        parse_book = 'Исход'
-        section = models.NewsSection.objects.get(title='Медиа')
-        title = f'{parse_book} - Библия - аудиоверсия - РБО'
+    async def parse_channel(self, config: dict, parse_book: str):
+        print(parse_book)
+        section = models.NewsSection.objects.get(title='Библия')
+        title = f'{parse_book} - аудиоверсия РБО'
         text_start = f'Библия - {parse_book} - аудиоверсия - Современный русский перевод Русского Библейского Общества'
         author = f'Телеграм "Слушать Библию" @{config["channel"]}'
         media_path = 'media/books'

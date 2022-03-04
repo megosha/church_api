@@ -68,13 +68,9 @@ function play_start(evt) {{
                         path = await message.download_media()
                         os.replace(path, f"{media_path}/{path}")
                         text += f'{message.text}\n{audio.format(num=num, filename=path, media_path=media_path)}\n\n'
-                        print(book, part, path, message.text[:20])
+                        print(book, part, path, message.text[:40])
                     elif right_book:
                         break
-                    else:
-                        print(book, message.text[:20])
-                elif message.text:
-                    print(message.text[:20])
         news = models.News.objects.create(
             section=section, author_profile=models.Main.objects.first().profile,
             title=title, text=text, html=html.format(total=num), author=author

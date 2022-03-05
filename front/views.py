@@ -105,6 +105,7 @@ class IndexView(View):
                                             date__lte=timezone.now(), section__site=request.site)[:7],
             liders=models.Profile.objects.filter(
                 position__lt=90, active=True, site=request.site).order_by('position')[:3],
+            have_bible=models.NewsSection.objects.filter(title=BibleView.title, site=self.request.site).exists()
         )
         if 'message' in request.session:
             context['message'] = request.session['message']

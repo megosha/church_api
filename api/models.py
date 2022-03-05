@@ -102,8 +102,20 @@ class Form(models.Model):
         return self.title
 
 
+class Media(models.Model):
+    NEWS = 'news'
+    MEDIA = 'media'
+    TITLES = ((NEWS, NEWS), (MEDIA, MEDIA))
+    site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
+    title = models.CharField(max_length=255, blank=True, choices=TITLES, default=NEWS)
+
+    def __str__(self):
+        return self.title
+
+
 class NewsSection(models.Model):
     site = models.ForeignKey(Site, on_delete=models.SET_NULL, null=True, blank=True)
+    media = models.ForeignKey(Media, on_delete=models.SET_NULL, null=True, blank=True)
     title = models.CharField(max_length=255, blank=True, default='')
     icon = models.CharField(max_length=32, default='mbri-info')
     active = models.BooleanField(default=True)

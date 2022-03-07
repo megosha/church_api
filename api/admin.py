@@ -10,14 +10,20 @@ admin.site.register(models.Config, SingletonModelAdmin)
 
 @admin.register(models.Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["name", "site", "position", "active"]
+    list_display = "name", "site", "position", "active"
+
+
+@admin.register(models.NewsSection)
+class NewsSection(admin.ModelAdmin):
+    list_display = 'site', 'media', 'title'
+    list_editable = 'media', 'title'
 
 
 @admin.register(models.News)
 class NewsAdmin(admin.ModelAdmin):
     list_display = "date", "title", "section", "active"
     readonly_fields = "cover_img", "image_img"
-    list_filter = 'section__site',
+    list_filter = 'section__site', 'section'
 
     def cover_img(self, obj: models.News):
         return mark_safe(f'<img src="{obj.cover.url}" width="200px">')
@@ -28,10 +34,11 @@ class NewsAdmin(admin.ModelAdmin):
 
 @admin.register(models.Form)
 class FormAdmin(admin.ModelAdmin):
-    list_display = ["created", "title", "sended"]
+    list_display = "created", "title", "sended"
 
 
-skip_models = ('authtoken.Token.objects', 'authtoken.TokenProxy.objects', 'account.EmailAddress.objects', 'socialaccount.SocialApp.objects',
+skip_models = ('authtoken.Token.objects', 'authtoken.TokenProxy.objects', 'account.EmailAddress.objects',
+               'socialaccount.SocialApp.objects',
                'socialaccount.SocialToken.objects', 'socialaccount.SocialAccount.objects',
                'django_celery_beat.IntervalSchedule.objects', 'django_celery_beat.CrontabSchedule.objects',
                'django_celery_beat.SolarSchedule.objects', 'django_celery_beat.ClockedSchedule.objects',

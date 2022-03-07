@@ -25,7 +25,7 @@ class Command(BaseCommand):
         print(parse_book)
         section = models.NewsSection.objects.get(title='Библия')
         def_article = models.News.objects.get(id=198)
-        title = f'{parse_book} - аудиоверсия РБО'
+        title = f'{parse_book}'
         text_start = f'Библия - {parse_book} - аудиоверсия - Современный русский перевод Русского Библейского Общества'
         author = f'Телеграм "Слушать Библию" @{config["channel"]}'
         media_path = 'media/books'

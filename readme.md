@@ -42,7 +42,7 @@ style.css:
 ##### Переход по клику на раздел
 
 ```
-onclick="window.location.href='/news-1'"
+onclick="window.location.href='/news/1'"
 ```
 
 ##### Один блок на все страницы в мобирайзе (футер)

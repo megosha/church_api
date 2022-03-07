@@ -15,8 +15,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(models.News)
 class NewsAdmin(admin.ModelAdmin):
-    list_display = ["date", "title", "section", "active"]
-    readonly_fields = ["cover_img", "image_img"]
+    list_display = "date", "title", "section", "active"
+    readonly_fields = "cover_img", "image_img"
+    list_filter = 'section__site',
 
     def cover_img(self, obj: models.News):
         return mark_safe(f'<img src="{obj.cover.url}" width="200px">')

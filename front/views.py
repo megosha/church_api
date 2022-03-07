@@ -12,6 +12,7 @@ from django.views import View
 
 from api import models
 from front import forms, methods
+from front.exceptions import Redirect
 
 
 class WriterView(View):
@@ -27,7 +28,7 @@ class WriterView(View):
                 return redirect(f'/profile-{request.user.profile.pk}')
         else:
             article = models.News()
-        sections = models.NewsSection.objects.filter(active=True, site=request.site)
+        sections = models.NewsSection.objects.filter(active=True, media__site=request.site)
         context = dict(
             form=forms.NewsForm(instance=article),
             section_list=sections,
@@ -101,11 +102,12 @@ class IndexView(View):
 
     def get(self, request):
         context = dict(
-            news=models.News.objects.filter(active=True, section__active=True,
+            news=models.News.objects.filter(active=True, section__active=True, section__media=models.NewsSection.NEWS,
                                             date__lte=timezone.now(), section__site=request.site)[:7],
             liders=models.Profile.objects.filter(
                 position__lt=90, active=True, site=request.site).order_by('position')[:3],
-            have_bible=models.NewsSection.objects.filter(title=BibleView.title, site=self.request.site).exists()
+            have_books=models.NewsSection.objects.filter(
+                media=models.NewsSection.BOOKS, site=self.request.site).exists()
         )
         if 'message' in request.session:
             context['message'] = request.session['message']
@@ -146,57 +148,7 @@ class CommandView(View):
         return HttpResponse(methods.render_with_site('command.html', request, context, True))
 
 
-class BibleView(View):
-    title = 'Библия'
-
-    def get(self, request, pk=None):
-        news_section = models.NewsSection.objects.filter(title=self.title, site=self.request.site).first()
-        if not news_section:
-            return redirect('/')
-        if pk:
-            return ArticleView.render(request, pk)
-        else:
-            news_qset = news_section.news_set.filter(active=True, date__lte=timezone.now())
-            news_filter = request.GET.get('filter')
-            if news_filter:
-                news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
-
-            page = request.GET.get('page')
-            try:
-                context = dict(
-                    newssection=methods.render_with_site('include/bible.html', request, dict(
-                        newssection=news_section,
-                        news=NewsSectionView.paginate(news_qset, page),
-                        page=page,
-                        filter=news_filter or '')),
-                    sec_title=self.title,
-                )
-            except Exception as exc:
-                print(exc)
-                return redirect('/')
-            return HttpResponse(methods.render_with_site('newssection.html', request, context, True))
-
-
-class MediaSectionView(View):
-
-    def get(self, request, pk=None):
-        return NewsSectionView.ret(request, pk, media=models.Media.MEDIA)
-
-
-class NewsSectionView(View):
-
-    def get(self, request, pk=None):
-        return self.ret(request, pk, media=models.Media.NEWS)
-
-    @staticmethod
-    def get_news_section(request, pk) -> Union[HttpResponseRedirect, models.NewsSection]:
-        news_section = models.NewsSection.objects.filter(pk=pk, site=request.site).first()
-        if not news_section:
-            news_section = models.NewsSection.objects.filter(site=request.site).first()
-            if not news_section:
-                return redirect('/')
-            return redirect(f'/news-{news_section.pk}')
-        return news_section
+class PaginatorMixin:
 
     @staticmethod
     def paginate(qset, page, per_page=10):
@@ -209,39 +161,61 @@ class NewsSectionView(View):
             items = paginator.page(paginator.num_pages)
         return items
 
-    @classmethod
-    def ret(cls, request, pk=None, media=models.Media.NEWS):
+
+class MediaView(View, PaginatorMixin):
+    media = models.NewsSection.NEWS
+    ordering = '-date'
+    by_site = True
+
+    def get(self, request, pk=None):
+        self.media = request.resolver_match.url_name
+        if self.media == models.NewsSection.BOOKS:
+            self.ordering = 'title'
+            self.by_site = False
+
         if pk:
-            news_section = cls.get_news_section(request, pk)
-            if isinstance(news_section, HttpResponseRedirect):
-                return news_section
+            news_section = self.get_news_section(pk)
             news_qset = news_section.news_set.all()
         else:
             news_section = None
-            news_qset = models.News.objects.filter(section__media__site=request.site)
-        news_qset = news_qset.filter(active=True, date__lte=timezone.now())
+            news_qset = models.News.objects.filter(section__media=self.media)
+            if self.by_site:
+                news_qset = news_qset.filter(section__site=request.site)
+        news_qset = news_qset.filter(active=True, date__lte=timezone.now()).order_by(self.ordering)
 
         news_filter = request.GET.get('filter')
         if news_filter:
             news_qset = news_qset.filter(Q(title__icontains=news_filter) | Q(text__icontains=news_filter))
 
         page = request.GET.get('page')
-        try:
-            context = dict(
-                newssection=methods.render_with_site('include/newssection.html', request, dict(
-                    newssection=news_section,
-                    newssection_all_=models.NewsSection.objects.filter(
-                        media__title=media, media__site=request.site, active=True, news__active=True
-                    ).distinct(),
-                    news=cls.paginate(news_qset, page),
-                    page=page,
-                    filter=news_filter or '')),
-                sec_title='Новости',
-            )
-        except Exception as exc:
-            print(exc)
-            return redirect('/')
+        context = dict(
+            newssection=news_section,
+            newssection_all=self.section_site_media_qset().filter(active=True, news__active=True).distinct(),
+            news=self.paginate(news_qset, page),
+            page=page,
+            filter=news_filter or '',
+            media=self.media,
+        )
+        context = dict(
+            newssection=methods.render_with_site('include/newssection.html', request, context),
+            media=self.media,
+        )
         return HttpResponse(methods.render_with_site('newssection.html', request, context, True))
+
+    def section_site_media_qset(self):
+        qset = models.NewsSection.objects.filter(media=self.media)
+        if self.by_site:
+            return qset.filter(site=self.request.site)
+        return qset
+
+    def get_news_section(self, pk) -> models.NewsSection:
+        news_section = self.section_site_media_qset().filter(pk=pk).first()
+        if not news_section:
+            news_section = self.section_site_media_qset().first()
+            if not news_section:
+                raise Redirect('/')
+            raise Redirect(f'/{self.media.lower()}/{news_section.pk}')
+        return news_section
 
 
 class ArticleView(View):
@@ -266,7 +240,6 @@ class ArticleView(View):
 
         context = dict(
             article=article,
-            # newssection_all=models.NewsSection.objects.filter(active=True, news__active=True).distinct()
         )
         article_html = methods.render_with_site('include/article.html', request, context)
 

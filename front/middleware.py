@@ -1,4 +1,7 @@
+from django import shortcuts
+
 from api import models
+from front.exceptions import Redirect
 
 
 class SiteSelectMiddleware:
@@ -18,3 +21,7 @@ class SiteSelectMiddleware:
         # Code to be executed for each request/response after the view is called.
 
         return response
+
+    def process_exception(self, request, exception):
+        if isinstance(exception, Redirect):
+            return shortcuts.redirect(exception.url)

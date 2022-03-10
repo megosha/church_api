@@ -11,6 +11,8 @@ class Command(BaseCommand):
             print(title)
             news = models.NewsSection.objects.get(title=title).news_set.exclude(title='Бытие')
             for article in news:
+                if '\nГлава ' in article.text:
+                    continue
                 print(article.title)
                 text = ''
                 chapter = 1

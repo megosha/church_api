@@ -28,7 +28,7 @@ class WriterView(View):
                 return redirect(f'/profile-{request.user.profile.pk}')
         else:
             article = models.News()
-        sections = models.NewsSection.objects.filter(active=True, media__site=request.site)
+        sections = models.NewsSection.objects.filter(active=True, site=request.site)
         context = dict(
             form=forms.NewsForm(instance=article),
             section_list=sections,

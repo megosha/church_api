@@ -117,6 +117,9 @@ class NewsSection(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = 'id',
+
 
 class News(models.Model):
     section = models.ForeignKey(NewsSection, on_delete=models.SET_NULL, null=True, blank=True)

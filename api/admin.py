@@ -16,7 +16,6 @@ class ProfileAdmin(admin.ModelAdmin):
 @admin.register(models.NewsSection)
 class NewsSection(admin.ModelAdmin):
     list_display = 'site', 'media', 'title'
-    list_editable = 'media', 'title'
 
 
 @admin.register(models.News)
@@ -24,6 +23,7 @@ class NewsAdmin(admin.ModelAdmin):
     list_display = "date", "title", "section", "active"
     readonly_fields = "cover_img", "image_img"
     list_filter = 'section__site', 'section'
+    list_editable = 'title',
 
     def cover_img(self, obj: models.News):
         return mark_safe(f'<img src="{obj.cover.url}" width="200px">')

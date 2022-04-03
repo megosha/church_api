@@ -1,9 +1,9 @@
 {% load thumbnail %}
 <section class="extFeatures cid-rWKUt54ncm" id="extFeatures3-70">
     <div class="container-fluid">
-        <div class="row justify-content-center content-row">
+        <div class="row justify-content-center content-row py-2">
             {% for item in newssection_all %}
-            <div onclick="window.location.href='/{{ media }}/{{ item.pk }}'" class="card p-3 col-md-6 col-lg-4 col-xl-2"
+            <div onclick="window.location.href='/{{ media }}/{{ item.pk }}'" class="card col"
                  onmouseover="this.style.cursor='pointer'" onmouseout="this.style.cursor='default'">
                 <div class="card-img pb-2">
                     <div class="step{% if item.pk != newssection.pk %} section_active{% endif %}">
@@ -26,10 +26,10 @@
         <h2 class="mbr-section-title pb-1 mbr-normal mbr-fonts-style display-1">{{ newssection.title }}</h2>
         <form method="GET" class="mbr-form form-with-styler">
             <div class="dragArea form-row">
-                <div data-for="find" class="col-lg-10 col-md-10 col-sm-10 col-10 form-group">
+                <div data-for="find" class="col form-group">
                     <input style="background-color: #f7fffd" type="text" name="filter" placeholder="Поиск" class="form-control input-sm" value="{{ filter }}" id="filter">
                 </div>
-                <div class="col">
+                <div class="col-auto">
                     <button type="submit" class="btn btn-secondary-outline"><span class="display-7 mobi-mbri-search mbr-iconfont"></span></button>
                 </div>
             </div>

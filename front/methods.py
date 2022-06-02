@@ -258,7 +258,7 @@ class YouTube:
         self.api_key = get_set('GOOGLE_API_KEY')
         self.api_prefix = 'https://www.googleapis.com/youtube/v3/'
 
-    def get_live(self, channel_id, filter=None):
+    def get_live(self, channel_id, filter=None, raise_exception=True, log_warning=True):
         response = requests.get(
             f'{self.api_prefix}search?part=snippet&channelId={channel_id}&type=video&eventType=live&key={self.api_key}'
         )
@@ -272,5 +272,8 @@ class YouTube:
                     return video_id
             else:
                 return video_id
-        logging.warning(response.json())
-        raise Exception(f'channel {channel_id}, filter {filter} not found. lives count {len(response.json()["items"])}')
+        if log_warning:
+            logging.warning(f"YouTube.get_live items({filter}) not found {response.json()}")
+        if raise_exception:
+            raise Exception(
+                f'channel {channel_id}, filter {filter} not found. lives count {len(response.json()["items"])}')

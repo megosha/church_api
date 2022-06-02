@@ -1,6 +1,7 @@
 import inspect
 import json
 import logging
+import time
 from contextlib import contextmanager
 from time import sleep
 
@@ -53,16 +54,18 @@ def say2group(text, chat_id=None):
 
 
 @contextmanager
-def log(text=''):
+def log(text='', only_warning=False):
     func = inspect.stack()[2].function
     func = f'{func} {text}' if text else func
-    logger.info(f'{func} start')
+    if not only_warning:
+        logger.info(f'{func} start')
     try:
         yield
     except Exception as exc:
         logger.warning(f'{func} Exception: {exc}')
     else:
-        logger.info(f'{func} stop')
+        if not only_warning:
+            logger.info(f'{func} stop')
 
 
 class ViewTasks:
@@ -122,8 +125,12 @@ class ViewTasks:
                    **kwargs):
         logger.info("post2group start")
         if youtube_live:
-            with log('YouTube.get_live') as link:
-                link = methods.YouTube().get_live(youtube_live, youtube_filter)
+            for counter in range(15):
+                with log('YouTube.get_live', only_warning=True) as link:
+                    link = methods.YouTube().get_live(youtube_live, youtube_filter, False, False)
+                if link:
+                    break
+                time.sleep(60)
             if not link:
                 if task_id:
                     PeriodicTask.objects.get(id=task_id).clocked.delete()

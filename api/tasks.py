@@ -99,12 +99,12 @@ class ViewTasks:
             # Если это был отложенный запуск, то удалить задачу
             PeriodicTask.objects.get(id=task_id).clocked.delete()
             logger.info(f"post2group task_id: {task_id} deleted")
-        with log('YouTube.get_live') as link:
-            link = methods.YouTube().get_live(youtube_live, youtube_filter)
-        if not link:
-            sleep(60 * 3)
-            with log('YouTube.get_live 2') as link:
-                link = methods.YouTube().get_live(youtube_live, youtube_filter)
+        for counter in range(15):
+            with log('YouTube.get_live', only_warning=True) as link:
+                link = methods.YouTube().get_live(youtube_live, youtube_filter, False, False)
+            if link:
+                break
+            time.sleep(60)
         if not link:
             say2boss(f'Ошибка! Прямые эфиры не найдены')
             return

@@ -153,6 +153,7 @@ class News(models.Model):
 class BotContact(models.Model):
     chat_id = models.BigIntegerField(primary_key=True)
     username = models.CharField(max_length=255, default='', blank=True)
+    title = models.CharField(max_length=255, default='', blank=True)
     rights = models.SmallIntegerField(default=0, blank=True)
     last_message = models.DateTimeField(default=timezone.now)
 

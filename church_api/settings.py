@@ -219,3 +219,13 @@ TTP_ID = env.str('TTP_ID', '')
 TTP_TEXT = env.str('TTP_TEXT', '')
 
 FEEDBACK_EMAILS = env.list('FEEDBACK_EMAILS', default=None)
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+}
+
+SOLO_CACHE = 'default'
+SOLO_CACHE_TIMEOUT = 60 * 5
+SOLO_CACHE_PREFIX = 'solo'

@@ -18,6 +18,11 @@ class NewsSection(admin.ModelAdmin):
     list_display = 'site', 'media', 'title'
 
 
+@admin.register(models.BotContact)
+class BotContactAdmin(admin.ModelAdmin):
+    list_display = 'chat_id', 'username', 'last_message', 'rights',
+
+
 @admin.register(models.News)
 class NewsAdmin(admin.ModelAdmin):
     list_display = "date", "title", "section", "active"

@@ -255,10 +255,11 @@ class Command(BaseCommand):
         # TODO log chat_id+
         # logger.info("Location of %s: %s", user.first_name, update.message.text)
         chat_id = update.effective_chat.id
+        title = update.effective_chat.title or update.effective_user.full_name or ''
         username = update.effective_chat.username or ''
         text: str = update.effective_message.text
         bot_user, created = models.BotContact.objects.update_or_create(
-            chat_id=chat_id, defaults=dict(username=username,last_message=timezone.now()))
+            chat_id=chat_id, defaults=dict(username=username, last_message=timezone.now(), title=title))
         if chat_id < 0:
             print('Post to channel', chat_id)
             listen_group = models.Config.get_solo().tgram.get('listen_group')

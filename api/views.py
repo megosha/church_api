@@ -13,6 +13,8 @@ from api import models, serializers, tasks
 from api.tasks import ViewTasks
 from front.methods import send_email
 
+logger = logging.getLogger('django')
+
 
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = models.Profile.objects.filter(active=True)
@@ -76,7 +78,6 @@ class LogView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def dispatch(self, request, *args, **kwargs):
-        logger = logging.getLogger('django')
         logger.info(f'{request.scheme} {request.method}:\n{request.body}')
         return HttpResponse('OK')
 
@@ -95,8 +96,10 @@ class TaskView(APIView):
 
     def post(self, request):
         profile = request.user.profile
+        logger.info(f'incoming task from: {profile.id} {profile.name}')
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        logger.info(f'incoming task params: {serializer.validated_data}')
         task = ViewTasks(**serializer.validated_data, profile_id=profile.id)
         task._proceed()
         return HttpResponse('OK')

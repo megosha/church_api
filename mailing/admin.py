@@ -80,7 +80,7 @@ class CustomImportForm(ImportForm):
 
 @admin.register(models.People)
 class PeopleAdmin(ImportMixin, admin.ModelAdmin):
-    list_display = "fio", "phone", "birthday", "site", "sent", "notify", "notify_sent",
+    list_display = "fio", "phone", "notify", "notify_sent", "birthday", "sent", "site",
     search_fields = 'fio', 'phone',
     list_editable = 'notify',
     resource_class = PeopleResource

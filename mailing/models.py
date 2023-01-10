@@ -112,3 +112,6 @@ class People(models.Model):
 
     def __str__(self):
         return f'{self.fio} {self.site}'
+
+    class Meta:
+        ordering = 'site', 'fio',

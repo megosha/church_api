@@ -162,6 +162,23 @@ class PaginatorMixin:
         return items
 
 
+class AudioView(View):
+    pre_path = '/www/church_api/media/audio/'
+
+    def get(self, request, path: str = ''):
+        from os import listdir
+        from os.path import isfile, join
+        full_path = self.pre_path + path.replace('@', '/')
+        dirs = sorted(listdir(full_path))
+        files = {f for f in listdir(path) if isfile(join(path, f))}
+        context = dict(
+            dirs=dirs,
+            files=files,
+        )
+        # TODO
+        return HttpResponse(methods.render_with_site('audio.html', request, context, True))
+
+
 class MediaView(View, PaginatorMixin):
     media = models.NewsSection.NEWS
     ordering = '-date'

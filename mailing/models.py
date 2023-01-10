@@ -19,10 +19,28 @@ class SmsConfig(models.Model):
     login = models.CharField(max_length=32, default='', blank=True)
     key = models.CharField(max_length=32, default='', blank=True)
     sign = models.CharField(max_length=32, default='Church22', blank=True)
-    text = models.TextField(default='', blank=True)
+    text = models.TextField(verbose_name='Поздравление', default='', blank=True)
+    text_notify = models.TextField(verbose_name='Напоминание', default='', blank=True)
 
     def __str__(self):
         return f'{self.site}'
+
+    def notifying(self):
+        now = date.today()
+        peoples = People.objects.filter(notify=True
+                                        ).exclude(notify_sent=now).exclude(phone='').values_list('pk', 'phone')
+        say2boss(f'Отправляем напоминания: {peoples.count()}')
+        success = list()
+        msg_ids = list()
+        for pk, phone in peoples:
+            if msg_id := self.send(phone, self.text_notify):
+                success.append(pk)
+                msg_ids.append(msg_id)
+            else:
+                say2boss(f'Ошибка отправки напоминания {pk}: {phone}')
+        if success:
+            People.objects.filter(pk__in=success).update(notify_sent=now)
+        return msg_ids
 
     def mailing(self) -> list:
         now = date.today()
@@ -78,13 +96,19 @@ class SmsConfig(models.Model):
     def status(self, msg_id: int):
         return self.request('sms/status', answer='status', json=dict(id=msg_id))
 
+    def check_balance(self):
+        if balance := self.balance() < 50:
+            say2boss(f'smsaero.ru balance is low ({balance})')
+
 
 class People(models.Model):
     site = models.ForeignKey("api.Site", on_delete=models.SET_NULL, null=True, blank=True)
     fio = models.CharField(max_length=255, default='')
     phone = models.CharField(max_length=16, default='', blank=True)
     birthday = models.DateField(null=True, blank=True)
-    sent = models.DateField(null=True, blank=True)
+    sent = models.DateField(verbose_name='Дата последнего поздравления', null=True, blank=True)
+    notify = models.BooleanField(verbose_name='Напоминать', default=False)
+    notify_sent = models.DateField(verbose_name='Дата последнего напоминания', null=True, blank=True)
 
     def __str__(self):
         return f'{self.fio} {self.site}'

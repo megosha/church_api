@@ -97,7 +97,7 @@ class SmsConfig(models.Model):
         return self.request('sms/status', answer='status', json=dict(id=msg_id))
 
     def check_balance(self):
-        if balance := self.balance() < 50:
+        if balance := self.balance() < 100:
             say2boss(f'smsaero.ru balance is low ({balance})')
 
 

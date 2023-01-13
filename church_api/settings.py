@@ -218,6 +218,8 @@ CELERY_TIMEZONE = 'Asia/Barnaul'
 TTP_ID = env.str('TTP_ID', '')
 TTP_TEXT = env.str('TTP_TEXT', '')
 
+GISMETEO_TOKEN = env.str('GISMETEO_TOKEN', '')
+
 FEEDBACK_EMAILS = env.list('FEEDBACK_EMAILS', default=None)
 
 CACHES = {

@@ -3,10 +3,12 @@ import json
 import logging
 import time
 from contextlib import contextmanager
-from time import sleep
 
+import pytz
+import requests
+from django.conf import settings
 from django.utils import timezone
-from django.utils.dateparse import parse_duration
+from django.utils.dateparse import parse_duration, parse_datetime
 from django_celery_beat.models import ClockedSchedule, PeriodicTask
 from emoji import emojize
 
@@ -16,6 +18,66 @@ from api import models
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+@app.task(name="api.tasks.post_weather", ignore_result=True)
+def post_weather(chat_id=None):
+    token = methods.get_set('GISMETEO_TOKEN')
+    if not token:
+        return
+    import locale
+    locale.setlocale(locale.LC_ALL, '')
+    from django.utils.timezone import activate
+    activate(settings.TIME_ZONE)
+    emoji_time = {4: "⛅️", 10: "☀️", 16: "🌗", 22: "🌙"}
+    emoji_dir = {0: "", 1: "⬆", 2: "↗", 3: "➡", 4: "↘", 5: "⬇", 6: "↙", 7: "⬅", 8: "↖"}
+    logger.info("post_weather start")
+    url = 'https://api.gismeteo.net/v2/weather/forecast/by_day_part/4720/?days=3'
+    response = requests.get(url, headers={'X-Gismeteo-Token': token})
+    if response.status_code != requests.codes.ok:
+        logger.error(f"post_weather response status_code: {response.status_code}")
+        return
+    now = timezone.localtime()
+    text = f"Погода {now:%d %B}:\n"
+    dates = response.json()['response']
+    flag = False
+    for date in dates:
+        dt = parse_datetime(date['date']['local']).astimezone(pytz.timezone(settings.TIME_ZONE))
+        if now.date() != dt.date():
+            break
+        print(now, dt)
+        if now > dt:
+            if flag:
+                continue
+            url = 'https://api.gismeteo.net/v2/weather/current/4720/'
+            response = requests.get(url, headers={'X-Gismeteo-Token': token})
+            if response.status_code != requests.codes.ok:
+                logger.error(f"post_weather response status_code: {response.status_code}")
+            else:
+                flag = True
+                date = response.json()['response']
+                dt = parse_datetime(date['date']['local'])
+        comfort = date['temperature']['comfort']['C']
+        air = date['temperature']['air']['C']
+        desc = date['description']['full']
+        humidity = date['humidity']['percent']
+        pressure = date['pressure']['mm_hg_atm']
+        wind = date['wind']['speed']['m_s']
+        direction = date['wind']['direction']['scale_8']
+        gm = date['gm']
+        storm = "🌩 " if date['storm'] else ""
+        text += f"\n{emoji_time.get(dt.hour, '⛅️')} {dt:%H:%M}:\n" \
+                f"- Температура {air}, ощущается {comfort}\n" \
+                f"- Влажность {humidity}%, давление {pressure} мм.р.с.\n" \
+                f"- Ветер {emoji_dir[direction]} {wind} м/с, геомагнитное поле {gm}/8\n" \
+                f"- {storm}{desc}\n"
+    text += "\nПо данным gismeteo.ru\n\n" \
+            "Благословенного дня и отличного настроения независимо от погоды!"
+
+    chat_id = chat_id or methods.get_set('TTP_ID')
+    result = methods.TGram().send_message(chat_id, text)
+    # result = methods.TGram().say2boss(text)
+    logger.info(f"post_weather end: {result}")
 
 
 @app.task(name="api.tasks.take_meter_value", ignore_result=True)

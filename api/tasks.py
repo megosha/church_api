@@ -45,8 +45,7 @@ def post_weather(chat_id=None):
         dt = parse_datetime(date['date']['local']).astimezone(pytz.timezone(settings.TIME_ZONE))
         if now.date() != dt.date():
             break
-        print(now, dt)
-        if now > dt:
+        if False and now > dt:
             if flag:
                 continue
             url = 'https://api.gismeteo.net/v2/weather/current/4720/'

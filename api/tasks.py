@@ -67,16 +67,16 @@ def post_weather(chat_id=None):
         gm = date['gm']
         storm = "🌩 " if date['storm'] else ""
         text += f"\n{emoji_time.get(dt.hour, '⛅️')} {dt:%H:%M}:\n" \
-                f"- Температура {air}, ощущается {comfort}\n" \
-                f"- Влажность {humidity}%, давление {pressure} мм.р.с.\n" \
-                f"- Ветер {emoji_dir[direction]} {wind} м/с, геомагнитное поле {gm}/8\n" \
+                f"- Темпер. {air}, ощущ. {comfort}\n" \
+                f"- Влажн. {humidity}%, давл. {pressure} мм.\n" \
+                f"- Ветер {emoji_dir[direction]} {wind} м/с, г/м поле {gm}/8\n" \
                 f"- {storm}{desc}\n"
     text += "\nПо данным gismeteo.ru\n\n" \
             "Благословенного дня и отличного настроения независимо от погоды!"
 
     chat_id = chat_id or methods.get_set('TTP_ID')
-    result = methods.TGram().send_message(chat_id, text)
-    # result = methods.TGram().say2boss(text)
+    # result = methods.TGram().send_message(chat_id, text)
+    result = methods.TGram().say2boss(text)
     logger.info(f"post_weather end: {result}")
 
 

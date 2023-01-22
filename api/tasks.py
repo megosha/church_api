@@ -74,8 +74,8 @@ def post_weather(chat_id=None):
             "Благословенного дня и отличного настроения независимо от погоды!"
 
     chat_id = chat_id or methods.get_set('TTP_ID')
-    # result = methods.TGram().send_message(chat_id, text)
-    result = methods.TGram().say2boss(text)
+    result = methods.TGram().send_message(chat_id, text)
+    # result = methods.TGram().say2boss(text)
     logger.info(f"post_weather end: {result}")
 
 

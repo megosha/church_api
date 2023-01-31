@@ -308,3 +308,18 @@ class YTRedirectView(View):
             return self.redirect_youtube(article.youtube)
 
         return redirect('article', pk=pk)
+
+
+class LearnView(View):
+    def get(self, request):
+        # if not request.user.is_authenticated:
+        #     request.session['message'] = 'Вы должны войти, чтобы увидеть профиль пользователя'
+        #     return redirect('/auth/login/')
+        mentors = models.Profile.objects.filter(
+            site=request.site,
+            position__lt=100
+        )
+        context = dict(
+            mentors=mentors,
+        )
+        return HttpResponse(methods.render_with_site('learn.html', request, context, True))

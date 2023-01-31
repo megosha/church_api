@@ -15,6 +15,7 @@ urlpatterns = [
     re_path(r'^account/?$', views.AccountView.as_view()),
     re_path(r'^writer/?$', views.WriterView.as_view()),
     re_path(r'^profile/?$', views.ProfileView.as_view()),
+    re_path(r'^learn/?$', views.LearnView.as_view()),
     re_path(r'^audio/?$', views.AudioView.as_view()),
     re_path(r'^audio/(?P<path>\s+)/?$', views.AudioView.as_view()),
     re_path(r'^books/?$', views.MediaView.as_view(), name=NewsSection.BOOKS),

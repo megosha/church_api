@@ -23,7 +23,6 @@
                 {% csrf_token %}
                 <button type="submit" class="btn-secondary-outline btn">Выйти</button>
             </form>
-
         {% endif %}
         <div class="pb-3">
             <h4 class="mb-3">Статьи пользователя:</h4>
@@ -31,7 +30,7 @@
                 <span class="mt-3">{{ article.date }} - {% firstof article.section "Черновики" %}</span>
                 <p><a class="text-secondary" href="/article-{{ article.pk }}">
                     {% thumbnail article.cover "50x50" crop="top" as im %}
-                    <img style="border-radius: 50%;" src="{{ im.url }}">&nbsp;{{ article.title }}
+                    <img style="border-radius: 50%;" src="{{ im.url }}" alt="{{ article.title }}">&nbsp;{{ article.title }}
                     {% endthumbnail %}
                 </a></p>
             {% empty %}

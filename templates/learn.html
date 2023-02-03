@@ -153,16 +153,16 @@
 {#                <p class="mbr-text mbr-fonts-style mbr-normal display-4">{{ item.about|linebreaksbr }}</p>#}
             </div>
             <div class="ico-wrap">
+                {% if item.telegram %}
+                    <a href="{{ item.telegram }}" target="_blank">
+                        <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-telegram socicon"></span>
+                    </a>
+                {% endif %}
                 {% if item.phone_visible %}
                     <a href="tel:{{ item.phone }}">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social mbri-mobile2"></span>
                     </a>
                     <span class="mbr-text mbr-fonts-style mbr-normal display-4">{{ item.phone }}</span>
-                {% endif %}
-                {% if item.telegram %}
-                    <a href="{{ item.telegram }}" target="_blank">
-                        <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-telegram socicon"></span>
-                    </a>
                 {% endif %}
             </div>
         </div>

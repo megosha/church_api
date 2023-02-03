@@ -317,7 +317,7 @@ class LearnView(View):
         #     return redirect('/auth/login/')
         mentors = models.Profile.objects.filter(
             site=request.site,
-            position__lt=100
+            is_mentor=True
         )
         context = dict(
             mentors=mentors,

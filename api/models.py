@@ -57,6 +57,7 @@ class Profile(models.Model):
     image = ImageField(blank=True, null=True, validators=[FileExtensionValidator(allowed_extensions=('jpg', 'jpeg'))])
     about = models.TextField(blank=True, default='')
     active = models.BooleanField(default=True)
+    is_mentor = models.BooleanField(default=False)
     city = models.CharField(max_length=64, blank=True, default='')
     phone = models.CharField(max_length=32, blank=True, default='')
     phone_visible = models.BooleanField(default=False, blank=True)

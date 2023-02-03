@@ -141,7 +141,7 @@
             <h4 class="mb-3">Кто проводит?</h4>
 
             {% for item in mentors %}
-
+<div class="card py-4 col-md-12">
     <div class="card-wrapper">
         {% thumbnail item.image "150x150" crop="top" as im %}
         <img src="{{ im.url }}" style="border-radius: 50%;" alt="">
@@ -171,7 +171,7 @@
             </div>
         </div>
     </div>
-
+</div>
             {% empty %}
                 <p>Наставники не найдены, воспользуйтесь формой обратной связи ниже</p>
             {% endfor %}

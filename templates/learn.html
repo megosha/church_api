@@ -154,20 +154,16 @@
             </div>
             <div class="ico-wrap">
                 {% if item.phone_visible %}
-                <div class="ico-box">
                     <a href="tel:{{ item.phone }}">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social mbri-mobile2"></span>
                     </a>
                     <span class="mbr-text mbr-fonts-style mbr-normal display-4">{{ item.phone }}</span>
-                </div>
                 {% endif %}
-                <div class="ico-box">
-                    {% if item.telegram %}
+                {% if item.telegram %}
                     <a href="{{ item.telegram }}" target="_blank">
                         <span class="px-2 mbr-iconfont mbr-iconfont-social socicon-telegram socicon"></span>
                     </a>
-                    {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -1,6 +1,5 @@
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.models import User
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import FileExtensionValidator
 from django.db import models, transaction
 from django.utils import timezone
@@ -40,8 +39,8 @@ class Main(models.Model):
 
 
 class Config(SingletonModel):
-    tgram = JSONField(default=dict)
-    commands = JSONField(default=dict)
+    tgram = models.JSONField(default=dict)
+    commands = models.JSONField(default=dict)
 
     @classmethod
     def command(cls, command: str) -> dict:
@@ -70,7 +69,7 @@ class Profile(models.Model):
     social_youtube = models.CharField(max_length=64, blank=True, default='')
     telegram = models.CharField(max_length=64, blank=True, default='')
     position = models.SmallIntegerField(default=100)
-    data = JSONField(default=dict, blank=True)
+    data = models.JSONField(default=dict, blank=True)
 
     class Meta:
         ordering = 'position', 'site', 'name'
@@ -88,7 +87,7 @@ class Profile(models.Model):
     @classmethod
     def set_data(cls, profile_id, key, value):
         cls.objects.filter(id=profile_id).update(data=models.Func(
-            models.F("data"), models.Value([key]), models.Value(value, JSONField()), function="jsonb_set"))
+            models.F("data"), models.Value([key]), models.Value(value, models.JSONField()), function="jsonb_set"))
 
 
 class Form(models.Model):
@@ -133,7 +132,7 @@ class News(models.Model):
     youtube = models.CharField(max_length=16, default='', blank=True)
     author = models.TextField(default='', blank=True)
     active = models.BooleanField(default=True)
-    meter = JSONField(default=dict, blank=True)
+    meter = models.JSONField(default=dict, blank=True)
 
     class Meta:
         ordering = '-date',

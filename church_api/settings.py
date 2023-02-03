@@ -19,7 +19,7 @@ DEBUG = env.bool('DEBUG', False)
 ALLOWED_HOSTS = ['*']
 SESSION_COOKIE_DOMAIN = '.church22.ru'
 SESSION_COOKIE_NAME = env.str('SESSION_COOKIE_NAME', 'tmp.church22.ru' if DEBUG else 'church22.ru')
-SESSION_COOKIE_AGE = 7777777  # 90 days
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 90
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -231,3 +231,5 @@ CACHES = {
 SOLO_CACHE = 'default'
 SOLO_CACHE_TIMEOUT = 60 * 5
 SOLO_CACHE_PREFIX = 'solo'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
